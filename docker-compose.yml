@@ -1,0 +1,17 @@
+# Servidor nginx
+services:
+  web:
+    image: nginx:1.23    # Puerto 8080 
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+      - ./config/docker.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - php-fpm
+
+  # Configuración de php-fpm
+  php-fpm:
+    image: php:8-fpm
+    volumes:
+      - .:/var/www/html
