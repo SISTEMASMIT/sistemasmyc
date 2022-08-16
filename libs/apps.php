@@ -9,7 +9,7 @@
                 $url= explode('/',$url);
             try {
                 if ($url[0]=="" or $url[0]=="index") {
-                    $fileController="controller/home.php";
+                    $fileController="controller/login.php";
                     require_once $fileController;
                     $controller = new Home();
                 }else{
