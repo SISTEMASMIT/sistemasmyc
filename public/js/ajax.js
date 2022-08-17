@@ -43,3 +43,37 @@ $(document).on("click", ".metismenu li a, .navbar-nav  li a", function (e) {
 	if (page == "javascript: void(0);") return false;
 	call_ajax_page(page);
 });
+
+function call_ajax_page(page) {
+
+	var title = page.replace(".html", "");
+	var title1 = title.replace("-", " ");
+
+	$('.page-title').empty();
+	$('.page-title').append(title1.charAt(0).toUpperCase() + title1.slice(1));
+
+	document.title = title1.charAt(0).toUpperCase() + title1.slice(1) + " | Admiria - Admin & Dashboard Template";
+
+	$.ajax({
+		url: "ajax/" + page,
+		cache: false,
+		dataType: "html",
+		type: "GET",
+		success: function (data) {
+			$("#result").empty();
+			$("#result").html(data);
+			window.location.hash = page;
+			$(window).scrollTop(0);
+		}
+	});
+}
+ /*
+$(document).ready(function () {
+	var pathO=document.location.hostname;
+	var path = window.location.hash.substr(1);
+	$.get(pathO+':8008/fail/',(data, status)=>{
+		$("#result").html(data);
+	});
+
+});*/
+
