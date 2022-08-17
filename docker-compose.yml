@@ -12,6 +12,6 @@ services:
 
   # Configuración de php-fpm
   php-fpm:
-    image: php:8-fpm
+    build: ./phpDockerFile/
     volumes:
       - .:/var/www/html

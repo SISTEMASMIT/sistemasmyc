@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 class Home extends Controller
 {
@@ -16,6 +19,8 @@ class Home extends Controller
     }
     public  function __construct0(){
         parent::__construct();
+        $this->loadModel("homeModel");
+        $this->view->data=$this->model->niveles();
         $this->view->render("/home/home");
         
      }

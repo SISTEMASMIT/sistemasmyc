@@ -5,6 +5,7 @@
  */
 class View 
 {
+    public $data ;
     /**
      * summary
      */
