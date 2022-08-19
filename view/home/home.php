@@ -97,15 +97,12 @@ require_once($path.'/view/header.php');
                                         </div>
                                         <div class="col-lg-3">
                                             <label for="sel1">Monitoreo:</label>
-                                            <!--div class="toggle-wrapper">
-                                            <div class="mier toggle-light primary" id="monitoreo"></div>
-                                            </div-->
                                             <div id="bit00_4">
                                                 <label class="switch">
                                                 <input type="checkbox" id="monitoreo">
                                                 <div class="slider round">
-                                                    <span class="on">ON</span>
-                                                    <span class="off">OFF</span>
+                                                    <span class="on">Activo</span>
+                                                    <span class="off">Desactivo</span>
                                                 </div>
                                                 </label>
                                             </div>
@@ -123,7 +120,7 @@ require_once($path.'/view/header.php');
                                     </div>
                                     <input id="target" type="button" value="LOTERIAS">
                                 </div>
-                                <button type="button" class="btn btn-dark waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#modalNiveles">Niveles</button>
+                                <button type="button" id="niveles" class="btn btn-dark waves-effect waves-light" onclick="abrirPermisos()" data-bs-toggle="modal" data-bs-target="#modalNiveles">Niveles</button>
                         </div>
                         <div class="modal-footer">
                         <button type="button" class="btn btn-danger waves-effect" data-bs-dismiss="modal">Cancelar</button>
@@ -134,7 +131,7 @@ require_once($path.'/view/header.php');
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
 
-        <!--///////////////////////  Nuevo 31-05-2022  /////////////////////////-->
+        <!--- MODA DE LOS NIVELES --->
         <div class="modal fade" id="modalNiveles" role="dialog">
             <div class="modal-dialog">
                 <!-- Modal content-->
@@ -143,29 +140,23 @@ require_once($path.'/view/header.php');
                         <h4 class="modal-title">Niveles de Seguridad</h4>
                     </div>
                     <div class="modal-body">
+                    <input id="search" type="text" placeholder="Buscar">
+                    <button type="button" class="btn btn-brown waves-effect" onclick="limpiarJstree()">Limpiar Todo</button>
+                    <button type="button" class="btn btn-success waves-effect" onclick="expandirJstree()">Expandir Todo</button>
+                    <br>
+                    <label>Grupo:</label>
+                        <select class="form-control" id="grupo">
+                        </select>
                         <!-- Initialize jsTree -->
                         <div class="padre">
                             <div id="folder_jstree" class="hijo"></div>
                         </div>
                         <br>
-                        <div class="padre2">
-                            <div class='hijo2'>
-                                <textarea hidden id='txt_folderjsondata'></textarea>
-                                <input type="button" value="Grabar Marcados" onclick="anda();"></input>
-                                <input type="button" value="Traigo Marcados"
-                                    onclick="anda2('<?php echo $lista; ?>');"></input>
-                                <input type="checkbox" name="expan" id="expan" checked>Expandir All
-                                <input type="button" value="Traigo Padre"
-                                    onclick="changeStatus('<?php echo $lista; ?>');"></input>
-                                <input type="button" value="Anula Todo" onclick="otra();"></input>
-                                <img src="">
-                            </div>
-                        </div>
                     </div>
                     <div class="modal-footer">
                         <div id="lblPlanta"></div>
                         <button type="button" class="btn btn-danger waves-effect" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="button" id="btnNivel" data-dismiss="modal" class="btn btn-dark" onclick="anda();">Guardar</button>
+                        <button type="button" id="btnNivel" data-dismiss="modal" class="btn btn-dark" onclick="guardarPermisos()"  data-bs-dismiss="modal">Guardar</button>
                     </div>
                 </div>
             </div>

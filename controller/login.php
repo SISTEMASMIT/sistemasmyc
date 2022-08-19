@@ -1,6 +1,6 @@
 <?php
 
-class Home extends Controller
+class Login extends Controller
 {
     /**
      * este es el controlador par los productos de inicio y el contenido plano

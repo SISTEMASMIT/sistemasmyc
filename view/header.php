@@ -18,6 +18,19 @@ $path=$_SERVER['DOCUMENT_ROOT'];
 <link href="<? $path;?>/public/css/bracket.css" rel="stylesheet" type="text/css">
 <link href="<? $path;?>/public/css/rwd-table.min.css" rel="stylesheet" type="text/css">
 <link href="<? $path;?>/public/css/main.css" rel="stylesheet" type="text/css">
+<script src="https://kit.fontawesome.com/ce19f53d03.js" crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" type="text/css" href="assets/datatables/datatables.css" />
+    <link rel="stylesheet" type="text/css"
+        href="assets/datatables/DataTables-1.10.18/css/dataTables.bootstrap4.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/bracket.css">
+    <link href="css/jquery.switchButton.css" rel="stylesheet">
+    <link href="css/toggles-full.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="jstree/dist/themes/default/style.min.css">
+
+
 
 <!-- Bootstrap Css -->
 <link href="<? $path;?>/public/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css">
@@ -37,7 +50,6 @@ $path=$_SERVER['DOCUMENT_ROOT'];
 
 <!-- Begin page -->
 <div id="layout-wrapper">
-
     <header id="page-topbar">
         <div class="navbar-header">
             <div class="d-flex">
@@ -577,3 +589,5 @@ $path=$_SERVER['DOCUMENT_ROOT'];
 <script src="https://maps.google.com/maps/api/js?key=AIzaSyCtSAR45TFgZjOs4nBFFZnII-6mMHLfSYI"></script>
 <script src="<? $path;?>/public/js/rwd-table.min.js"></script>
 <script src="<? $path;?>/public/js/table-responsive.init.js"></script>
+<script type="text/javascript" src="<? $path;?>/public/js/jstree.min.js"></script>
+
