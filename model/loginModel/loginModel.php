@@ -22,9 +22,12 @@ class loginModel{
                 "e" => $e,
                 "mensaje" => $mensaje
             );
-            $dataJson=json_encode($data2);
+            $dataJson=json_encode($data2[0]);
             echo $dataJson;
         }else{
+            if(!isset($_SESSION)) {
+                session_start();
+           }
             $data2[] = array(
                 /*
                 "e" => $data[0]["e"],

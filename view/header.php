@@ -239,7 +239,7 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                                 class="badge bg-success float-end">11</span>Settings</a>
                         <a class="dropdown-item" href="#">Lock screen</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item text-danger" href="#">Logout</a>
+                        <a class="dropdown-item text-danger" href="/logout">Logout</a>
                     </div>
                 </div>
             </div>

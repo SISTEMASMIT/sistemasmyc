@@ -19,28 +19,27 @@ $('#formLogin').submit(function(e) {
 
         }
     })
-    console.log(info.user);
     if(typeof(info.e) == 'undefined'){
         window.location.href = "/home"; 
     }
-    // if(info[0]["e"]=="0"){
-    //     if(info[0]["mensaje"]=="Usuario Desactivado"){
-    //         $('#invalido').html('<p>¡Usuario Desactivado por múltiples fallos de sesión!</p><button type="button" class="btn btn-secondary waves-effect" onclick="reactivar()">Reactivar Usuario</button><br>');
-    //     }else if(info[0]["mensaje"]=="Usuario Suspendido"){
-    //         $('#invalido').html('<p>¡Usuario Suspendido!</p><a href="#">Reactivar Usuario</a>');
-    //     }else if(info[0]["mensaje"]=="Banca Inactiva"){
-    //         $('#invalido').html('<p>¡Esta Banca se encuentra inactiva!</p><a href="#">Reactivar Usuario</a>');
-    //     }else{
-    //         $('#invalido').html('<p>¡Su usuario o clave son inválidos, intente nuevamente!</p>');
-    //     }   
-    //     console.log("Error "+info[0]["mensaje"]);
-    // }else if(info[0]["e"]=="2"){
-    //     console.log("Registre equipo");
-    // }else{
+    if(info.e=="0"){
+        if(info.mensaje=="Usuario Desactivado"){
+            $('#invalido').html('<p>¡Usuario Desactivado por múltiples fallos de sesión!</p><button type="button" class="btn btn-secondary waves-effect" onclick="reactivar()">Reactivar Usuario</button><br>');
+        }else if(info.mensaje=="Usuario Suspendido"){
+            $('#invalido').html('<p>¡Usuario Suspendido!</p><a href="#">Reactivar Usuario</a>');
+        }else if(info.mensaje=="Banca Inactiva"){
+            $('#invalido').html('<p>¡Esta Banca se encuentra inactiva!</p><a href="#">Reactivar Usuario</a>');
+        }else{
+            $('#invalido').html('<p>¡Su usuario o clave son inválidos, intente nuevamente!</p>');
+        }   
+        console.log("Error "+info.mensaje);
+    }else if(info.e="2"){
+        console.log("Registre equipo");
+    }else{
         
        
 
-    // }
+    }
 
     /* 
     if(clave=='1234'){
