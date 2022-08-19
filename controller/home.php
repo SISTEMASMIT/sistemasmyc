@@ -20,8 +20,12 @@ class Home extends Controller
     public  function __construct0(){
         parent::__construct();
         $this->loadModel("homeModel");
-        $this->view->data=$this->model->niveles();
-        $this->view->render("/home/home");
+        if(isset($_SESSION["usuario"])){
+            $this->view->data=$this->model->niveles();
+            $this->view->render("/home/home");
+        }else{
+            header("Location:/");
+        }
      }
 
 }

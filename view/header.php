@@ -78,7 +78,6 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                     id="vertical-menu-btn">
                     <i class="mdi mdi-menu"></i>
                 </button>
-
                 
                 <div class="d-none d-sm-block ms-2">
                     <h4 class="page-title"></h4>

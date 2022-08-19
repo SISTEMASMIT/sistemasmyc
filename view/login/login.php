@@ -70,8 +70,8 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                                                     </label>
                                                 </div>
                                             </div>--->
-                                            <div class="col-sm-8 text-end">
-                                                <label for="" id="invalido"></label>
+                                            <div class="">
+                                                <label for="" id="invalido"></label><br>
                                                 <button class="btn btn-primary w-md waves-effect waves-light" type="submit">Entrar</button>
                                             </div>
                                         </div>
@@ -108,12 +108,43 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                     </div><!-- /.modal-dialog -->
                 </div><!-- /.modal -->
             
+
+                
+
+
                             </div>
                         </div>    
                     </div>
                 </div>
             </div>
         </div>
+
+
+        <!--- Modal para reactivar Usuario -->
+        <div id="modalActivar" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title mt-0" id="myModalLabel">Reactivar Usuario</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                        <div class="modal-body"> 
+                            <form id="reactivar">
+                                <div class="modal-body">
+                                    <div id="usuarioA"></div>
+                                    <label for="">Ingrese el Código que le fue enviado a su medio de comunicación para reactivar su usuario</label>
+                                    <br><div id="bit00_3">
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" id="codigo">
+                                            </div>
+                                            </div>
+                                            <br>
+                                    <button class="btn btn-primary w-md waves-effect waves-light" type="submit">Entrar</button>
+                                </div>
+                             </form>    
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
 
                              
         <!-- JAVASCRIPT -->

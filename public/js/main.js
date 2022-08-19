@@ -1,9 +1,3 @@
-function guardarCambios(){
-    $('#guardar').on("click", function() {
-        alert("CLICKADOS");
-    });
-}
-
 $('#search').keyup(function(){
     $('#folder_jstree').jstree(true).show_all();
     $('#folder_jstree').jstree('search', $(this).val());
@@ -30,10 +24,8 @@ function expandirJstree(){
 function guardarPermisos(){
     var tree = $('#folder_jstree').jstree();
     var permisos = tree.get_selected(); 
-    console.log(permisos);
     $("#niveles").val(permisos);
 }
-
 
 
 //Guardar Usuario
@@ -66,8 +58,6 @@ $('#formUsuarios').submit(function(e) {
         estado_usuario='On';
     }
     usuario.push(nombre,username,clave,receptor,telefono,dias_consulta, dias_cargo, pagos_ajustes,estado_usuario,monitoreo,permisos);
-    console.log(usuario);
-
 });
 
 
@@ -98,7 +88,6 @@ function abrirPermisos(){
             data: {},
             success: function(data) {
                 folder_jsondata = data;
-
                 $('#folder_jstree').jstree({
                     'core': {
                         'check_callback': true,

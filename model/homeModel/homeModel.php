@@ -2,6 +2,7 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
 class Arbol{
 	public $id=0;
 	public $parentId=0;
@@ -26,9 +27,14 @@ class homeModel{
 	public function niveles(){
 		$arboles=array();
 		$niveles=array();
-		$sql = "CALL bl_banca('pru1','0001', '', 'login', 'fsql', 'usu_login', 'p123', '', '', '', '', '', '', '', 'tokenl', '')";
+		$usuario=$_SESSION["usuario"];
+		$usuario=json_decode($usuario);
+		$sql = "CALL bl_banca(:username,'0001', '', 'login', 'fsql', 'usu_login', :clave, '', '', '', '', '', '', '', :token, '')";
 		$this->conexion=conexion::getConexion();
 		$statemant=$this->conexion->prepare($sql);
+		$statemant->bindParam(":username",$usuario->user);
+		$statemant->bindParam(":clave",$usuario->clave);
+		$statemant->bindParam(":token",$usuario->token);
 		if($statemant->execute()){
 			$statemant->fetchAll(PDO::FETCH_ASSOC);
 			$statemant->nextRowset();
