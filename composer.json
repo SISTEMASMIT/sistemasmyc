@@ -1,5 +1,5 @@
 {
     "require": {
-        "web-token/jwt-framework": "^3.0"
+        "nowakowskir/php-jwt": "^2.0"
     }
 }

@@ -26,10 +26,12 @@ class homeModel{
 	public function niveles(){
 		$arboles=array();
 		$niveles=array();
-		$sql = "CALL bl_banca('usuario','0001', 'token', '', 'fsql', 'menu_config', '', '', '', '', '', '', '', '', '', '')";
+		$sql = "CALL bl_banca('pru1','0001', '', 'login', 'fsql', 'usu_login', 'p123', '', '', '', '', '', '', '', 'tokenl', '')";
 		$this->conexion=conexion::getConexion();
 		$statemant=$this->conexion->prepare($sql);
 		if($statemant->execute()){
+			$statemant->fetchAll(PDO::FETCH_ASSOC);
+			$statemant->nextRowset();
 			while($row=$statemant->fetch(PDO::FETCH_ASSOC)){
 				array_push($arboles,new Arbol($row["id"],$row["parentid"],$row["icono"],$row["item"],$row["link"],$row["etiqueta"]));
 			}
