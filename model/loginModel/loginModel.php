@@ -15,11 +15,20 @@ class loginModel{
         $statemant->bindParam(":token",$usuario->jwt);
 		if($statemant->execute()){
         $data=$statemant->fetchAll(PDO::FETCH_ASSOC);
-        //var_dump($data);
-        var_dump($data[0]["m"]);
-        $dataJson=json_encode($data);
-        //echo json_encode($dataJson);
-		}
+        if(count($data[0])<=2){
+            $e = $data[0]["e"];
+            $mensaje = $data[0]["m"];
+            $data2[] = array(
+                "e" => $e,
+                "mensaje" => $mensaje
+            );
+            $dataJson=json_encode($data2);
+            echo $dataJson;
+        }else{
+            $dataJson=json_encode($data);
+            echo $dataJson;
+            }
+	    }
 
 	}
 

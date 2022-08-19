@@ -35,7 +35,6 @@ function guardarPermisos(){
 }
 
 
-
 //Guardar Usuario
 $('#formUsuarios').submit(function(e) {
     e.preventDefault(); 
@@ -98,7 +97,6 @@ function abrirPermisos(){
             data: {},
             success: function(data) {
                 folder_jsondata = data;
-
                 $('#folder_jstree').jstree({
                     'core': {
                         'check_callback': true,

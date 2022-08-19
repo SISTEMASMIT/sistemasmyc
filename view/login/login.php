@@ -70,7 +70,7 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                                                     </label>
                                                 </div>
                                             </div>--->
-                                            <div class="col-sm-8 text-end">
+                                            <div class="">
                                                 <label for="" id="invalido"></label>
                                                 <button class="btn btn-primary w-md waves-effect waves-light" type="submit">Entrar</button>
                                             </div>

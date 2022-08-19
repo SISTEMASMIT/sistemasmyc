@@ -20,15 +20,29 @@ $('#formLogin').submit(function(e) {
         data: {'usuario': JSON.stringify(usuario)},
         success: function(data) {
             info = data;
-            console.log(info);
-            info = info.split('"');
-            console.log(info[1]);
-            console.log(info[1]);
-            console.log(info[2]);
-            console.log(info[5]);
+            console.log(info[0]["mensaje"]);
         }
         
+        
     })
+
+    if(info[0]["e"]=="0"){
+        if(info[0]["mensaje"]=="Usuario Desactivado"){
+            $('#invalido').html('<p>¡Usuario Desactivado por múltiples fallos de sesión!</p><button type="button" class="btn btn-secondary waves-effect" onclick="reactivar()">Reactivar Usuario</button>');
+        }else if(info[0]["mensaje"]=="Usuario Suspendido"){
+            $('#invalido').html('<p>¡Usuario Suspendido!</p><a href="#">Reactivar Usuario</a>');
+        }else if(info[0]["mensaje"]=="Banca Inactiva"){
+            $('#invalido').html('<p>¡Esta Banca se encuentra inactiva!</p><a href="#">Reactivar Usuario</a>');
+        }else{
+            $('#invalido').html('<p>¡Su usuario o clave son inválidos, intente nuevamente!</p>');
+        }
+        
+        
+        console.log("Error "+info[0]["mensaje"]);
+    }else if(info[0]["e"]=="2"){
+        console.log("Registre equipo");
+
+    }
 
     /* 
     if(clave=='1234'){
@@ -60,3 +74,8 @@ $('#navegador').submit(function(e) {
     
 
 });
+
+
+function reactivar(){
+    alert("Solicitar Reactivación");
+}

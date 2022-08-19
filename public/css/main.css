@@ -19,6 +19,10 @@
     display: none;
 }
 
+#invalido{
+    color: red;
+    font-size: large;
+}
 .jstree-default .jstree-open>.jstree-ocl:before {
     font-family: "Font Awesome 6 Free"; font-weight: 900; content: "\f007";  
 }
