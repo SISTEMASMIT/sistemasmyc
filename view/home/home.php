@@ -388,9 +388,7 @@ require_once($path.'/view/header.php');
 <script src="<? $path;?>/public/js/main.js"></script>
 
 
-
 <!-- JAVASCRIPT -->
-
 
 <!-- App js -->
 <script src="<? $path;?>/public/js/app.js"></script>

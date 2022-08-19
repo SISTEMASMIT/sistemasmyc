@@ -71,7 +71,6 @@ function buscarEnArbol(&$arboles,$nodo,$id){
 				}
 			}
 			if($encontro==0){
-				echo "hola";
 				$this->buscarEnArbol($arbol->hijos,$nodo,$id);
 			}
 		}

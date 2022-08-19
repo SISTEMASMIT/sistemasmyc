@@ -309,21 +309,6 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                         }
                     }
                     echo  recorrer($this->data);
-                    // $this->data=json_decode($this->data);
-                    // // $this->data=array_reverse($this->data); 
-                    // foreach($this->data as $arbolb){
-                    //     $html="";
-                    //         $html=$html."<li>
-                    //         <a href='' class='has-arrow waves-effect'>
-                    //         <i class='dripicons-network-1'></i>
-                    //             <span>".$arbolb->titulo."</span>
-                    //         </a>";
-                    //         $html=$html."<ul class='sub-menu' aria-expanded='true'>";
-                    //         $html=$html."<li><a href=>Level 1</a></li>";
-                    //         $html=$html."</ul>";
-                    //         $html=$html."</li>";
-                    //     echo $html;
-                    //     }
                 ?>
                     <!-- <li class="mm-active">
                         <a href="javascript: void(0);" class="has-arrow waves-effect" aria-expanded="true">
