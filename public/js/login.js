@@ -20,7 +20,6 @@ $('#formLogin').submit(function(e) {
         data: {'usuario': JSON.stringify(usuario)},
         success: function(data) {
             info = data;
-            console.log(info[0]["mensaje"]);
         }
         
         
@@ -28,19 +27,20 @@ $('#formLogin').submit(function(e) {
 
     if(info[0]["e"]=="0"){
         if(info[0]["mensaje"]=="Usuario Desactivado"){
-            $('#invalido').html('<p>¡Usuario Desactivado por múltiples fallos de sesión!</p><button type="button" class="btn btn-secondary waves-effect" onclick="reactivar()">Reactivar Usuario</button>');
+            $('#invalido').html('<p>¡Usuario Desactivado por múltiples fallos de sesión!</p><button type="button" class="btn btn-secondary waves-effect" onclick="reactivar()">Reactivar Usuario</button><br>');
         }else if(info[0]["mensaje"]=="Usuario Suspendido"){
             $('#invalido').html('<p>¡Usuario Suspendido!</p><a href="#">Reactivar Usuario</a>');
         }else if(info[0]["mensaje"]=="Banca Inactiva"){
             $('#invalido').html('<p>¡Esta Banca se encuentra inactiva!</p><a href="#">Reactivar Usuario</a>');
         }else{
             $('#invalido').html('<p>¡Su usuario o clave son inválidos, intente nuevamente!</p>');
-        }
-        
-        
+        }   
         console.log("Error "+info[0]["mensaje"]);
     }else if(info[0]["e"]=="2"){
         console.log("Registre equipo");
+    }else{
+        
+        window.location.href = "/home";
 
     }
 
@@ -76,6 +76,20 @@ $('#navegador').submit(function(e) {
 });
 
 
-function reactivar(){
-    alert("Solicitar Reactivación");
+function reactivar(user){
+    $('#modalActivar').modal("show");
+    $('#usuarioA').html('<label id="usuario">'+$('#usuario').val()+'</label>');    
+}
+
+
+function cookie(){
+    let setCookie = (name, value, days) => {
+        let expires = "";
+        if (days) {
+         let date = new Date();
+         date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+         expires = "; expires=" + date.toUTCString();
+        }
+       document.cookie = name + "=" + (value || "") + expires + "; path=/";
+       };
 }

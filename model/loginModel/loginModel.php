@@ -25,7 +25,23 @@ class loginModel{
             $dataJson=json_encode($data2);
             echo $dataJson;
         }else{
-            $dataJson=json_encode($data);
+            session_start();
+            $data2[] = array(
+                /*
+                "e" => $data[0]["e"],
+                "receptor" => $data[0]["rec"],
+                "banca" => $data[0]["nomban"],
+                "usuario" => $data[0]["nomusu"],
+                "token" => $data[0]["token"],
+                "empresa" => $data[0]["lg"],
+                "componentes" =>  $data[0]["compo"]
+                */
+                "user" => $usuario->username,
+                "clave" => $usuario->clave,
+                "token" => $usuario->jwt
+            );
+            $dataJson=json_encode($data2);
+            $_SESSION["usuario"] = $dataJson;
             echo $dataJson;
             }
 	    }
