@@ -7,11 +7,11 @@ $path=$_SERVER['DOCUMENT_ROOT'];
     <head>
     
         <meta charset="utf-8">
-        <title>PUTAS | Sistemas MYC</title>
+        <title>LOGIN | Sistemas MYC</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="Themesbrand" name="author">
         <!-- App favicon -->
-        <link rel="shortcut icon" href="<? $path;?>/<? $path;?>/public/images/favicon.ico">
+        <link rel="shortcut icon" href="<? $path;?>/public/images/favicon.ico">
     
         <!-- Bootstrap Css -->
         <link href="<? $path;?>/public/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css">
@@ -19,7 +19,7 @@ $path=$_SERVER['DOCUMENT_ROOT'];
         <link href="<? $path;?>/public/css/icons.min.css?ver1" rel="stylesheet" type="text/css">
         <!-- App Css-->
         <link href="<? $path;?>/public/css/app.min.css?ver1" id="app-style" rel="stylesheet" type="text/css">
-    
+        <link href="<? $path;?>/public/css/main.css" id="app-style" rel="stylesheet" type="text/css">
     </head>
 
     <body>
@@ -38,14 +38,14 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                             <div class="card-body">
                                 <div class="text-center mt-4">
                                     <div class="mb-3">
-                                        <a href="index.html"><img src="<? $path;?>/public/images/logo.png" height="30" alt="logo"></a>
+                                        <a href="#"><img src="<? $path;?>/public/images/SIAM.png" height="120" alt="logo"></a>
                                     </div>
                                 </div>
                                 <div class="p-3">
                                     <h4 class="font-size-18 mt-2 text-center">Bienvenido!</h4>
                                     <p class="text-muted text-center mb-4">Ingresa a la Banca.</p>
     
-                                    <form class="form-horizontal" action="index.html">
+                                    <form class="form-horizontal" action="" id="formLogin">
     
                                         <div class="mb-3">
                                             <label class="form-label" for="usuario">Usuario</label>
@@ -56,7 +56,8 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                                             <label class="form-label" for="userpassword">Contraseña</label>
                                             <input type="password" class="form-control" id="clave" placeholder="Ingrese su Contraseña">
                                         </div>
-    
+                                        <? $token="tokenl";?>
+                                        <input type="text" id="token" value="<? echo $token; ?>">
                                         <div class="row mt-4">
                                             <!---
                                             <div class="col-sm-6">
@@ -70,13 +71,43 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                                                 </div>
                                             </div>--->
                                             <div class="col-sm-8 text-end">
+                                                <label for="" id="invalido"></label>
                                                 <button class="btn btn-primary w-md waves-effect waves-light" type="submit">Entrar</button>
                                             </div>
                                         </div>
                                     </form>
     
                                 </div>
-    
+
+                                <!-- sample modal content -->
+                <div id="modalNav" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title mt-0" id="myModalLabel">Recordar Navegador?</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                        <div class="modal-body"> 
+                            <form id="navegador">
+                                <div class="modal-body">
+                                    <label for="">¿Este es su equipo de confianza? Marque sí para no pedirle más confirmaciones en el futuro.</label>
+                                    <br><div id="bit00_3">
+                                                <label class="switch">
+                                                <input type="checkbox" id="recordar">
+                                                <div class="slider round">
+                                                    <span class="on">Si</span>
+                                                    <span class="off">No</span>
+                                                </div>
+                                                </label>
+                                            </div>
+                                            <br>
+                                    <button class="btn btn-primary w-md waves-effect waves-light" type="submit">Entrar</button>
+                                </div>
+                             </form>    
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+            
                             </div>
                         </div>    
                     </div>
@@ -91,7 +122,7 @@ $path=$_SERVER['DOCUMENT_ROOT'];
         <script src="<? $path;?>/public/libs/metismenu/metisMenu.min.js"></script>
         <script src="<? $path;?>/public/libs/simplebar/simplebar.min.js"></script>
         <script src="<? $path;?>/public/libs/node-waves/waves.min.js"></script>
-
+        <script src="<? $path;?>/public/js/login.js"></script>
         <script src="<? $path;?>/public/js/app.js"></script>
 
     </body>

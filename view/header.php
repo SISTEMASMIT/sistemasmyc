@@ -14,6 +14,23 @@ $path=$_SERVER['DOCUMENT_ROOT'];
 <!-- App favicon -->
 <link rel="shortcut icon" href="<? $path;?>/public/images/favicon.ico">
 
+<!--- my css -->
+<link href="<? $path;?>/public/css/bracket.css" rel="stylesheet" type="text/css">
+<link href="<? $path;?>/public/css/rwd-table.min.css" rel="stylesheet" type="text/css">
+<link href="<? $path;?>/public/css/main.css" rel="stylesheet" type="text/css">
+<script src="https://kit.fontawesome.com/ce19f53d03.js" crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" type="text/css" href="assets/datatables/datatables.css" />
+    <link rel="stylesheet" type="text/css"
+        href="assets/datatables/DataTables-1.10.18/css/dataTables.bootstrap4.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/bracket.css">
+    <link href="css/jquery.switchButton.css" rel="stylesheet">
+    <link href="css/toggles-full.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="jstree/dist/themes/default/style.min.css">
+
+
 
 <!-- Bootstrap Css -->
 <link href="<? $path;?>/public/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css">
@@ -33,7 +50,6 @@ $path=$_SERVER['DOCUMENT_ROOT'];
 
 <!-- Begin page -->
 <div id="layout-wrapper">
-
     <header id="page-topbar">
         <div class="navbar-header">
             <div class="d-flex">
@@ -332,80 +348,7 @@ $path=$_SERVER['DOCUMENT_ROOT'];
     </div>
     <!-- Left Sidebar End -->
      <!-- ============================================================== -->
-            <!-- Start right Content here -->
-            <!-- ============================================================== -->
-            <div class="main-content">
-
-                <div class="page-content">
-                    <div class="container-fluid">
-
-                        <div class="row">
-                            <div class="col-12">
-                                <table class="body-wrap" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; width: 100%; background-color: transparent; color: #212529; margin: 0;" bgcolor="#transparent">
-                                    <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
-                                        <td style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0;" valign="top"></td>
-                                        <td class="container" width="600" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; display: block !important; max-width: 600px !important; clear: both !important; margin: 0 auto;" valign="top">
-                                            <div class="content" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; max-width: 600px; display: block; margin: 0 auto; padding: 20px;">
-                                                <table class="main" width="100%" cellpadding="0" cellspacing="0" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; border-radius: 3px; background-color: #fff; margin: 0; border: 1px solid #e9e9e9;" bgcolor="#fff">
-                                                    <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
-                                                        <td class="alert alert-warning" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 16px; vertical-align: top; color: #fff; font-weight: 500; text-align: center; border-radius: 3px 3px 0 0; background-color: #67a8e4; margin: 0; padding: 20px;" align="center" bgcolor="#71b6f9" valign="top">
-                                                            Warning: You're approaching your limit. Please upgrade.
-                                                        </td>
-                                                    </tr>
-                                                    <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
-                                                        <td class="content-wrap" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 20px;" valign="top">
-                                                            <table width="100%" cellpadding="0" cellspacing="0" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
-                                                                <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
-                                                                    <td class="content-block" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                                                                        You have <strong style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;"><span style="background-color: #ea553d;color: #ffffff;padding: 5px 8px; font-size: 12px; border-radius: 4px;">1
-                                                                        free report</span></strong> remaining.
-                                                                    </td>
-                                                                </tr>
-                                                                <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
-                                                                    <td class="content-block" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                                                                        Add your credit card now to upgrade your account to a premium plan to ensure you don't miss out on any reports.
-                                                                    </td>
-                                                                </tr>
-                                                                <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
-                                                                    <td class="content-block" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                                                                        <a href="#" class="btn-primary" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; color: #FFF; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #f06292 !important; margin: 0; border-color: #f06292 !important; border-style: solid !important; border-width: 8px 16px !important;">Upgrade
-                                                                            my account</a>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
-                                                                    <td class="content-block" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                                                                        Thanks for choosing <b>Admiria</b> Admin.
-                                                                    </td>
-                                                                </tr>
-                                                                <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
-                                                                    <td class="content-block" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                                                                        <b>Admiria</b>
-                                                                        <p>Support Team</p>
-                                                                    </td>
-                                                                </tr>
-
-                                                                <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
-                                                                    <td class="content-block" style="text-align: center;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0;" valign="top">
-                                                                        <script>document.write(new Date().getFullYear())</script> © Admiria.
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-
-                            </div>
-                        </div>
-
-                        
-
-                    </div> <!-- container-fluid -->
-                </div>
-                <!-- End Page-content -->
+            
 
                 
                 <footer class="footer">
@@ -442,3 +385,16 @@ $path=$_SERVER['DOCUMENT_ROOT'];
 </div>
 
 <!-- END layout-wrapper -->
+
+
+<!--- CARGA DE JS --->
+<script src="<? $path;?>/public/libs/jquery/jquery.min.js"></script>
+<script src="<? $path;?>/public/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="<? $path;?>/public/libs/metismenu/metisMenu.min.js"></script>
+<script src="<? $path;?>/public/libs/simplebar/simplebar.min.js"></script>
+<script src="<? $path;?>/public/libs/node-waves/waves.min.js"></script>
+<script src="https://maps.google.com/maps/api/js?key=AIzaSyCtSAR45TFgZjOs4nBFFZnII-6mMHLfSYI"></script>
+<script src="<? $path;?>/public/js/rwd-table.min.js"></script>
+<script src="<? $path;?>/public/js/table-responsive.init.js"></script>
+<script type="text/javascript" src="<? $path;?>/public/js/jstree.min.js"></script>
+

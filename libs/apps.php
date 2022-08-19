@@ -11,7 +11,7 @@
                 if ($url[0]=="" or $url[0]=="index") {
                     $fileController="controller/login.php";
                     require_once $fileController;
-                    $controller = new Home();
+                    $controller = new Login();
                 }else{
                     $fileController="controller/".$url[0].".php";    
                 if (file_exists($fileController)) {
