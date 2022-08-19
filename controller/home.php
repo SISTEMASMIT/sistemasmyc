@@ -22,7 +22,6 @@ class Home extends Controller
         $this->loadModel("homeModel");
         $this->view->data=$this->model->niveles();
         $this->view->render("/home/home");
-        
      }
 
 }

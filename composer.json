@@ -1,0 +1,6 @@
+{
+    "require": {
+        "web-token/jwt-framework": "^3.0",
+        "phpoffice/phpspreadsheet": "^1.24"
+    }
+}

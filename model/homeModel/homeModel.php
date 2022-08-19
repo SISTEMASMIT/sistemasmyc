@@ -2,74 +2,81 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+class Arbol{
+	public $id=0;
+	public $parentId=0;
+	public $icono="";
+	public $titulo="";
+	public $link="";
+	public $etiqueta=0;
+	public $hijos=array();
+	public $listahijos="";
+	public $html="";
 
+	public function __construct($id,$paretdId,$icono,$titulo,$link,$etiqueta){
+		$this->id=$id;
+		$this->parentId=$paretdId;
+		$this->icono=$icono;
+		$this->titulo=$titulo;
+		$this->link=$link;
+		$this->etiqueta=$etiqueta;
+	}
+}
 class homeModel{
 	public function niveles(){
+		$arboles=array();
+		$niveles=array();
 		$sql = "CALL bl_banca('usuario','0001', 'token', '', 'fsql', 'menu_config', '', '', '', '', '', '', '', '', '', '')";
 		$this->conexion=conexion::getConexion();
 		$statemant=$this->conexion->prepare($sql);
 		if($statemant->execute()){
 			while($row=$statemant->fetch(PDO::FETCH_ASSOC)){
-				while($row=$statemant->fetch(PDO::FETCH_ASSOC)){
-				var_dump($row);
+				array_push($arboles,new Arbol($row["id"],$row["parentid"],$row["icono"],$row["item"],$row["link"],$row["etiqueta"]));
 			}
 		}
-
-	}
+		$niveles=$this->crearArbol($arboles);
+	return json_encode($niveles);
 }
 
-
-
-
-	// public function listarEjercicios(){
-	// 	$alumno=$_SESSION['alumno'];
-	// 	$idAlumno=$alumno->getId();
-	// 	$sql = "SELECT id_curso FROM `alumno_curso` WHERE id_alumno=:idAlumno";
-	// 	$this->conexion=conexion::getConexion();
-	// 	$statement=$this->conexion->prepare($sql);
-	// 	$statement->bindParam(":idAlumno",$idAlumno,PDO::PARAM_STR);
-	// 	$items=array();
-	// 	if($statement->execute()){
-	// 		$row = $statement->fetch(PDO::FETCH_ASSOC);
-	// 		$sql2 = "SELECT * FROM `ejercicio` WHERE id_curso=:idCurso and estado=1";
-	// 		$this->conexion=conexion::getConexion();
-	// 		$statement=$this->conexion->prepare($sql2);
-	// 		$statement->bindParam(":idCurso",$row['id_curso'],PDO::PARAM_STR);
-	// 		if($statement->execute()){
-	// 			while($row = $statement->fetch(PDO::FETCH_ASSOC)){
-	// 			array_push($items, new Ejercicio($row["id"],$row["titulo"],$row["descripcion"],$row["fecha_inicio"],$row["fecha_fin"],$row["sin_fecha"],$row["autor"],$row["tipo_ejercicio"],$row["estado"]));
-	// 			}
-	// 		}
-	// 	return json_encode(array("estado" => 1,"items"=>$items));
-    //    }else{
-    //         return json_encode(array("estado" => 0));
-    //    }
-	// }
-
-	// public function listarQuices(){
-	// 	$alumno=$_SESSION['alumno'];
-	// 	$idAlumno=$alumno->getId();
-	// 	$sql = "SELECT id_curso FROM `alumno_curso` WHERE id_alumno=:idAlumno";
-	// 	$this->conexion=conexion::getConexion();
-	// 	$statement=$this->conexion->prepare($sql);
-	// 	$statement->bindParam(":idAlumno",$idAlumno,PDO::PARAM_STR);
-	// 	$items=array();
-	// 	if($statement->execute()){
-	// 		$row = $statement->fetch(PDO::FETCH_ASSOC);
-	// 		$sql2 = "SELECT * FROM `quiz` WHERE id_curso=:idCurso and estado=1";
-	// 		$this->conexion=conexion::getConexion();
-	// 		$statement=$this->conexion->prepare($sql2);
-	// 		$statement->bindParam(":idCurso",$row['id_curso'],PDO::PARAM_STR);
-	// 		if($statement->execute()){
-	// 			while($row = $statement->fetch(PDO::FETCH_ASSOC)){
-	// 			array_push($items, new Quiz($row["id_quiz"],$row["titulo"],$row["descripcion"],$row["fecha_inicio"],$row["fecha_fin"],$row["autor"],$row["id_curso"],$row["estado"]));
-	// 			}
-	// 		}
-	// 	return json_encode(array("estado" => 1,"items"=>$items));
-    //    }else{
-    //         return json_encode(array("estado" => 0));
-    //    }
-	// }
+function crearArbol($arboles){
+	$arrayAux=Array();
+	
+	foreach($arboles as $clave => $arbol){ 	
+		if($arbol->etiqueta==0){
+			array_push($arrayAux,$arbol);
+		}else if($arbol->etiqueta==1 or $arbol->etiqueta==2){
+			$padre=$arrayAux[array_search(intval($arbol->parentId), array_column($arrayAux, 'id'))];	
+				$padre->listahijos=$padre->listahijos.";".strval($arbol->id);
+			array_push($padre->hijos,$arbol);
+		}else if($arbol->etiqueta==3 or $arbol->etiqueta==4 or $arbol->etiqueta==5 or $arbol->etiqueta==6){
+			$this->buscarEnArbol($arrayAux,$arbol,$arbol->parentId);
+		}else if($arbol->etiqueta==7 or $arbol->etiqueta==8){
+			$this->buscarEnArbol($arrayAux,$arbol,$arbol->parentId);
+		}
+	}
+	return $arrayAux;
+}
+#falta desarrollo de cursividad ..........
+function buscarEnArbol(&$arboles,$nodo,$id){
+	foreach($arboles as $clave => $arbol){
+		$ids=explode(";",$arbol->listahijos);
+		if(array_search(strval($id),$ids)!=0){
+			$encontro=0;
+			foreach($arbol->hijos as $hijo2){
+				if($hijo2->id == $id){
+					$encontro=1;
+					$arboles[$clave]->listahijos=$arboles[$clave]->listahijos.";".strval($nodo->id);
+					$hijo2->listahijos=$hijo2->listahijos.";".strval($nodo->id);
+					array_push($hijo2->hijos,$nodo);
+				}
+			}
+			if($encontro==0){
+				echo "hola";
+				$this->buscarEnArbol($arbol->hijos,$nodo,$id);
+			}
+		}
+	}
+}
 
 }
 
