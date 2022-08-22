@@ -56,8 +56,7 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                                             <label class="form-label" for="userpassword">Contraseña</label>
                                             <input type="password" class="form-control" id="clave" placeholder="Ingrese su Contraseña">
                                         </div>
-                                        <? $token="tokenl";?>
-                                        <input type="text" id="token" value="<? echo $token; ?>">
+                                    
                                         <div class="row mt-4">
                                             <!---
                                             <div class="col-sm-6">

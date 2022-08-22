@@ -46,9 +46,8 @@ $('#formLogin').submit(function(e) {
     var usuario =[];
     user = $.trim($('#usuario').val());
     clave = $.trim($('#clave').val());
-    token = $.trim($('#token').val());
 
-    usuario = {"username":user, "clave":clave,"jwt":token};
+    usuario = {"username":user, "clave":clave};
     console.log(usuario);
     var info;
     $.ajax({
@@ -78,7 +77,7 @@ $('#formLogin').submit(function(e) {
         }   
         console.log("Error "+info.mensaje);
     }else if(info.e="2"){
-        console.log("Registre equipo");
+        alert("Registre equipo");
     }else{
         
        
