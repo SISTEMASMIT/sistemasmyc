@@ -38,6 +38,7 @@ class loginModel{
                 "empresa" => $data[0]["lg"],
                 "componentes" =>  $data[0]["compo"]
                 */
+                "e" => $data[0]["e"],
                 "user" => $usuario->username,
                 "clave" => $usuario->clave,
                 "token" => $usuario->jwt
@@ -49,6 +50,27 @@ class loginModel{
 	    }
 
 	}
+
+
+    public function activarUsuario(){
+        $usuario=json_decode($_POST['usuario']);
+        $sql = "CALL bl_banca(:username, '0001', '', 'active_user', 'fsql', 'usu_login', :clave, :host, :codigo, '', '', '', '', '',:token, '')";
+        $this->conexion=conexion::getConexion();
+		$statemant=$this->conexion->prepare($sql);
+        $statemant->bindParam(":username",$usuario->username);
+        $statemant->bindParam(":clave",$usuario->clave);
+        $statemant->bindParam(":codigo",$usuario->codigo);
+        $statemant->bindParam(":token",$usuario->token);
+        $statemant->bindParam(":host",$usuario->host);
+		if($statemant->execute()){
+            $data=$statemant->fetchAll(PDO::FETCH_ASSOC);
+            $dataJson=json_encode($data[0]);
+            echo $dataJson;
+        }else{
+           
+        }
+    }
+
 
 
 }

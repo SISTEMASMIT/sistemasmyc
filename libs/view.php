@@ -5,7 +5,7 @@
  */
 class View 
 {
-    public $data ;
+    public $data=array();
     /**
      * summary
      */

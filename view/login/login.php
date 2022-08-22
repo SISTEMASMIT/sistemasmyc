@@ -136,10 +136,13 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                                     <br><div id="bit00_3">
                                             <div class="form-group">
                                                 <input type="text" class="form-control" id="codigo">
+                                                <input type="text" class="invisible" id="host" value="<? echo $_SERVER['HOSTNAME'];?>">
                                             </div>
                                             </div>
+                                            <label for="" id="msgAct"></label>
                                             <br>
-                                    <button class="btn btn-primary w-md waves-effect waves-light" type="submit">Entrar</button>
+                                    <button id="activarUser" class="btn btn-primary w-md waves-effect waves-light" type="submit">Activar</button>
+                                    <button id="cancelarActivarUser" type="button" class="btn btn-danger waves-effect" data-bs-dismiss="modal">Cancelar</button>
                                 </div>
                              </form>    
                         </div><!-- /.modal-content -->
@@ -155,6 +158,5 @@ $path=$_SERVER['DOCUMENT_ROOT'];
         <script src="<? $path;?>/public/libs/node-waves/waves.min.js"></script>
         <script src="<? $path;?>/public/js/login.js"></script>
         <script src="<? $path;?>/public/js/app.js"></script>
-
     </body>
 </html>

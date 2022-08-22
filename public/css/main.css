@@ -14,7 +14,12 @@
 .nivel {
     left: 10px;
 }
-
+#reactiva{
+    margin-bottom: 20px;
+}
+.invisible{
+    display: none;
+}
 #token{
     display: none;
 }

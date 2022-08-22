@@ -275,24 +275,27 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                                         #primer nivel
                                         foreach($arbol->hijos as $hijos1){
                                             if(count($hijos1->hijos)>0){
-                                                $html=$html."<li class='mm-active'><a href='javascript: void(0);' class='has-arrow' aria-expanded='true'>".$hijos1->titulo."</a>";
+                                                $html=$html."<li class='mm-active'><a href='javascript: void(0);'  class='has-arrow' aria-expanded='true'>".$hijos1->titulo."</a>";
                                                 $html=$html."<ul class='sub-menu mm-collapse mm-show' aria-expanded='true' style=''>";
                                                 foreach($hijos1->hijos as $hijos2){
                                                     if(count($hijos2->hijos)>0){
                                                         $html=$html."<li class='mm-active'><a href='javascript: void(0);' class='has-arrow' aria-expanded='false'>".$hijos2->titulo."</a>";
                                                         $html=$html."<ul class='sub-menu mm-collapse mm-show' aria-expanded='false' style='margin-left: 15px;'>";
                                                         foreach($hijos2->hijos as $hijos3){
-                                                            $html=$html."<li><a href='javascript: void(0);'>".$hijos3->titulo."</a></li>";        
+                                                            $url=str_replace(" ","-",strtolower(trim($hijos2->titulo)))."/".str_replace(" ","-",strtolower(trim($hijos3->titulo)));
+                                                            $html=$html."<li><a href='javascript: void(0);' id='redirect' data-url='$url'>".$hijos3->titulo."</a></li>";        
                                                         }
                                                         $html=$html."</ul></li>";
                                                     }else{
-                                                        $html=$html."<li><a href='javascript: void(0);' aria-expanded='false'>".$hijos2->titulo."</a></li>";
+                                                        $url=str_replace(" ","-",strtolower(trim($hijos1->titulo)))."/".str_replace(" ","-",strtolower(trim($hijos2->titulo)));
+                                                        $html=$html."<li><a href='javascript: void(0);' aria-expanded='false' id='redirect' data-url='$url'>".$hijos2->titulo."</a></li>";
                                                     }                                                  
                                                     
                                                 }
                                                 $html=$html."</ul></li>";
                                 }else{  
-                                                $html=$html."<li><a href='javascript: void(0);' aria-expanded='false'>".$hijos1->titulo."</a></li>";   
+                                    $url=str_replace(" ","-",strtolower(trim($arbol->titulo)))."/".str_replace(" ","-",strtolower(trim($hijos1->titulo)));
+                                                $html=$html."<li><a href='javascript: void(0);' aria-expanded='false' id='redirect' data-url='$url' >".$hijos1->titulo."</a></li>";   
                                             }
                                         }
                                         $html=$html."</ul>";
@@ -307,7 +310,7 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                             return "<li><a href=".$arboles->link.">".$arboles->titulo."</a></li>";
                         }
                     }
-                    echo  recorrer($this->data);
+                    echo  recorrer($this->data["menu"]);
                 ?>
                     <!-- <li class="mm-active">
                         <a href="javascript: void(0);" class="has-arrow waves-effect" aria-expanded="true">

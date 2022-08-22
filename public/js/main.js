@@ -65,7 +65,7 @@ $('#formUsuarios').submit(function(e) {
 function abrirPermisos(){
     var grupos;
     $.ajax({
-        url: "queryGrupos/",
+        url: "query/grupos/mostrarGrupos",
         dataType: "json",
         method: "POST",
         async: false,
@@ -137,7 +137,11 @@ $(document).on('change', '#grupo', function() {
 });
 
 
-
+$(document).on("click","#redirect",function(e){
+    e.preventDefault();
+    let url=this.getAttribute("data-url");
+    window.location.href = url;
+})
 //Funcion para pintar los permisos según el grupo
 
 function marcarPermisos(permisos){

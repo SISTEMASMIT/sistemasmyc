@@ -16,10 +16,26 @@ class Query extends Controller
     }
     public  function __construct0(){
         parent::__construct();
-        $this->loadModel("permisosModel");
-        return $this->view->data=$this->model->permisos();
-     }
+        if($this->loadModel("permisosModel")){
+            return $this->view->data=$this->model->permisos();
+        }else{
+            echo "No existe";
+        }
+    }
 
+    public function __construct1($url){
+        parent::__construct();
+        if($this->loadModel($url[1]."Model")){
+            if(method_exists($this->model,$url[2])){
+                $this->model->{$url[2]}();
+            }else{
+                echo "Método Inexistente";
+            }
+        }
+        else{
+            echo "No existe";
+        }
+    }
 
 }
 

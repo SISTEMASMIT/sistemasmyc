@@ -25,7 +25,10 @@
             require($url);
      		$modelName=$model;
      		$this->model= new $modelName;
-     	}
+            return 1;
+     	}else{
+            return 0;
+        }
      }
 
  } 
