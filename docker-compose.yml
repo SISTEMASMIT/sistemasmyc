@@ -15,3 +15,5 @@ services:
     build: ./phpDockerFile/
     volumes:
       - .:/var/www/html
+    environment:
+      - PASSPHRASE=SIStem122323233fas5f4asdf8s4df1asasfasdfa-mic.*dadmkajndkhfafldnla
