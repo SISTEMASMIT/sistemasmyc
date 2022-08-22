@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-class Home extends Controller
+class RegUsuario extends Controller
 {
     /**
      * este es el controlador par los productos de inicio y el contenido plano
@@ -21,8 +21,8 @@ class Home extends Controller
         parent::__construct();
         $this->loadModel("homeModel");
         if(isset($_SESSION["usuario"])){
-            $this->view->data["menu"]=$this->model->niveles();
-            $this->view->render("/home/home");
+            $this->view->data=$this->model->niveles();
+            $this->view->render("/regUsuario/regUsuario");
         }else{
             header("Location:/");
         }

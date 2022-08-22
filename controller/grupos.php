@@ -30,7 +30,10 @@ class Grupos extends Controller
                     $this->view->data["nombreComponente"] = "view/".$url[0]."/componentes"."/".$url2.".php";
                     $this->view->render('grupos/grupos');
                 }else{
-                    echo "Método Inexistente";
+                    $this->loadModel("homeModel");
+                    $this->view->data["menu"]=$this->model->niveles();
+                    $this->view->data["nombreComponente"] = "view/".$url[0]."/componentes"."/".$url2.".php";
+                    $this->view->render('grupos/grupos');
                 }
             }
         }else{
