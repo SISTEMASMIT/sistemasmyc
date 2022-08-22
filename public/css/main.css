@@ -9,6 +9,18 @@
     background-color: #007bff;
 }
 
+.card{
+    background-color: #ffffff !important;
+}
+
+.btn{
+    margin-bottom: 10px;
+}
+
+.espaciadoB{
+    margin-bottom: 10px;
+}
+
 /* Tree */
 
 .nivel {

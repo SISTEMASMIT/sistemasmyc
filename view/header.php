@@ -28,7 +28,7 @@ $path=$_SERVER['DOCUMENT_ROOT'];
     <link rel="stylesheet" href="css/bracket.css">
     <link href="css/jquery.switchButton.css" rel="stylesheet">
     <link href="css/toggles-full.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="jstree/dist/themes/default/style.min.css">
+    <link rel="stylesheet" type="text/css" href="<? $path;?>/jstree/dist/themes/default/style.min.css">
 
 
 
@@ -363,7 +363,7 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                 </div>
                 <div class="col-sm-6">
                     <div class="text-sm-end d-none d-sm-block">
-                        Crafted with <i class="mdi mdi-heart text-danger"></i> by sumadre
+                        Crafted with <i class="mdi mdi-heart text-danger"></i> by Sistemas MIT
                     </div>
                 </div>
             </div>
@@ -377,6 +377,7 @@ $path=$_SERVER['DOCUMENT_ROOT'];
 <!--- CARGA DE JS --->
 <script src="<? $path;?>/public/libs/jquery/jquery.min.js"></script>
 <script src="<? $path;?>/public/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
 <script src="<? $path;?>/public/libs/metismenu/metisMenu.min.js"></script>
 <script src="<? $path;?>/public/libs/simplebar/simplebar.min.js"></script>
 <script src="<? $path;?>/public/libs/node-waves/waves.min.js"></script>
