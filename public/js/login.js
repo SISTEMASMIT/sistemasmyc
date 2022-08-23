@@ -46,9 +46,11 @@ $('#formLogin').submit(function(e) {
     var usuario =[];
     user = $.trim($('#usuario').val());
     clave = $.trim($('#clave').val());
-
-    usuario = {"username":user, "clave":clave};
-    console.log(usuario);
+    ls = [];
+    ls.push('');
+    ls.push('');
+    ls.push('');
+    usuario = {"username":user, "clave":clave,"ls":ls};
     var info;
     $.ajax({
         url: "query/login/iniciarSesion",
@@ -58,11 +60,10 @@ $('#formLogin').submit(function(e) {
         data: {'usuario': JSON.stringify(usuario)},
         success: function(data) {
             info = data;
-            console.log(info);
         }
     })
     if(info.e == 'undefined'){
-        window.location.href = "/home"; 
+       window.location.href = "/home"; 
     }else if(info.e =='1'){
         window.location.href = "/home"; 
     }else if(info.e=="0"){
@@ -77,7 +78,7 @@ $('#formLogin').submit(function(e) {
         }   
         console.log("Error "+info.mensaje);
     }else if(info.e="2"){
-        alert("Registre equipo");
+        $('#modalNav').modal("show");
     }else{
         
        
@@ -95,14 +96,47 @@ $('#navegador').submit(function(e) {
     }else{
         recordarNavegador='On';
     }
-
-    console.log(recordarNavegador);
-
-    if(clave=='1234'){
-        $('#modalNav').modal("show");
-    }else{
-        $('#invalido').html('<p>Usuario o Clave Inválido</p>');
+    var usuario =[];
+    user = $.trim($('#usuario').val());
+    clave = $.trim($('#clave').val());
+    equipo = $.trim($('#nombreEquipo').val());
+    grabar = document.querySelector('#recordar').checked;
+    codigo = $.trim($('#codigo').val());
+    partes = [];
+    for(var i=0; i< equipo.length; i = fin){
+        var inicio = i;
+        var fin = i+ equipo.length/3;
+        partes.push(equipo.substring(inicio,fin));
     }
+    localStorage.setItem('UserAgent',  btoa(partes[0]));
+    localStorage.setItem('Local',  btoa(partes[1]));
+    localStorage.setItem('Net',  btoa(partes[2]));
+
+    console.log(localStorage.getItem("UserAgent"));
+    if (localStorage.getItem("UserAgent") !== null) {
+        ls = [];
+        ls.push(localStorage.getItem('UserAgent'));
+        ls.push(localStorage.getItem('Local'));
+        ls.push(localStorage.getItem('Net'));
+
+        usuario = {"username":user, "clave":clave , "equipo":equipo, "grabar":grabar,"codigo":codigo,"ls":ls};
+        console.log(usuario);
+        var info;
+        $.ajax({
+            url: "query/login/registrarEquipo",
+            dataType: "json",
+            method: "POST",
+            async: false,
+            data: {'usuario': JSON.stringify(usuario)},
+            success: function(data) {
+                info = data;
+                console.log(info);
+            }
+        })
+    }
+    
+
+
     
 
 });

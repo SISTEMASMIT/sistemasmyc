@@ -2,7 +2,7 @@
 session_start();
 
 // Máxima duración de sesión activa en hora
-define( 'MAX_SESSION_TIEMPO', 3600 *  8);
+define( 'MAX_SESSION_TIEMPO', 3600 *  1);
 
 // Controla cuando se ha creado y cuando tiempo ha recorrido 
 if ( isset( $_SESSION[ 'ULTIMA_ACTIVIDAD' ] ) && 

@@ -58,17 +58,6 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                                         </div>
                                     
                                         <div class="row mt-4">
-                                            <!---
-                                            <div class="col-sm-6">
-                                                
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" id="customControlInline">
-                                                    
-                                                    <label class="form-check-label" for="customControlInline">
-                                                        Remember me
-                                                    </label>
-                                                </div>
-                                            </div>--->
                                             <div class="">
                                                 <label for="" id="invalido"></label><br>
                                                 <button class="btn btn-primary w-md waves-effect waves-light" type="submit">Entrar</button>
@@ -83,13 +72,15 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title mt-0" id="myModalLabel">Recordar Navegador?</h5>
+                                <h5 class="modal-title mt-0" id="myModalLabel">Es necesario registrar el equipo</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                         <div class="modal-body"> 
                             <form id="navegador">
                                 <div class="modal-body">
-                                    <label for="">¿Este es su equipo de confianza? Marque sí para no pedirle más confirmaciones en el futuro.</label>
+                                    <label for="">Nombre de este equipo: </label>
+                                    <input type="text" class="form-control" id="nombreEquipo" required placeholder="Nombre del equipo">
+                                    <br><label for="">¿Este es su equipo de confianza? Marque sí para no pedirle más confirmaciones en el futuro.</label><br>
                                     <br><div id="bit00_3">
                                                 <label class="switch">
                                                 <input type="checkbox" id="recordar">
@@ -100,6 +91,8 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                                                 </label>
                                             </div>
                                             <br>
+                                    <label for="">Ingrese el código que le fue enviado.</label>
+                                    <input type="text" class="form-control espaciadoB" id="codigo" required placeholder="Código recibidoo">
                                     <button class="btn btn-primary w-md waves-effect waves-light" type="submit">Entrar</button>
                                 </div>
                              </form>    

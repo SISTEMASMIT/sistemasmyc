@@ -33,10 +33,12 @@ use Firebase\JWT\Key;
         }
      }
      public function encode_jwt(){
+        $nombre_maquina=json_decode($_POST["usuario"])->ls;
         $token=Array(
             "data"=>[
                 "userAgent"=>$_SERVER['HTTP_USER_AGENT'],
                 "ip"=>$_SERVER["REMOTE_ADDR"],
+                "nombre"=>base64_decode($nombre_maquina[0]).base64_decode($nombre_maquina[1]).base64_decode($nombre_maquina[2])
                 ]
         ); 
                 // Your passphrase
