@@ -1,9 +1,7 @@
-version:'3.7'
-
-# Servidor nginx
+version: '3.7'
 services:
   web:
-    image: nginx:1.23    # Puerto 8080 
+    image: nginx:1.23   
     ports:
       - "8080:80"
     volumes:
@@ -12,7 +10,7 @@ services:
     links:
       - php-fpm
 
-  # Configuración de php-fpm
+  
   php-fpm:
     build: ./phpDockerFile/
     volumes:
