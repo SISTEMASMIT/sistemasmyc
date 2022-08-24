@@ -22,12 +22,11 @@ $path=$_SERVER['DOCUMENT_ROOT'];
 
 
 <link rel="stylesheet" type="text/css" href="assets/datatables/datatables.css" />
-    <link rel="stylesheet" type="text/css"
-        href="assets/datatables/DataTables-1.10.18/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="<? $path;?>/public/assets/datatables/DataTables-1.10.18/css/dataTables.bootstrap4.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="css/bracket.css">
-    <link href="css/jquery.switchButton.css" rel="stylesheet">
-    <link href="css/toggles-full.css" rel="stylesheet">
+    <link rel="stylesheet" href="<? $path;?>public/css/bracket.css">
+    <link href="<? $path;?>/public/css/jquery.switchButton.css" rel="stylesheet">
+    <link href="<? $path;?>/public/css/toggles-full.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="<? $path;?>/jstree/dist/themes/default/style.min.css">
 
 
