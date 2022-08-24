@@ -1,5 +1,3 @@
-
-
 function reactivar(){
     $('#modalActivar').modal("show");
     $('#usuarioA').html('<label id="usuario">'+$('#usuario').val()+'</label>');    
@@ -9,30 +7,37 @@ $('#reactivar').submit(function(e){
     e.preventDefault();
     var usuario = [];
     user = $.trim($('#usuario').val());
-    clave = $.trim($('#clave').val());
-    codigo = $.trim($('#codigo').val());
-    token = $.trim($('#token').val());
-    host = $.trim($('#host').val());
-    usuario = {"username":user, "clave":clave, "codigo":codigo,"token":token,"host":host};
-    console.log(usuario);
+    codigo = $.trim($('#codigoActivar').val());
+    ls = [];
+    ls.push('');
+    ls.push('');
+    ls.push('');
+    var info;
+    usuario = {"username":user, "codigo":codigo,"ls":ls};
+       
+        $.ajax({
+            url: "query/login/activarUsuario",
+            dataType: "json",
+            method: "POST",
+            async: false,
+            data: {'usuario': JSON.stringify(usuario)},
+            success: function(data) {
+                info = data;
+            }
+        })
 
-    $.ajax({
-        url: "query/login/activarUsuario",
-        dataType: "json",
-        method: "POST",
-        async: false,
-        data: {'usuario': JSON.stringify(usuario)},
-        success: function(data) {
-            info = data;
-            console.log(info);
-        }
-    })
+
     if(info.e == '1'){
         $('#activarUser').addClass('invisible');
         $('#cancelarActivarUser').html('Cerrar');
-        $('#msgAct').html('<p>¡Usuario Activado Correctamente, intente iniciar sesión de nuevo!</p>');
-    }else{
+        $('#msgAct').html('<p>¡Usuario Activado Correctamente, en segundos podrás intentar nuevamente!</p>');
+        setTimeout(function(){
+            window.location.href = "/";
+        }, 5000);
+    }else if(info.e=="0"){
         $('#msgAct').html('<p class="invalido">¡Código inválido, intente después!</p>');
+    }else{
+        console.log(info.e);
     }
 
 
@@ -46,10 +51,20 @@ $('#formLogin').submit(function(e) {
     var usuario =[];
     user = $.trim($('#usuario').val());
     clave = $.trim($('#clave').val());
-    ls = [];
-    ls.push('');
-    ls.push('');
-    ls.push('');
+
+    if (localStorage.getItem("UserAgent") !== null) {
+        ls = [];
+        ls.push(localStorage.getItem('UserAgent'));
+        ls.push(localStorage.getItem('Local'));
+        ls.push(localStorage.getItem('Net'));
+
+    }else{
+        ls = [];
+        ls.push('');
+        ls.push('');
+        ls.push('');
+    }
+    
     usuario = {"username":user, "clave":clave,"ls":ls};
     var info;
     $.ajax({
@@ -65,7 +80,7 @@ $('#formLogin').submit(function(e) {
     if(info.e == 'undefined'){
        window.location.href = "/home"; 
     }else if(info.e =='1'){
-        window.location.href = "/home"; 
+       window.location.href = "/home"; 
     }else if(info.e=="0"){
         if(info.mensaje=="Usuario Desactivado"){
             $('#invalido').html('<p>¡Usuario Desactivado por múltiples fallos de sesión!</p><button type="button" id="reactiva" class="btn btn-secondary waves-effect" onclick="reactivar()">Reactivar Usuario</button><br>');
@@ -100,7 +115,7 @@ $('#navegador').submit(function(e) {
     user = $.trim($('#usuario').val());
     clave = $.trim($('#clave').val());
     equipo = $.trim($('#nombreEquipo').val());
-    grabar = document.querySelector('#recordar').checked;
+    temporalidad = recordarNavegador;
     codigo = $.trim($('#codigo').val());
     partes = [];
     for(var i=0; i< equipo.length; i = fin){
@@ -112,27 +127,39 @@ $('#navegador').submit(function(e) {
     localStorage.setItem('Local',  btoa(partes[1]));
     localStorage.setItem('Net',  btoa(partes[2]));
 
-    console.log(localStorage.getItem("UserAgent"));
     if (localStorage.getItem("UserAgent") !== null) {
         ls = [];
         ls.push(localStorage.getItem('UserAgent'));
         ls.push(localStorage.getItem('Local'));
         ls.push(localStorage.getItem('Net'));
 
-        usuario = {"username":user, "clave":clave , "equipo":equipo, "grabar":grabar,"codigo":codigo,"ls":ls};
-        console.log(usuario);
+        usuario = {"username":user, "clave":clave , "equipo":equipo, "temporalidad":temporalidad,"codigo":codigo,"ls":ls};
         var info;
         $.ajax({
-            url: "query/login/registrarEquipo",
+            url: "login/registrarEquipo",
             dataType: "json",
             method: "POST",
             async: false,
             data: {'usuario': JSON.stringify(usuario)},
             success: function(data) {
                 info = data;
-                console.log(info);
             }
         })
+        if(info.e=='0'){
+            $('#msgReg').html('<p>¡Código Inválido, intente nuevamente</p><br>');
+        }else if(info.e=="3"){
+            $('#alertaModal').modal("show");
+            $('#modalNav').modal("hide");
+            if(recordarNavegador=="On"){
+                $('#msgRegNav').html("<p>Su navegador se registró Permanentemente.</p>");
+            }else{
+                $('#msgRegNav').html("<p>Su navegador se registró Temporalmente.</p>");
+            }
+            setTimeout(function(){
+                window.location.href = "/home";
+            }, 3000);
+        }
+
     }
     
 

@@ -18,6 +18,19 @@ class Login extends Controller
         parent::__construct();
         $this->view->render("/login/login");
      }
+     public function __construct1($url){
+        parent::__construct();
+        if($this->loadModel($url[0]."Model")){
+            if(method_exists($this->model,$url[1])){
+                $this->model->{$url[1]}($this->encode_jwt());
+            }else{
+                echo "Método Inexistente";
+            }
+        }
+        else{
+            echo "No existe";
+        }
+    }
 
 
 }

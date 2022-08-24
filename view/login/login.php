@@ -93,18 +93,35 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                                             <br>
                                     <label for="">Ingrese el código que le fue enviado.</label>
                                     <input type="text" class="form-control espaciadoB" id="codigo" required placeholder="Código recibidoo">
-                                    <button class="btn btn-primary w-md waves-effect waves-light" type="submit">Entrar</button>
+                                    <label for="" id="msgReg"></label><br>
+                                    <button class="btn btn-primary w-md waves-effect waves-light" type="submit">Enviar</button>
                                 </div>
                              </form>    
                         </div><!-- /.modal-content -->
                     </div><!-- /.modal-dialog -->
                 </div><!-- /.modal -->
-            
+            </div>
+
+                <!--- Modal Navegador Registro -->
+                
+                <div class="modal fade bs-example-modal-sm" id="alertaModal" tabindex="-1" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title mt-0" id="mySmallModalLabel"></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                            <div class="modal-body"> 
+                                <div id="msgRegNav"></div>                                        
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
 
                 
 
 
-                            </div>
+                            
                         </div>    
                     </div>
                 </div>
@@ -123,12 +140,11 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                         <div class="modal-body"> 
                             <form id="reactivar">
                                 <div class="modal-body">
-                                    <div id="usuarioA"></div>
+                                    <div id="usuarioA" class="espaciadoB"></div>
                                     <label for="">Ingrese el Código que le fue enviado a su medio de comunicación para reactivar su usuario</label>
                                     <br><div id="bit00_3">
                                             <div class="form-group">
-                                                <input type="text" class="form-control" id="codigo">
-                                                <input type="text" class="invisible" id="host" value="<? echo $_SERVER['HOSTNAME'];?>">
+                                                <input type="text" class="form-control" id="codigoActivar">
                                             </div>
                                             </div>
                                             <label for="" id="msgAct"></label>
