@@ -4,6 +4,28 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-6">
+                    <h4 class="card-title">Grupos Existentes</h4>
+                    <p class="card-title-desc">Listado de grupos existentes con sus permisos</p>
+                    <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <thead class="thead">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="gruposExistentes">
+                                <tr>
+                                    <td>Tiger Nixon</td>
+                                    <td>System Architect</td>
+                                    <td>Edinburgh</td>
+                                    <td>61</td>
+                                </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-6">
                     <div class="card">
                         <div class="card-body">
                             <h4 class="card-title">Gestión y Configuración de Grupos</h4>
@@ -24,23 +46,14 @@
                                 <label for="">Asignar Permisos</label>
                             <div id="folder_jstree"></div>
                             </div>
-                            <div class="col-12">
-                                <button class="btn btn-primary" type="submit">Aceptar</button>
-                            </div>
-                        </form>
+                                <div class="col-12">
+                                    <button class="btn btn-primary" type="submit">Aceptar</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title">Grupos Existentes</h4>
-                            <p class="card-title-desc">Listado de grupos existentes con sus permisos</p>
-                            <div id="gruposExistentes"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                </div>  
+            </div><!-- div row  -->
         </div> <!-- container-fluid -->
     </div>  <!--- page-content --->
 </div>

@@ -29,12 +29,14 @@ class homeModel{
 		$niveles=array();
 		$usuario=$_SESSION["usuario"];
 		$usuario=json_decode($usuario);
-		$sql = "CALL bl_banca(:username,'0001', '', 'login', 'fsql', 'usu_login', :clave, '', '', '', '', '', '', '', :token, '')";
+		$sql = "CALL bl_banca(:username,:banca, :token, 'login', 'fsql', 'usu_login', :clave, '', '', '', '', '', '', '', :jwt, '')";
 		$this->conexion=conexion::getConexion();
 		$statemant=$this->conexion->prepare($sql);
 		$statemant->bindParam(":username",$usuario->user);
 		$statemant->bindParam(":clave",$usuario->clave);
+		$statemant->bindParam(":banca",$usuario->banca);
 		$statemant->bindParam(":token",$usuario->token);
+		$statemant->bindParam(":jwt",$usuario->jwt);
 		if($statemant->execute()){
 			$statemant->fetchAll(PDO::FETCH_ASSOC);
 			$statemant->nextRowset();
