@@ -29,6 +29,14 @@ class homeModel{
 		$niveles=array();
 		$usuario=$_SESSION["usuario"];
 		$usuario=json_decode($usuario);
+		$sql = "CALL bl_banca(:username,:banca, :token, 'login', 'fsql', 'usu_login', :clave, '', '', '', '', '', '', '', :jwt, '')";
+		$this->conexion=conexion::getConexion();
+		$statemant=$this->conexion->prepare($sql);
+		$statemant->bindParam(":username",$usuario->user);
+		$statemant->bindParam(":clave",$usuario->clave);
+		$statemant->bindParam(":banca",$usuario->banca);
+		$statemant->bindParam(":token",$usuario->token);
+		$statemant->bindParam(":jwt",$usuario->jwt);
 		$sql = "CALL bl_banca(:username,:banca,:token, 'list', 'fsql', 'menu_usu', '', '', '', '', '', '', '', '', '', '')";
 		$this->conexion=conexion::getConexion();
 		$statemant=$this->conexion->prepare($sql);

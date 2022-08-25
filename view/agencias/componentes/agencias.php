@@ -50,7 +50,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <div class="form-group">
+                                            <div class="form-group">n
                                                 <label for="" class="col-form-label">Telefono:</label>
                                                 <input type="text" class="form-control" id="telefono">
                                             </div>

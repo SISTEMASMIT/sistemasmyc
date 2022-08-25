@@ -63,13 +63,27 @@ $('#formUsuarios').submit(function(e) {
 
 //Funcion para desplegar los permisos
 function abrirPermisos(){
+
+    if (localStorage.getItem("UserAgent") !== null) {
+        ls = [];
+        ls.push(localStorage.getItem('UserAgent'));
+        ls.push(localStorage.getItem('Local'));
+        ls.push(localStorage.getItem('Net'));
+
+    }else{
+        ls = [];
+        ls.push('');
+        ls.push('');
+        ls.push('');
+    }
+    usuario = {"ls":ls};
     var grupos;
     $.ajax({
-        url: "query/grupos/mostrarGrupos",
+        url: "/query/grupos/mostrarGrupos",
         dataType: "json",
         method: "POST",
         async: false,
-        data: {},
+        data: {'usuario': JSON.stringify(usuario)},
         success: function(data) {         
             grupos = data;
         }
@@ -85,7 +99,7 @@ function abrirPermisos(){
             dataType: "json",
             method: "POST",
             async: false,
-            data: {},
+            data: {'usuario': JSON.stringify(usuario)},
             success: function(data) {
                 folder_jsondata = data;
                 $('#folder_jstree').jstree({
@@ -153,14 +167,29 @@ function marcarPermisos(permisos){
 
 
 $( document ).ready(function() {
+
+    if (localStorage.getItem("UserAgent") !== null) {
+        ls = [];
+        ls.push(localStorage.getItem('UserAgent'));
+        ls.push(localStorage.getItem('Local'));
+        ls.push(localStorage.getItem('Net'));
+
+    }else{
+        ls = [];
+        ls.push('');
+        ls.push('');
+        ls.push('');
+    }
+    usuario = {"ls":ls};
+
   
     var grupos;
     $.ajax({
-        url: "../query/grupos/grupos_permisos",
+        url: "/query/grupos/grupos_permisos",
         dataType: "json",
         method: "POST",
         async: false,
-        data: {},
+        data: {'usuario': JSON.stringify(usuario)},
         success: function(data) {         
             grupos = data;
         }
@@ -171,28 +200,21 @@ $( document ).ready(function() {
     let html='';
     for(var i in grupos){
         if(grupos[i].grupo!="SUPER"){
-            html+=`<button type="button" class="btn btn-secondary examplePop" title="`+grupos[i].descripcion+`" data-container="body" data-toggle="popover" data-bs-trigger="focus" data-placement="top" data-bs-content="`;
-            for(var a in grupos[i].niveles){
-                if(grupos[i].niveles[a] !="4"){
-                    html+=grupos[i].niveles[a]+`,`;
-                }
-            }
-            html+=`">`+grupos[i].descripcion+`</button><br>`;
-        }
-       
+            html+=`<tr>`;
+            html+=`<td>`+grupos[i].grupo+`</td><td>`+grupos[i].descripcion+`</td></tr>`;
+        }  
     }
     $("#gruposExistentes").html(html);
-
 
     //Jstree
 
     var folder_jsondata;
         $.ajax({
-            url: "../query/",
+            url: "/query/",
             dataType: "json",
             method: "POST",
             async: false,
-            data: {},
+            data: {'usuario': JSON.stringify(usuario)},
             success: function(data) {
                 folder_jsondata = data;
                 $('#folder_jstree').jstree({

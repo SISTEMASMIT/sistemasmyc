@@ -27,7 +27,7 @@ $path=$_SERVER['DOCUMENT_ROOT'];
     <link rel="stylesheet" href="<? $path;?>public/css/bracket.css">
     <link href="<? $path;?>/public/css/jquery.switchButton.css" rel="stylesheet">
     <link href="<? $path;?>/public/css/toggles-full.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="<? $path;?>/jstree/dist/themes/default/style.min.css">
+    <link rel="stylesheet" type="text/css" href="<? $path;?>/public/jstree/dist/themes/default/style.min.css">
 
 
 
