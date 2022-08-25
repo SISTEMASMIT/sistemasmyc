@@ -1,14 +1,3 @@
-<?php
-$path=$_SERVER['DOCUMENT_ROOT'];
-require_once($path.'/view/header.php');
-?>
-<body data-sidebar="dark">
-<div class="container"></div>
-<div class="main-content" id="result">
-
-        </div>
-<!-- Right bar overlay-->
-<div class="rightbar-overlay"></div>
 <!-- CONTENIDO WEB -->
 <div class="main-content">
     <div class="page-content">
@@ -120,7 +109,10 @@ require_once($path.'/view/header.php');
                                     </div>
                                     <input id="target" type="button" value="LOTERIAS">
                                 </div>
-                                <button type="button" class="btn btn-dark waves-effect waves-light" id="abrirPermisos" data-bs-toggle="modal" data-bs-target="#modalNiveles">Niveles</button>
+                                <label>Grupo:</label>
+                                    <select class="form-control" id="grupo">
+                                    </select>
+                                <!-- <button type="button" id="niveles" class="btn btn-dark waves-effect waves-light" onclick="abrirPermisos()" data-bs-toggle="modal" data-bs-target="#modalNiveles">Niveles</button> -->
                         </div>
                         <div class="modal-footer">
                         <button type="button" class="btn btn-danger waves-effect" data-bs-dismiss="modal">Cancelar</button>
@@ -131,37 +123,6 @@ require_once($path.'/view/header.php');
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
 
-        <!--- MODA DE LOS NIVELES --->
-        <div class="modal fade" id="modalNiveles" role="dialog">
-            <div class="modal-dialog">
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Niveles de Seguridad</h4>
-                    </div>
-                    <div class="modal-body">
-                    <input id="search" type="text" placeholder="Buscar">
-                    <button type="button" class="btn btn-brown waves-effect" onclick="limpiarJstree()">Limpiar Todo</button>
-                    <button type="button" class="btn btn-success waves-effect" onclick="expandirJstree()">Expandir Todo</button>
-                    <br>
-                    <label>Grupo:</label>
-                        <select class="form-control" id="grupo">
-                        </select>
-                        <!-- Initialize jsTree -->
-                        <div class="padre">
-                            <div id="folder_jstree" class="hijo"></div>
-                        </div>
-                        <br>
-                    </div>
-                    <div class="modal-footer">
-                        <div id="lblPlanta"></div>
-                        <button type="button" class="btn btn-danger waves-effect" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="button" id="btnNivel" data-dismiss="modal" class="btn btn-dark" onclick="guardarPermisos()"  data-bs-dismiss="modal">Guardar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    <!--/div-->
 
     </div>
     </div>
@@ -374,11 +335,6 @@ require_once($path.'/view/header.php');
                                         </div>
                                     </tbody>
                                 </table>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="menuTabla">
-                                    <a class="dropdown-item" href="#">Action</a>
-                                    <a class="dropdown-item" href="#">Another action</a>
-                                    <a class="dropdown-item" href="#">Something else here</a>
-                                    </div>
                             </div>
                     </div>
                 </div>
@@ -387,19 +343,3 @@ require_once($path.'/view/header.php');
     </div>  <!--- page-content --->
 </div>
 <!-- FIN CONTENIDO WEB -->
-
-<!---Mi Js--->
-
-
-<script  type="module" src="<? $path;?>/public/js/main.js"></script>
-
-
-<!-- JAVASCRIPT -->
-
-<!-- App js -->
-<script src="<? $path;?>/public/js/app.js"></script>
-<script src="<? $path;?>/public/js/ajax.js"></script>
-
-</body>
-
-</html>
