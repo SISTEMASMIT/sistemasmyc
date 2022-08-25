@@ -2,6 +2,9 @@
 import {ajax_peticion} from './Ajax-peticiones.js';
 import {info} from "./info.js";
 
+$(document).ready(function(){
+    $(".mm-active").removeClass("mm-active");
+});
 
 //Guardar Usuario
 $('#formUsuarios').submit(function(e) {
@@ -45,7 +48,7 @@ $(document).on("click","#redirect",function(e){
 
 $('th').dblclick(function() {
     alert($(this).text());
-  });
+});
 
 
 

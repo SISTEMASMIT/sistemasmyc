@@ -50,10 +50,14 @@ class gruposModel{
     }
 
     public function guardarGrupos(){
+        $usuario=$_SESSION["usuario"];
+		$usuario=json_decode($usuario);
         $datos=json_decode($_POST['usuario']);
-        $sql = "CALL bl_banca('','', '', 'crear', 'fsql', 'gru_usu', :nombre, :descripcion, '', '', '', '', '', '', :permisos, '')";
+        $sql = "CALL bl_banca(:usuario,'', :token, 'crear', 'fsql', 'gru_usu', :nombre, :descripcion, '', '', '', '', '', '', :permisos, '')";
         $this->conexion=conexion::getConexion();
 		$statemant=$this->conexion->prepare($sql);
+        $statemant->bindParam(":usuario",$usuario->user);
+        $statemant->bindParam(":token",$usuario->token);
         $statemant->bindParam(":nombre",$datos->nombre);
         $statemant->bindParam(":descripcion",$datos->descripcion);
         $statemant->bindParam(":permisos",$datos->permisos);
@@ -86,9 +90,13 @@ class gruposModel{
 
     public function eliminarGrupo(){
         $datos=json_decode($_POST['datos']);
-        $sql = "CALL bl_banca('','', '', 'eliminar', 'fsql', 'gru_usu', :nombre, '', '', '', '', '', '', '', '', '')";
+        $usuario=$_SESSION["usuario"];
+		$usuario=json_decode($usuario);
+        $sql = "CALL bl_banca(:usuario,'', :token, 'eliminar', 'fsql', 'gru_usu', :nombre, '', '', '', '', '', '', '', '', '')";
         $this->conexion=conexion::getConexion();
 		$statemant=$this->conexion->prepare($sql);
+        $statemant->bindParam(":usuario",$usuario->user);
+        $statemant->bindParam(":token",$usuario->token);
         $statemant->bindParam(":nombre",$datos->nombre);
         if($statemant->execute()){
             $data=$statemant->fetchAll(PDO::FETCH_ASSOC);

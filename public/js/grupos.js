@@ -33,6 +33,7 @@ $('#formGrupos').submit( async function(e) {
     if(info.e=="1"){
         $('#alertaModal').modal("show");
         $('#msgGrupo').html("<p>Se registró el grupo correctamente.</p>");
+        recargarTablaGrupos();
     }else if(info.e=="0"){
         $('#alertaModal').modal("show");
         $('#msgGrupo').html("<p>Ocurrió un error, el nombre del grupo ya existe.</p>");
