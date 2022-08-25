@@ -1,3 +1,7 @@
+// imports
+import {ajax_peticion} from "./Ajax-peticiones";
+import {info} from "./info";
+//
 $('#search').keyup(function(){
     $('#folder_jstree').jstree(true).show_all();
     $('#folder_jstree').jstree('search', $(this).val());
