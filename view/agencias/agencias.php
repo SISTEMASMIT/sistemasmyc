@@ -13,7 +13,7 @@ require_once($path.'/view/header.php');
 <? require_once($this->data["nombreComponente"]); ?>
 <!---Mi Js--->
 
-<script src="<? $path;?>/public/js/main.js"></script>
+<script type="module" src="<? $path;?>/public/js/main.js"></script>
 
 
 <!-- JAVASCRIPT -->

@@ -14,6 +14,6 @@ $path=$_SERVER['DOCUMENT_ROOT'];
   <div class="number">404</div>
 <div class="text"><span>Oops...</span><br>Pagina no encontrada</div>
 </br>
-<a href="/" class="btn-stile-fail"> Regresar a login </a>
+<a href='<?php echo isset($_SESSION["usuario"])?"/home":"/"; ?>' class="btn-stile-fail"><?php echo isset($_SESSION["usuario"])?"Regresar a home":"Regresar a login"; ?> </a>
 </body>
 </html>

@@ -1,20 +1,14 @@
 // imports
-import {ajax_peticion} from "./Ajax-peticiones";
-import {info} from "./info";
+import {ajax_peticion} from "./Ajax-peticiones.js";
+import {info} from "./info.js";
 //
+
 $('#search').keyup(function(){
     $('#folder_jstree').jstree(true).show_all();
     $('#folder_jstree').jstree('search', $(this).val());
 });
 
-
 // Funcion para limpiar el jstree
-
-function limpiarJstree(){
-    $('#folder_jstree').jstree().deselect_all();
-    $('#folder_jstree').jstree('close_all');
-}
-
 
 function limpiarJstree(){
     $('#folder_jstree').jstree().deselect_all();
@@ -66,18 +60,12 @@ $('#formUsuarios').submit(function(e) {
 
 
 //Funcion para desplegar los permisos
-function abrirPermisos(){
-    var grupos;
-    $.ajax({
-        url: "query/grupos/mostrarGrupos",
-        dataType: "json",
-        method: "POST",
-        async: false,
-        data: {},
-        success: function(data) {         
-            grupos = data;
-        }
-    })
+$(document).on("click","#abrirPermisos",function(){
+    let grupos;
+    let peticion=ajax_peticion("query/grupos/mostrarGrupos",{},"POST");
+    peticion.done(function(data){
+        grupos=data;
+    });
     var html='<option selected id="">Seleccione un Grupo</option>';
     for(var i in grupos){
         html+='<option id="'+i+'" value="'+grupos[i].niveles+'">'+grupos[i].descripcion+'</option>';
@@ -133,7 +121,7 @@ function abrirPermisos(){
             }
         })
 
-}
+});
 
 
 $(document).on('change', '#grupo', function() {
@@ -144,7 +132,8 @@ $(document).on('change', '#grupo', function() {
 $(document).on("click","#redirect",function(e){
     e.preventDefault();
     let url=this.getAttribute("data-url");
-    window.location.href = url;
+
+    window.location.href=window.location.origin+"/"+url;
 })
 //Funcion para pintar los permisos según el grupo
 

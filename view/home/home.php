@@ -120,7 +120,7 @@ require_once($path.'/view/header.php');
                                     </div>
                                     <input id="target" type="button" value="LOTERIAS">
                                 </div>
-                                <button type="button" id="niveles" class="btn btn-dark waves-effect waves-light" onclick="abrirPermisos()" data-bs-toggle="modal" data-bs-target="#modalNiveles">Niveles</button>
+                                <button type="button" class="btn btn-dark waves-effect waves-light" id="abrirPermisos" data-bs-toggle="modal" data-bs-target="#modalNiveles">Niveles</button>
                         </div>
                         <div class="modal-footer">
                         <button type="button" class="btn btn-danger waves-effect" data-bs-dismiss="modal">Cancelar</button>
@@ -385,7 +385,7 @@ require_once($path.'/view/header.php');
 
 <!---Mi Js--->
 
-<script src="<? $path;?>/public/js/main.js"></script>
+<script  type="module" src="<? $path;?>/public/js/main.js"></script>
 
 
 <!-- JAVASCRIPT -->

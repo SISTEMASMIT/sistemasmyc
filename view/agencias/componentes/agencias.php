@@ -136,16 +136,13 @@
                     <label>Grupo:</label>
                         <select class="form-control" id="grupo">
                         </select>
-                        <!-- Initialize jsTree -->
-                        <div class="padre">
-                            <div id="folder_jstree" class="hijo"></div>
-                        </div>
                         <br>
                     </div>
                     <div class="modal-footer">
                         <div id="lblPlanta"></div>
                         <button type="button" class="btn btn-danger waves-effect" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="button" id="btnNivel" data-dismiss="modal" class="btn btn-dark" onclick="guardarPermisos()"  data-bs-dismiss="modal">Guardar</button>
+
+                        <!-- <button type="button" id="btnNivel" data-dismiss="modal" class="btn btn-dark" onclick="guardarPermisos()"  data-bs-dismiss="modal">Guardar</button> -->
                     </div>
                 </div>
             </div>
