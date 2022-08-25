@@ -1,6 +1,6 @@
 
 export function info(){
-    ls = [];
+    let ls = [];
     if (localStorage.getItem("UserAgent") !== null) {
         ls.push(localStorage.getItem('UserAgent'));
         ls.push(localStorage.getItem('Local'));

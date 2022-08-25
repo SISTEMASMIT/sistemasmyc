@@ -1,35 +1,6 @@
 // imports
-import {ajax_peticion} from "./Ajax-peticiones";
-import {info} from "./info";
-//
-$('#search').keyup(function(){
-    $('#folder_jstree').jstree(true).show_all();
-    $('#folder_jstree').jstree('search', $(this).val());
-});
-
-
-// Funcion para limpiar el jstree
-
-function limpiarJstree(){
-    $('#folder_jstree').jstree().deselect_all();
-    $('#folder_jstree').jstree('close_all');
-}
-
-
-function limpiarJstree(){
-    $('#folder_jstree').jstree().deselect_all();
-    $('#folder_jstree').jstree('close_all');
-}
-
-function expandirJstree(){
-    $('#folder_jstree').jstree('open_all');
-}
-//Guardar los permisos seleccionados
-function guardarPermisos(){
-    var tree = $('#folder_jstree').jstree();
-    var permisos = tree.get_selected(); 
-    $("#niveles").val(permisos);
-}
+import {ajax_peticion} from './Ajax-peticiones.js';
+import {info} from "./info.js";
 
 
 //Guardar Usuario
@@ -65,82 +36,6 @@ $('#formUsuarios').submit(function(e) {
 });
 
 
-//Funcion para desplegar los permisos
-function abrirPermisos(){
-    var grupos;
-    $.ajax({
-        url: "query/grupos/mostrarGrupos",
-        dataType: "json",
-        method: "POST",
-        async: false,
-        data: {},
-        success: function(data) {         
-            grupos = data;
-        }
-    })
-    var html='<option selected id="">Seleccione un Grupo</option>';
-    for(var i in grupos){
-        html+='<option id="'+i+'" value="'+grupos[i].niveles+'">'+grupos[i].descripcion+'</option>';
-    }
-    $("#grupo").html(html);
-        var folder_jsondata;
-        $.ajax({
-            url: "query/",
-            dataType: "json",
-            method: "POST",
-            async: false,
-            data: {},
-            success: function(data) {
-                folder_jsondata = data;
-                $('#folder_jstree').jstree({
-                    'core': {
-                        'check_callback': true,
-                        "themes": { "stripes": true },
-                        'data': folder_jsondata,
-                        'multiple': true
-                    },
-                    "types" : {
-                        "root" : {
-                          "icon" : "fa-regular fa-building-lock"
-                        },
-                        "child" : {
-                            "icon" : "fa-regular fa-circle-user"
-                        }
-                    },
-                    'search': {
-                        'case_insensitive': true,
-                        'show_only_matches' : true
-                    },
-                    'checkbox': { 'keep_selected_style': false },
-                    'plugins': ['checkbox', 'types' ,'search'],
-                    'themes': {
-                        'theme': 'apple',
-                        "dots": true,
-                        "icons": true
-                    },
-                    'plugins': ['checkbox', 'search','types', 'html_data', 'themes', 'ui']
-                }).on('search.jstree', function (nodes, str, res) {
-                    if (str.nodes.length===0) {
-                        $('#search').jstree(true).hide_all();
-                    }
-                })
-                
-                $('#deliverable_search').keyup(function(){
-                    $('#folder_jstree').jstree(true).show_all();
-                    $('#folder_jstree').jstree('search', $(this).val());
-                });
-
-            }
-        })
-
-}
-
-
-$(document).on('change', '#grupo', function() {
-    marcarPermisos($(this).val());
-});
-
-
 $(document).on("click","#redirect",function(e){
     e.preventDefault();
     let url=this.getAttribute("data-url");
@@ -148,14 +43,33 @@ $(document).on("click","#redirect",function(e){
 })
 //Funcion para pintar los permisos según el grupo
 
-function marcarPermisos(permisos){
-    var tree = $('#folder_jstree').jstree();
-    var permiso = permisos.split(',');
-    var i;
-            for (i = 0; i < permiso.length; i++) {
-                tree.enable_node(parseInt(permiso[i]));
-                tree.check_node(parseInt(permiso[i]));
-               // tree.open_node(parseInt(permiso[i]));
-               $("#folder_jstree").jstree("_open_to", parseInt(permiso[i]));
-            }
-}
+$('th').dblclick(function() {
+    alert($(this).text());
+  });
+
+
+
+$("th").on('contextmenu', function(e) {
+	$('th').css('box-shadow', 'none');
+  var top = e.pageY - 220;
+  var left = e.pageX - 220;
+  $(this).css('box-shadow', 'inset 1px 1px 0px 0px red, inset -1px -1px 0px 0px red');
+  $("#menuTabla").css({
+    display: "block",
+    top: top,
+    left: left
+  });
+  return false; 
+  
+});
+
+$(".table").on("click", function() {
+	if ( $("#menuTabla").css('display') == 'block' ){
+  	    $("#menuTabla").hide();
+    }
+    $('th').css('box-shadow', 'none');
+});
+
+$("#menuTabla a").on("click", function() {
+  $(this).parent().hide();
+});

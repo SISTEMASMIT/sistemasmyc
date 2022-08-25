@@ -1,3 +1,6 @@
+import {ajax_peticion} from './Ajax-peticiones.js';
+import { info } from './info.js';
+
 $('#search').keyup(function(){
     $('#folder_jstree').jstree(true).show_all();
     $('#folder_jstree').jstree('search', $(this).val());
@@ -6,20 +9,6 @@ $('#search').keyup(function(){
 
 // Funcion para limpiar el jstree
 
-function limpiarJstree(){
-    $('#folder_jstree').jstree().deselect_all();
-    $('#folder_jstree').jstree('close_all');
-}
-
-
-function limpiarJstree(){
-    $('#folder_jstree').jstree().deselect_all();
-    $('#folder_jstree').jstree('close_all');
-}
-
-function expandirJstree(){
-    $('#folder_jstree').jstree('open_all');
-}
 //Guardar los permisos seleccionados
 function guardarPermisos(){
     var tree = $('#folder_jstree').jstree();
@@ -28,36 +17,43 @@ function guardarPermisos(){
 }
 
 
-//Guardar Usuario
-$('#formUsuarios').submit(function(e) {
+//guardar grupos de seguridad
+$('#formGrupos').submit( async function(e) {
     e.preventDefault(); 
+    var nombre = $.trim($('#nombre').val());
+    var descripcion = $.trim($('#descripcion').val());
+    var tree = $('#folder_jstree').jstree();
+    var permisos = tree.get_selected(); 
+    permisos = permisos.toString();
+    let grupo = {"nombre":nombre,"descripcion":descripcion,"permisos":permisos};
+    var info;
 
-    var usuario =[];
+    var receive =  await ajax_peticion("/query/grupos/guardarGrupos", {'usuario': JSON.stringify(grupo)}, "POST");
+    info = receive;
+    if(info.e=="1"){
+        $('#alertaModal').modal("show");
+        $('#msgGrupo').html("<p>Se registró el grupo correctamente.</p>");
+    }else if(info.e=="0"){
+        $('#alertaModal').modal("show");
+        $('#msgGrupo').html("<p>Ocurrió un error, el nombre del grupo ya existe.</p>");
+    }
+});
 
-    nombre = $.trim($('#nombre_user').val());
-    username = $.trim($('#usuario_ban').val());
-    clave = $.trim($('#clave_ban').val());
-    var xban = $.trim($('#codigo_ban').val());
-    let indice = xban.indexOf(" ");
-    var receptor = xban.substring(0, indice);
-    telefono = $.trim($('#telefono').val());
-    dias_consulta = $.trim($('#dia_con').val());
-    dias_cargo = $.trim($('#dia_cargo').val());
-    pagos_ajustes = $.trim($('#config2').val());
-    estado_usuario = document.querySelector('#estado').checked;
-    monitoreo = document.querySelector('#monitoreo').checked;
-    permisos = $.trim($('#niveles').val());
-    if(monitoreo==''){
-        monitoreo='Off';
-    }else{
-        monitoreo='On';
-    }
-    if(estado_usuario==''){
-        estado_usuario='Off';
-    }else{
-        estado_usuario='On';
-    }
-    usuario.push(nombre,username,clave,receptor,telefono,dias_consulta, dias_cargo, pagos_ajustes,estado_usuario,monitoreo,permisos);
+
+//eliminar grupos de seguridad
+
+$(document).on('click', '.eliminarGrupo', async function() {
+    var grupo = this.id.split("-");
+    let datos = {"nombre":grupo[1]}
+    var receive =  await ajax_peticion("/query/grupos/eliminarGrupo", {'datos': JSON.stringify(datos)}, "POST");
+    var info = receive;
+    console.log(info);
+
+    recargarTablaGrupos();
+
+
+
+
 });
 
 
@@ -146,6 +142,17 @@ function abrirPermisos(){
 }
 
 
+$(document).on('click', '#limpiar', function() {
+    $('#folder_jstree').jstree().deselect_all();
+    $('#folder_jstree').jstree('close_all');
+});
+
+$(document).on('click', '#expandir', function() {
+    $('#folder_jstree').jstree('open_all');
+});
+
+
+
 $(document).on('change', '#grupo', function() {
     marcarPermisos($(this).val());
 });
@@ -165,46 +172,49 @@ function marcarPermisos(permisos){
 }
 
 
-
-$( document ).ready(function() {
-
-    if (localStorage.getItem("UserAgent") !== null) {
-        ls = [];
-        ls.push(localStorage.getItem('UserAgent'));
-        ls.push(localStorage.getItem('Local'));
-        ls.push(localStorage.getItem('Net'));
-
-    }else{
-        ls = [];
-        ls.push('');
-        ls.push('');
-        ls.push('');
-    }
-    usuario = {"ls":ls};
-
-  
+async function recargarTablaGrupos(){
     var grupos;
-    $.ajax({
-        url: "/query/grupos/grupos_permisos",
-        dataType: "json",
-        method: "POST",
-        async: false,
-        data: {'usuario': JSON.stringify(usuario)},
-        success: function(data) {         
-            grupos = data;
-        }
-    })
-    console.log(grupos);
-
-
+    var receive =  await ajax_peticion("/query/grupos/grupos_permisos", {'usuario': JSON.stringify(grupo)}, "POST");
+    grupos = receive;
     let html='';
     for(var i in grupos){
         if(grupos[i].grupo!="SUPER"){
             html+=`<tr>`;
-            html+=`<td>`+grupos[i].grupo+`</td><td>`+grupos[i].descripcion+`</td></tr>`;
+            html+=`<td>`+grupos[i].grupo+`</td><td>`+grupos[i].descripcion+`</td><td><a class="btn btn-outline-secondary btn-sm editarGrupo" id="editar-`+grupos[i].grupo+`" title="Editar Permisos">
+            <i class="fas fa-pencil-alt"></i>
+        </a></td>
+        <td><a class="btn btn-outline-secondary btn-sm eliminarGrupo" id="eliminar-`+grupos[i].grupo+`" title="Eliminar Grupo">
+            <i class="fas fa-trash-alt"></i>
+        </a></td>
+        </tr>`;
         }  
     }
     $("#gruposExistentes").html(html);
+}
+
+$( document ).ready(function() {
+    recargarTablaGrupos();
+    var grupos;
+    $.ajax({
+        url: "query/grupos/mostrarGrupos",
+        dataType: "json",
+        method: "POST",
+        async: false,
+        data: {},
+        success: function(data) {         
+            grupos = data;
+        }
+    })
+    var html2='<option selected id="">Seleccione un Grupo</option>';
+    for(var i in grupos){
+        if(grupos[i].grupo == "SUPER"){
+        }else{
+            html2+='<option id="'+i+'" value="'+grupos[i].niveles+'">'+grupos[i].descripcion+'</option>';
+        }
+    }
+    $("#grupo").html(html2);
+
+
 
     //Jstree
 
@@ -214,7 +224,7 @@ $( document ).ready(function() {
             dataType: "json",
             method: "POST",
             async: false,
-            data: {'usuario': JSON.stringify(usuario)},
+            data: {},
             success: function(data) {
                 folder_jsondata = data;
                 $('#folder_jstree').jstree({

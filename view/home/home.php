@@ -374,6 +374,11 @@ require_once($path.'/view/header.php');
                                         </div>
                                     </tbody>
                                 </table>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="menuTabla">
+                                    <a class="dropdown-item" href="#">Action</a>
+                                    <a class="dropdown-item" href="#">Another action</a>
+                                    <a class="dropdown-item" href="#">Something else here</a>
+                                    </div>
                             </div>
                     </div>
                 </div>
@@ -385,7 +390,7 @@ require_once($path.'/view/header.php');
 
 <!---Mi Js--->
 
-<script src="<? $path;?>/public/js/main.js"></script>
+<script type="module" src="<? $path;?>/public/js/main.js"></script>
 
 
 <!-- JAVASCRIPT -->
