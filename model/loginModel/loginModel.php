@@ -47,9 +47,9 @@ class loginModel{
                 );
                 $dataJson=json_encode($data2[0]);
                 $_SESSION["usuario"] = $dataJson;
+                $_SESSION["inactividad"] = "Off";
                 echo $dataJson;
                 }
-            
             }
 	    }
 

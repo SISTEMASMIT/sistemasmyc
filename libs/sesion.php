@@ -1,16 +1,28 @@
 <?php
 session_start();
 
+$tiempo = 600;
 // Máxima duración de sesión activa en hora
 define( 'MAX_SESSION_TIEMPO', 3600 *  1);
-
+define( 'MAX_SESSION_INACTIVIDAD', $tiempo *  1);
 // Controla cuando se ha creado y cuando tiempo ha recorrido 
 if ( isset( $_SESSION[ 'ULTIMA_ACTIVIDAD' ] ) && 
      ( time() - $_SESSION[ 'ULTIMA_ACTIVIDAD' ] > MAX_SESSION_TIEMPO ) ) {
-
-    // Si ha pasado el tiempo sobre el limite destruye la session
     destruir_session();
 }
+
+
+if(!isset($_SESSION['inactividad'])){
+    $_SESSION['inactividad']="Off";
+}
+
+if ( isset( $_SESSION[ 'ULTIMA_ACTIVIDAD' ] ) && isset( $_SESSION[ 'usuario' ] ) &&
+     ( time() - $_SESSION[ 'ULTIMA_ACTIVIDAD' ] > MAX_SESSION_INACTIVIDAD ) || ($_SESSION['inactividad'] == "On")){
+        inactividad();
+    }
+
+
+
 
 $_SESSION[ 'ULTIMA_ACTIVIDAD' ] = time();
 
@@ -32,3 +44,15 @@ function destruir_session() {
 
     @session_destroy();
 }
+
+
+function inactividad() {
+    $_SESSION['inactividad'] = "On";
+    if(($_SERVER['REQUEST_URI']!="/inactividad" ) && ($_SERVER['REQUEST_URI']!="/") && ($_SERVER['REQUEST_URI']!="/inactividad/comprobacion" ) ){
+        header('Location: /inactividad');
+    }
+    
+
+}
+
+
