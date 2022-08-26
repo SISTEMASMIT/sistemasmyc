@@ -13,8 +13,8 @@ require_once($path.'/view/header.php');
 <? require_once($this->data["nombreComponente"]); ?>
 <!---Mi Js--->
 
-<script type="module"src="<? $path;?>/public/js/main.js"></script>
-<script src="<? $path;?>/public/js/receptores.js"></script>
+<script type="module" src="<? $path;?>/public/js/main.js"></script>
+<script type="module" src="<? $path;?>/public/js/receptores.js"></script>
 
 <!-- JAVASCRIPT -->
 
