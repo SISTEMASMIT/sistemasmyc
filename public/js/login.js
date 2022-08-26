@@ -16,7 +16,7 @@ $('#reactivar').submit(function(e){
     usuario = {"username":user, "codigo":codigo,"ls":ls};
        
         $.ajax({
-            url: "query/login/activarUsuario",
+            url: "login/activarUsuario",
             dataType: "json",
             method: "POST",
             async: false,
@@ -68,7 +68,7 @@ $('#formLogin').submit(function(e) {
     usuario = {"username":user, "clave":clave,"ls":ls};
     var info;
     $.ajax({
-        url: "query/login/iniciarSesion",
+        url: "login/iniciarSesion",
         dataType: "json",
         method: "POST",
         async: false,

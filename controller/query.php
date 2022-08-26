@@ -27,7 +27,7 @@ class Query extends Controller
         parent::__construct();
         if($this->loadModel($url[1]."Model")){
             if(method_exists($this->model,$url[2])){
-                $this->model->{$url[2]}($this->encode_jwt());
+                $this->model->{$url[2]}();
             }else{
                 echo "Método Inexistente";
             }

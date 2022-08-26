@@ -13,7 +13,7 @@ require_once($path.'/view/header.php');
 <? require_once($this->data["nombreComponente"]); ?>
 <!---Mi Js--->
 
-<script src="<? $path;?>/public/js/main.js"></script>
+<script type="module" src="<? $path;?>/public/js/main.js"></script>
 
 
 <!-- JAVASCRIPT -->
@@ -21,7 +21,7 @@ require_once($path.'/view/header.php');
 <!-- App js -->
 <script src="<? $path;?>/public/js/app.js"></script>
 <script src="<? $path;?>/public/js/ajax.js"></script>
-
+<script type="module" src="<? $path;?>/public/js/grupos.js" ></script>
 </body>
 
 </html>

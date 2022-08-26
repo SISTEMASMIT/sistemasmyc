@@ -1,16 +1,19 @@
+
+    import {ajax_peticion} from "./Ajax-peticiones.js";
+    import {info} from "./info.js";
+
+    $(document).ready(function(){
+    $(".mm-active").removeClass("mm-active");
+});
+
+//
+
 $('#search').keyup(function(){
     $('#folder_jstree').jstree(true).show_all();
     $('#folder_jstree').jstree('search', $(this).val());
 });
 
-
 // Funcion para limpiar el jstree
-
-function limpiarJstree(){
-    $('#folder_jstree').jstree().deselect_all();
-    $('#folder_jstree').jstree('close_all');
-}
-
 
 function limpiarJstree(){
     $('#folder_jstree').jstree().deselect_all();
@@ -28,7 +31,6 @@ function guardarPermisos(){
 }
 
 
-//Guardar Usuario
 $('#formUsuarios').submit(function(e) {
     e.preventDefault(); 
 
@@ -60,20 +62,13 @@ $('#formUsuarios').submit(function(e) {
     usuario.push(nombre,username,clave,receptor,telefono,dias_consulta, dias_cargo, pagos_ajustes,estado_usuario,monitoreo,permisos);
 });
 
-
 //Funcion para desplegar los permisos
-function abrirPermisos(){
-    var grupos;
-    $.ajax({
-        url: "query/grupos/mostrarGrupos",
-        dataType: "json",
-        method: "POST",
-        async: false,
-        data: {},
-        success: function(data) {         
-            grupos = data;
-        }
-    })
+$(document).on("click","#abrirPermisos",function(){
+    let grupos;
+    let peticion=ajax_peticion("query/grupos/mostrarGrupos",{},"POST");
+    peticion.done(function(data){
+        grupos=data;
+    });
     var html='<option selected id="">Seleccione un Grupo</option>';
     for(var i in grupos){
         html+='<option id="'+i+'" value="'+grupos[i].niveles+'">'+grupos[i].descripcion+'</option>';
@@ -129,7 +124,7 @@ function abrirPermisos(){
             }
         })
 
-}
+});
 
 
 $(document).on('change', '#grupo', function() {
@@ -137,21 +132,42 @@ $(document).on('change', '#grupo', function() {
 });
 
 
+
 $(document).on("click","#redirect",function(e){
     e.preventDefault();
     let url=this.getAttribute("data-url");
-    window.location.href = url;
+
+    window.location.href=window.location.origin+"/"+url;
 })
 //Funcion para pintar los permisos según el grupo
 
-function marcarPermisos(permisos){
-    var tree = $('#folder_jstree').jstree();
-    var permiso = permisos.split(',');
-    var i;
-            for (i = 0; i < permiso.length; i++) {
-                tree.enable_node(parseInt(permiso[i]));
-                tree.check_node(parseInt(permiso[i]));
-               // tree.open_node(parseInt(permiso[i]));
-               $("#folder_jstree").jstree("_open_to", parseInt(permiso[i]));
-            }
-}
+$('th').dblclick(function() {
+    alert($(this).text());
+});
+
+
+
+$("th").on('contextmenu', function(e) {
+	$('th').css('box-shadow', 'none');
+  var top = e.pageY - 220;
+  var left = e.pageX - 220;
+  $(this).css('box-shadow', 'inset 1px 1px 0px 0px red, inset -1px -1px 0px 0px red');
+  $("#menuTabla").css({
+    display: "block",
+    top: top,
+    left: left
+  });
+  return false; 
+  
+});
+
+$(".table").on("click", function() {
+	if ( $("#menuTabla").css('display') == 'block' ){
+  	    $("#menuTabla").hide();
+    }
+    $('th').css('box-shadow', 'none');
+});
+
+$("#menuTabla a").on("click", function() {
+  $(this).parent().hide();
+});
