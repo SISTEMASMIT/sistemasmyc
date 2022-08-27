@@ -1,5 +1,5 @@
 
-export function info(){
+export function nav_data(){
     let ls = [];
     if (localStorage.getItem("UserAgent") !== null) {
         ls.push(localStorage.getItem('UserAgent'));

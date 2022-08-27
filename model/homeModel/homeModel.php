@@ -36,8 +36,14 @@ class homeModel{
 		$statemant->bindParam(":token",$usuario->token);
 		$statemant->bindParam(":banca",$usuario->banca);
 		if($statemant->execute()){
-			while($row=$statemant->fetch(PDO::FETCH_ASSOC)){
-				array_push($arboles,new Arbol($row["id"],$row["parentid"],$row["icono"],$row["item"],$row["link"],$row["etiqueta"]));
+			$row2=$statemant;
+			if($row2->rowCount()>1){
+				while($row=$statemant->fetch(PDO::FETCH_ASSOC)){
+					array_push($arboles,new Arbol($row["id"],$row["parentid"],$row["icono"],$row["item"],$row["link"],$row["etiqueta"]));
+				}
+			}else{
+				destruir_session();
+				header("Location: /");
 			}
 		}
 		$niveles=$this->crearArbol($arboles);
@@ -46,7 +52,6 @@ class homeModel{
 
 function crearArbol($arboles){
 	$arrayAux=Array();
-	
 	foreach($arboles as $clave => $arbol){ 	
 		if($arbol->etiqueta==0){
 			array_push($arrayAux,$arbol);

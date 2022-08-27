@@ -13,12 +13,15 @@ class gruposModel{
         $usuario=$_SESSION["usuario"];
 		$usuario=json_decode($usuario);
         $gruposArray=array();
-        $sql = "CALL bl_banca(:username,'', '', 'list', 'fsql', 'gru_usu', '', '', '', '', '', '', '', '', '', '')";
+        $sql = "CALL bl_banca(:username,:banca, :token, 'list', 'fsql', 'gru_usu', '', '', '', '', '', '', '', '', '', '')";
 		$this->conexion=conexion::getConexion();
 		$statemant=$this->conexion->prepare($sql);
         $statemant->bindParam(":username",$usuario->user);
+        $statemant->bindParam(":banca",$usuario->banca);
+        $statemant->bindParam(":token",$usuario->token);
 		if($statemant->execute()){
             while($row=$statemant->fetch(PDO::FETCH_ASSOC)){
+                var_dump($row);
                 $grupos[] = array(
                     "niveles" => explode(",",$row["niveles"]),
                     "descripcion" => $row["descripcion"],
@@ -40,7 +43,7 @@ class gruposModel{
         $statemant->bindParam(":banca",$usuario->banca);
         $statemant->bindParam(":token",$usuario->token);
 		if($statemant->execute()){
-        $data=$statemant->fetchAll(PDO::FETCH_ASSOC);
+            $data=$statemant->fetchAll(PDO::FETCH_ASSOC);
         }
         $grupos = $data;
         foreach ($grupos as $grupo){

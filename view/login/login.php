@@ -100,7 +100,46 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                         </div><!-- /.modal-content -->
                     </div><!-- /.modal-dialog -->
                 </div><!-- /.modal -->
-            </div>
+</div>
+          
+                 <!--- Modal para reactivar Usuario -->
+        <div id="modalQR" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title mt-0" id="myModalLabel">¡Este es su primer inicio de sesión! por favor siga los pasos</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                        <div class="modal-body"> 
+                            <form id="registroP">
+                                <div class="modal-body">
+                                    <label for="">Nombre de este equipo: </label>
+                                    <input type="text" autocomplete="off" class="form-control" id="nombreEquipo1" required placeholder="Nombre del equipo">
+                                    <label for="">Nueva contraseña: </label>
+                                    <input type="password" autocomplete="off" class="form-control" id="nuevaClave" required placeholder="Nueva Contraseña">
+                                    <br><label for="">¿Este es su equipo de confianza? Marque sí para no pedirle más confirmaciones en el futuro.</label><br>
+                                    <br><div id="bit00_3">
+                                                <label class="switch">
+                                                <input type="checkbox" id="recordar2">
+                                                <div class="slider round">
+                                                    <span class="on">Si</span>
+                                                    <span class="off">No</span>
+                                                </div>
+                                                </label>
+                                            </div>
+                                            <br>
+                                    <label class="labelQr" for="">Tenga a la mano, su celular con la Aplicación "Google Autenticator", de clic en siguiente cuando esté listo.</label>
+                                    <button class="btn btn-primary w-md waves-effect waves-light" id="mostrarQr">Siguiente</button>
+                                    <img id="imgQr" class="imgQr espaciadoB" src="" />
+                                    <label class="labelCodeQr espaciadoB" for="">Escanee este QR y digite el número de 6 digitos que le da Google Autenticator: </label>
+                                    <input class="inputCodeQr espaciadoB" id="inputCodeQr" type="text" autocomplete="off" class="form-control" required placeholder="Ingrese el código"><br>
+                                    <label for="" id="msgQr"></label><br>
+                                    <button class="btn btn-primary w-md waves-effect waves-light" type="submit">Enviar</button>
+                                </div>
+                             </form>   
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
 
                 <!--- Modal Navegador Registro -->
                 
@@ -118,7 +157,22 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                     </div><!-- /.modal-dialog -->
                 </div><!-- /.modal -->
 
+                <!--- Modal Navegador Registro -->
                 
+                <div class="modal fade bs-example-modal-sm" id="sesionAlerta" tabindex="-1" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title mt-0" id="mySmallModalLabel"></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                            <div class="modal-body"> 
+                                <div id="msgSesion"></div>                                        
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+
 
 
                             
@@ -164,7 +218,7 @@ $path=$_SERVER['DOCUMENT_ROOT'];
         <script src="<? $path;?>/public/libs/metismenu/metisMenu.min.js"></script>
         <script src="<? $path;?>/public/libs/simplebar/simplebar.min.js"></script>
         <script src="<? $path;?>/public/libs/node-waves/waves.min.js"></script>
-        <script src="<? $path;?>/public/js/login.js"></script>
+        <script type="module" src="<? $path;?>/public/js/login.js"></script>
         <script src="<? $path;?>/public/js/app.js"></script>
     </body>
 </html>

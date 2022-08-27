@@ -1,5 +1,5 @@
 export function ajax_peticion(url,datos,metodo){
-    let ajax=$.ajax({
+    let ajax= $.ajax({
         url: url,
         dataType: "json",
         method: metodo,

@@ -1,5 +1,4 @@
 import {ajax_peticion} from './Ajax-peticiones.js';
-import { info } from './info.js';
 
 $('#search').keyup(function(){
     $('#folder_jstree').jstree(true).show_all();
@@ -26,10 +25,7 @@ $('#formGrupos').submit( async function(e) {
     var permisos = tree.get_selected(); 
     permisos = permisos.toString();
     let grupo = {"nombre":nombre,"descripcion":descripcion,"permisos":permisos};
-    var info;
-
-    var receive =  await ajax_peticion("/query/grupos/guardarGrupos", {'usuario': JSON.stringify(grupo)}, "POST");
-    info = receive;
+    var info =  await ajax_peticion("/query/grupos/guardarGrupos", {'usuario': JSON.stringify(grupo)}, "POST");
     if(info.e=="1"){
         $('#alertaModal').modal("show");
         $('#msgGrupo').html("<p>Se registró el grupo correctamente.</p>");
@@ -46,102 +42,9 @@ $('#formGrupos').submit( async function(e) {
 $(document).on('click', '.eliminarGrupo', async function() {
     var grupo = this.id.split("-");
     let datos = {"nombre":grupo[1]}
-    var receive =  await ajax_peticion("/query/grupos/eliminarGrupo", {'datos': JSON.stringify(datos)}, "POST");
-    var info = receive;
-    console.log(info);
-
+    var info =  await ajax_peticion("/query/grupos/eliminarGrupo", {'datos': JSON.stringify(datos)}, "POST");
     recargarTablaGrupos();
-
-
-
-
 });
-
-
-//Funcion para desplegar los permisos
-function abrirPermisos(){
-
-    if (localStorage.getItem("UserAgent") !== null) {
-        ls = [];
-        ls.push(localStorage.getItem('UserAgent'));
-        ls.push(localStorage.getItem('Local'));
-        ls.push(localStorage.getItem('Net'));
-
-    }else{
-        ls = [];
-        ls.push('');
-        ls.push('');
-        ls.push('');
-    }
-    usuario = {"ls":ls};
-    var grupos;
-    $.ajax({
-        url: "/query/grupos/mostrarGrupos",
-        dataType: "json",
-        method: "POST",
-        async: false,
-        data: {'usuario': JSON.stringify(usuario)},
-        success: function(data) {         
-            grupos = data;
-        }
-    })
-    var html='<option selected id="">Seleccione un Grupo</option>';
-    for(var i in grupos){
-        html+='<option id="'+i+'" value="'+grupos[i].niveles+'">'+grupos[i].descripcion+'</option>';
-    }
-    $("#grupo").html(html);
-        var folder_jsondata;
-        $.ajax({
-            url: "query/",
-            dataType: "json",
-            method: "POST",
-            async: false,
-            data: {'usuario': JSON.stringify(usuario)},
-            success: function(data) {
-                folder_jsondata = data;
-                $('#folder_jstree').jstree({
-                    'core': {
-                        'check_callback': true,
-                        "themes": { "stripes": true },
-                        'data': folder_jsondata,
-                        'multiple': true
-                    },
-                    "types" : {
-                        "root" : {
-                          "icon" : "fa-regular fa-building-lock"
-                        },
-                        "child" : {
-                            "icon" : "fa-regular fa-circle-user"
-                        }
-                    },
-                    'search': {
-                        'case_insensitive': true,
-                        'show_only_matches' : true
-                    },
-                    'checkbox': { 'keep_selected_style': false },
-                    'plugins': ['checkbox', 'types' ,'search'],
-                    'themes': {
-                        'theme': 'apple',
-                        "dots": true,
-                        "icons": true
-                    },
-                    'plugins': ['checkbox', 'search','types', 'html_data', 'themes', 'ui']
-                }).on('search.jstree', function (nodes, str, res) {
-                    if (str.nodes.length===0) {
-                        $('#search').jstree(true).hide_all();
-                    }
-                })
-                
-                $('#deliverable_search').keyup(function(){
-                    $('#folder_jstree').jstree(true).show_all();
-                    $('#folder_jstree').jstree('search', $(this).val());
-                });
-
-            }
-        })
-
-}
-
 
 $(document).on('click', '#limpiar', function() {
     $('#folder_jstree').jstree().deselect_all();
@@ -158,8 +61,8 @@ $(document).on('change', '#grupo', function() {
     marcarPermisos($(this).val());
 });
 
-//Funcion para pintar los permisos según el grupo
 
+//Funcion para pintar los permisos según el grupo
 function marcarPermisos(permisos){
     var tree = $('#folder_jstree').jstree();
     var permiso = permisos.split(',');
@@ -174,9 +77,8 @@ function marcarPermisos(permisos){
 
 
 async function recargarTablaGrupos(){
-    var grupos;
-    var receive =  await ajax_peticion("/query/grupos/grupos_permisos", {'usuario': JSON.stringify(grupo)}, "POST");
-    grupos = receive;
+    var grupos =  await ajax_peticion("/query/grupos/grupos_permisos", "", "POST");
+    console.log(grupos);
     let html='';
     for(var i in grupos){
         if(grupos[i].grupo!="SUPER"){
@@ -193,19 +95,12 @@ async function recargarTablaGrupos(){
     $("#gruposExistentes").html(html);
 }
 
-$( document ).ready(function() {
+
+$( document ).ready(async function() {
     recargarTablaGrupos();
     var grupos;
-    $.ajax({
-        url: "query/grupos/mostrarGrupos",
-        dataType: "json",
-        method: "POST",
-        async: false,
-        data: {},
-        success: function(data) {         
-            grupos = data;
-        }
-    })
+
+    var grupos =  await ajax_peticion("/query/grupos/mostrarGrupos", "", "POST");
     var html2='<option selected id="">Seleccione un Grupo</option>';
     for(var i in grupos){
         if(grupos[i].grupo == "SUPER"){
@@ -214,8 +109,6 @@ $( document ).ready(function() {
         }
     }
     $("#grupo").html(html2);
-
-
 
     //Jstree
 
@@ -273,7 +166,7 @@ $( document ).ready(function() {
 });
 
 
-
+//Por si se necesita el popover
 $(function () {
     $('.examplePop').popover({
       container: 'body'

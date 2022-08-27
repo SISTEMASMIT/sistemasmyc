@@ -1,6 +1,6 @@
 
     import {ajax_peticion} from "./Ajax-peticiones.js";
-    import {info} from "./info.js";
+    import {nav_data} from "./info.js";
 
     $(document).ready(function(){
     $(".mm-active").removeClass("mm-active");

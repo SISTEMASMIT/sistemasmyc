@@ -17,6 +17,10 @@
 .vertical-menu {  border: none!important; }
 .vertical-menu-default .vetical-menu li a { color: rgb(255, 0, 0); }
 
+.labelCodeQr, .imgQr, .inputCodeQr{
+    display: none;
+}
+
 
 /* Menú al dar click derecho*/
 #menuTabla {
