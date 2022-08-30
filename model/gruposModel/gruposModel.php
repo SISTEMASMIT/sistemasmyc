@@ -21,7 +21,6 @@ class gruposModel{
         $statemant->bindParam(":token",$usuario->token);
 		if($statemant->execute()){
             while($row=$statemant->fetch(PDO::FETCH_ASSOC)){
-                var_dump($row);
                 $grupos[] = array(
                     "niveles" => explode(",",$row["niveles"]),
                     "descripcion" => $row["descripcion"],
@@ -129,7 +128,37 @@ class gruposModel{
 
     }
 
+    //Permisos del grupo reales
 
+    public function permisos_nombres(){
+        $datos=json_decode($_POST['datos']);
+        $niveles = explode(",",$datos->niveles);
+        $usuario=$_SESSION["usuario"];
+		$usuario=json_decode($usuario);
+		$sql = "CALL bl_banca(:usuario,:banca,:token, 'list', 'fsql', 'menu_usu', '', '', '', '', '', '', '', '', '', '')";
+		$this->conexion=conexion::getConexion();
+		$statemant=$this->conexion->prepare($sql);
+        $statemant->bindParam(":usuario",$usuario->user);
+		$statemant->bindParam(":token",$usuario->token);
+		$statemant->bindParam(":banca",$usuario->banca);
+		if($statemant->execute()){
+			while($row=$statemant->fetch(PDO::FETCH_ASSOC)){
+                $permisos[] = array(
+                    "id" => $row["id"],
+                    "item" => $row["item"]
+                );
+            }
+        }
+
+        foreach($niveles as $key => $nivel){
+            echo $nivel."<br>";
+            // if($nivel!="4"){
+            //     $datos->niveles[$key] = $permisos[array_search(intval($nivel), array_column($permisos, 'id'))]["item"];
+            // }
+        }
+        
+
+    }
 
 }
 

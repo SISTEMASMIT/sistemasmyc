@@ -127,10 +127,6 @@ $(document).on("click","#abrirPermisos",function(){
 });
 
 
-$(document).on('change', '#grupo', function() {
-    marcarPermisos($(this).val());
-});
-
 
 
 $(document).on("click","#redirect",function(e){
@@ -141,10 +137,11 @@ $(document).on("click","#redirect",function(e){
 })
 //Funcion para pintar los permisos según el grupo
 
+/*
 $('th').dblclick(function() {
     alert($(this).text());
 });
-
+*/
 
 
 $("th").on('contextmenu', function(e) {

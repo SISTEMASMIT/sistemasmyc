@@ -76,14 +76,15 @@ function marcarPermisos(permisos){
 }
 
 
+
+
 async function recargarTablaGrupos(){
-    var grupos =  await ajax_peticion("/query/grupos/grupos_permisos", "", "POST");
-    console.log(grupos);
+    let grupos =  await ajax_peticion("/query/grupos/grupos_permisos", "", "POST");
     let html='';
     for(var i in grupos){
         if(grupos[i].grupo!="SUPER"){
             html+=`<tr>`;
-            html+=`<td>`+grupos[i].grupo+`</td><td>`+grupos[i].descripcion+`</td><td><a class="btn btn-outline-secondary btn-sm editarGrupo" id="editar-`+grupos[i].grupo+`" title="Editar Permisos">
+            html+=`<td class="nombre" data-info="`+grupos[i].niveles+`">`+grupos[i].grupo+`</td><td class="descripcion">`+grupos[i].descripcion+`</td><td><a class="btn btn-outline-secondary btn-sm editarGrupo" id="editar-`+grupos[i].grupo+`" title="Editar Permisos">
             <i class="fas fa-pencil-alt"></i>
         </a></td>
         <td><a class="btn btn-outline-secondary btn-sm eliminarGrupo" id="eliminar-`+grupos[i].grupo+`" title="Eliminar Grupo">
@@ -98,9 +99,8 @@ async function recargarTablaGrupos(){
 
 $( document ).ready(async function() {
     recargarTablaGrupos();
-    var grupos;
 
-    var grupos =  await ajax_peticion("/query/grupos/mostrarGrupos", "", "POST");
+    let grupos =  await ajax_peticion("/query/grupos/mostrarGrupos", "", "POST");
     var html2='<option selected id="">Seleccione un Grupo</option>';
     for(var i in grupos){
         if(grupos[i].grupo == "SUPER"){
@@ -172,3 +172,18 @@ $(function () {
       container: 'body'
     })
   })
+
+
+$('#tablaGrupos').on("click", "tr", function(){
+    let niveles= $(this).find("td:first").attr("data-info");
+    consultar_permisos($(this).find("td:first").text(),niveles);
+});
+
+//Consultar los permisos del grupo clickado
+
+async function consultar_permisos(grupo,niveles){
+    let datos = {"grupo":grupo,"niveles":niveles};
+    let permisos =  await ajax_peticion("/query/grupos/permisos_nombres", {'datos': JSON.stringify(datos)}, "POST");
+    console.log(permisos);
+
+}

@@ -5,9 +5,14 @@ error_reporting(E_ALL);
 
 class permisosModel{
 	public function permisos(){
-		$sql = "CALL bl_banca('usuario','0001', 'token', '', 'fsql', 'menu_config', '', '', '', '', '', '', '', '', '', '')";
+        $usuario=$_SESSION["usuario"];
+		$usuario=json_decode($usuario);
+		$sql = "CALL bl_banca(:usuario,:banca, :token, '', 'fsql', 'menu_config', '', '', '', '', '', '', '', '', '', '')";
 		$this->conexion=conexion::getConexion();
 		$statemant=$this->conexion->prepare($sql);
+        $statemant->bindParam(":usuario",$usuario->user);
+		$statemant->bindParam(":token",$usuario->token);
+		$statemant->bindParam(":banca",$usuario->banca);
 		if($statemant->execute()){
         $data=$statemant->fetchAll(PDO::FETCH_ASSOC);
         $folderData=json_encode($data);
