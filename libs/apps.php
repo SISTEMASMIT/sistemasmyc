@@ -26,6 +26,7 @@
                     }
                 }
             } catch (Exception $e) {
+                echo $e;
                 $controller= new Fail();
             }
             

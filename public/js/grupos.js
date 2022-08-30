@@ -84,12 +84,7 @@ async function recargarTablaGrupos(){
     for(var i in grupos){
         if(grupos[i].grupo!="SUPER"){
             html+=`<tr>`;
-            html+=`<td class="nombre" data-info="`+grupos[i].niveles+`">`+grupos[i].grupo+`</td><td class="descripcion">`+grupos[i].descripcion+`</td><td><a class="btn btn-outline-secondary btn-sm editarGrupo" id="editar-`+grupos[i].grupo+`" title="Editar Permisos">
-            <i class="fas fa-pencil-alt"></i>
-        </a></td>
-        <td><a class="btn btn-outline-secondary btn-sm eliminarGrupo" id="eliminar-`+grupos[i].grupo+`" title="Eliminar Grupo">
-            <i class="fas fa-trash-alt"></i>
-        </a></td>
+            html+=`<td class="nombre" data-info="`+grupos[i].niveles+`">`+grupos[i].grupo+`</td><td class="descripcion">`+grupos[i].descripcion+`</td>
         </tr>`;
         }  
     }
@@ -176,14 +171,48 @@ $(function () {
 
 $('#tablaGrupos').on("click", "tr", function(){
     let niveles= $(this).find("td:first").attr("data-info");
-    consultar_permisos($(this).find("td:first").text(),niveles);
+    consultar_permisos($(this).find("td:first").text(),niveles,$(this).find("td:eq(1)").text());
+
 });
 
 //Consultar los permisos del grupo clickado
 
-async function consultar_permisos(grupo,niveles){
+$(".tab").on("click", function () {
+    var categoryId = $(this).data("id");
+
+    $(".tab, .tab-pane").removeClass("active");
+    $(this).addClass("active");
+    $("#" + categoryId).addClass("active");
+  });
+
+  
+async function consultar_permisos(grupo,niveles,descripcion){
     let datos = {"grupo":grupo,"niveles":niveles};
     let permisos =  await ajax_peticion("/query/grupos/permisos_nombres", {'datos': JSON.stringify(datos)}, "POST");
-    console.log(permisos);
+    let html=``;
+    let head = `<h2>`+permisos.nombre+`</h2><p>`+descripcion+`</p>`;
+    let body = ``;
+    for(var i in permisos.permisos){
+        head+=`<li>`+permisos.permisos[i]+`</li>`;
+    }
+    html+=head+body;
+    $("#panelGrupo").removeClass('invisible');
+    $("#infoGrupo").removeClass('invisible');
+    $("#infoGrupo").html(html);
+    var ancho = screen.width;
+    if (ancho<420){
+        $("#p2").removeClass('col-md-3');
+        $("#p2").addClass('col-md-9');
+        $("#p1").removeClass('col-md-9');
+        $("#p1").addClass('col-md-3');
+    }else{
+        $("#p2").removeClass('col-md-3');
+        $("#p2").addClass('col-md-6');
+        $("#p1").removeClass('col-md-9');
+        $("#p1").addClass('col-md-6');
+    }
 
+    
+
+    $("#infoGrupo").html(html);
 }

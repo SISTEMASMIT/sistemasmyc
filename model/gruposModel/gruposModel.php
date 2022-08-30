@@ -148,14 +148,20 @@ class gruposModel{
                     "item" => $row["item"]
                 );
             }
+        }else{
+            echo "sdfsd";
         }
-
+        $grupo = array (
+            "nombre" => $datos->grupo,
+            "permisos" => array()
+        );
         foreach($niveles as $key => $nivel){
-            echo $nivel."<br>";
-            // if($nivel!="4"){
-            //     $datos->niveles[$key] = $permisos[array_search(intval($nivel), array_column($permisos, 'id'))]["item"];
-            // }
+            if($nivel!="4" AND $nivel!="17"){
+               $grupo["permisos"][$key] = $permisos[array_search(intval($nivel), array_column($permisos, 'id'))]["item"];
+            }
         }
+        
+        echo json_encode($grupo);
         
 
     }

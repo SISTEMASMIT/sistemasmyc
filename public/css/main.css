@@ -21,6 +21,53 @@
     display: none;
 }
 
+/* #p1,#p2{
+    border-width: 3px;
+    border-style: solid;
+    border-color: #263238;
+} */
+
+tbody {
+    border: 1px solid;
+    color: black;
+  }
+
+
+#tablaGrupos tbody tr:hover {
+    background-color: rgb(163, 174, 219);
+  }
+  
+ #tablaGrupos tbody tr:focus {
+    background-color: rgb(99, 99, 234);
+    outline: 0; 
+  }
+
+ 
+@media (max-width:420px){
+    #p1.col-md-6{
+
+    }
+    
+    #p1.col-md-3{
+        max-height: 300px;
+        overflow-y: auto;
+        white-space: nowrap;
+    }
+
+    #p2.col-md-9{
+        max-height: 700px;
+        overflow-y: auto;
+        white-space: nowrap;
+    }
+    
+    #p2.col-md-3{
+        overflow-y: auto;
+        white-space: nowrap;
+    }
+
+
+}
+
 
 /* Menú al dar click derecho*/
 #menuTabla {
