@@ -3,10 +3,10 @@
     import {nav_data} from "./info.js";
 
 
-function reactivar(){
+$(document).on('click', '#reactivarUsuario', function() {
     $('#modalActivar').modal("show");
     $('#usuarioA').html('<label id="usuario">'+$('#usuario').val()+'</label>');    
-}
+});
 
 $('#reactivar').submit(async function(e){
     e.preventDefault();
@@ -15,6 +15,7 @@ $('#reactivar').submit(async function(e){
     var codigo = $.trim($('#codigoActivar').val());
     let ls = nav_data();
     usuario = {"username":user, "codigo":codigo,"ls":ls};
+
     var info =  await ajax_peticion("/login/activarUsuario", {'usuario': JSON.stringify(usuario)}, "POST");
 
     if(info.e == '1'){
@@ -52,7 +53,7 @@ $('#formLogin').submit(async function(e) {
             $('#modalQR').modal("show");
         }
         else if(info.mensaje=="Usuario Desactivado"){
-            $('#invalido').html('<p>¡Usuario Desactivado por múltiples fallos de sesión!</p><button type="button" id="reactiva" class="btn btn-secondary waves-effect" onclick="reactivar()">Reactivar Usuario</button><br>');
+            $('#invalido').html('<p>¡Usuario Desactivado por múltiples fallos de sesión!</p><button type="button" id="reactivarUsuario" class="btn btn-secondary waves-effect">Reactivar Usuario</button><br>');
         }else if(info.mensaje=="Usuario Suspendido"){
             $('#invalido').html('<p>¡Usuario Suspendido!</p><a href="#">Reactivar Usuario</a>');
         }else if(info.mensaje=="Banca Inactiva"){
@@ -120,7 +121,7 @@ $('#registroP').submit(async function(e) {
                 if(confirmar.equipo.charAt(0)=="1"){
                     $('#sesionAlerta').modal("show");
                     $('#modalQR').modal("hide");
-                    $('#msgSesion').html("<p>Se han validado todos los datos, en breve puedes iniciar sesion con tu nueva clave.</p>");
+                    $('#msgSesion').html("<p>Se han validado todos los datos, en breve podrás iniciar sesion con tu nueva clave.</p>");
                     setTimeout(function(){
                         window.location.href = "/home";
                     }, 5000);

@@ -28,7 +28,7 @@ $path=$_SERVER['DOCUMENT_ROOT'];
             <div id="preloader"><div id="status"><div class="spinner"></div></div></div>
 
          <!-- Begin page -->
-         <div class="accountbg" style="background: url('<? $path;?>/public/images/bg-loteria.jpg');background-size: cover;background-position: center;"></div>
+        <div class="accountbg" style="background: url('<? $path;?>/public/images/bg-loteria.jpg');background-size: cover;background-position: center;"></div>
 
         <div class="account-pages mt-5 pt-5">
             <div class="container">
@@ -67,7 +67,7 @@ $path=$_SERVER['DOCUMENT_ROOT'];
     
                                 </div>
 
-                                <!-- sample modal content -->
+                                <!-- Modal para registrar Eqiopo -->
                 <div id="modalNav" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -91,7 +91,7 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                                                 </label>
                                             </div>
                                             <br>
-                                    <label for="">Ingrese el código que le fue enviado.</label>
+                                    <label for="">Ingrese el código que le indica Google Authenticator.</label>
                                     <input type="text" class="form-control espaciadoB" id="codigo" required placeholder="Código recibidoo">
                                     <label for="" id="msgReg"></label><br>
                                     <button class="btn btn-primary w-md waves-effect waves-light" type="submit">Enviar</button>
@@ -100,9 +100,9 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                         </div><!-- /.modal-content -->
                     </div><!-- /.modal-dialog -->
                 </div><!-- /.modal -->
-</div>
+
           
-                 <!--- Modal para reactivar Usuario -->
+                 <!--- Modal para primer inicio -->
         <div id="modalQR" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -128,10 +128,10 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                                                 </label>
                                             </div>
                                             <br>
-                                    <label class="labelQr" for="">Tenga a la mano, su celular con la Aplicación "Google Autenticator", de clic en siguiente cuando esté listo.</label>
+                                    <label class="labelQr" for="">Tenga a la mano, su celular con la Aplicación "Google Authenticator", de clic en siguiente cuando esté listo.</label>
                                     <button class="btn btn-primary w-md waves-effect waves-light" id="mostrarQr">Siguiente</button>
                                     <img id="imgQr" class="imgQr espaciadoB" src="" />
-                                    <label class="labelCodeQr espaciadoB" for="">Escanee este QR y digite el número de 6 digitos que le da Google Autenticator: </label>
+                                    <label class="labelCodeQr espaciadoB" for="">Escanee este QR y digite el número de 6 digitos que le da Google Authenticator: </label>
                                     <input class="inputCodeQr espaciadoB" id="inputCodeQr" type="text" autocomplete="off" class="form-control" required placeholder="Ingrese el código"><br>
                                     <label for="" id="msgQr"></label><br>
                                     <button class="btn btn-primary w-md waves-effect waves-light" type="submit">Enviar</button>
@@ -141,25 +141,23 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                     </div><!-- /.modal-dialog -->
                 </div><!-- /.modal -->
 
-                <!--- Modal Navegador Registro -->
                 
-                <div class="modal fade bs-example-modal-sm" id="alertaModal" tabindex="-1" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-sm">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title mt-0" id="mySmallModalLabel"></h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                            <div class="modal-body"> 
-                                <div id="msgRegNav"></div>                                        
-                            </div>
-                        </div><!-- /.modal-content -->
-                    </div><!-- /.modal-dialog -->
-                </div><!-- /.modal -->
+               
 
-                <!--- Modal Navegador Registro -->
+                            
+                        </div>    
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+<!-- ALERTAS DE AQUÍ PARA ABAJO --->
+
+
+ <!--- Modal Sesion -->
                 
-                <div class="modal fade bs-example-modal-sm" id="sesionAlerta" tabindex="-1" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+ <div class="modal fade bs-example-modal-sm" id="sesionAlerta" tabindex="-1" aria-labelledby="mySmallModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-sm">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -175,12 +173,21 @@ $path=$_SERVER['DOCUMENT_ROOT'];
 
 
 
-                            
-                        </div>    
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!--- Modal Navegador Registro -->
+                
+        <div class="modal fade bs-example-modal-sm" id="alertaModal" tabindex="-1" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title mt-0" id="mySmallModalLabel"></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                            <div class="modal-body"> 
+                                <div id="msgRegNav"></div>                                        
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
 
 
         <!--- Modal para reactivar Usuario -->
@@ -195,7 +202,7 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                             <form id="reactivar">
                                 <div class="modal-body">
                                     <div id="usuarioA" class="espaciadoB"></div>
-                                    <label for="">Ingrese el Código que le fue enviado a su medio de comunicación para reactivar su usuario</label>
+                                    <label for="">Ingrese el Código que le da Google Authenticator</label>
                                     <br><div id="bit00_3">
                                             <div class="form-group">
                                                 <input type="text" class="form-control" id="codigoActivar">
@@ -210,7 +217,7 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                         </div><!-- /.modal-content -->
                     </div><!-- /.modal-dialog -->
                 </div><!-- /.modal -->
-
+    </div>
                              
         <!-- JAVASCRIPT -->
         <script src="<? $path;?>/public/libs/jquery/jquery.min.js"></script>
