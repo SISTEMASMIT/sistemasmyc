@@ -249,7 +249,6 @@ class loginModel{
     }
 
     public function activarUsuario(){
-
         $g = new \Google\Authenticator\GoogleAuthenticator();
         $secret = $_SESSION["secret"];
         $usuario=json_decode($_POST['usuario']);
@@ -288,14 +287,79 @@ class loginModel{
 
         $dataJson=json_encode($data2[0]);
         echo $dataJson;
-        
+    }
 
-        
+    function validarUsuario($jwt){
+        $usuario=json_decode($_POST['usuario']);
+        $sql = "CALL bl_banca(:username, '', '', 'list_google', 'fsql', 'usu_login', '', '', '', '', '', '', '', '','', '')";
+        $this->conexion=conexion::getConexion();
+		$statemant=$this->conexion->prepare($sql);
+        $statemant->bindParam(":username",$usuario->username);
+        if($statemant->execute()){
+            $dataG=$statemant->fetchAll(PDO::FETCH_ASSOC);
+            if(count($dataG)>0){
+                $_SESSION["secret"] = $dataG[0]["m"];
+            }else{
+                $_SESSION["secret"] = "ARRAYOFBYTESGG";
+            }
+            $data2 = array(
+                "e" => "1",
+                "mensaje" => "correcto"
+            );
+        }else{
+            $data2 = array(
+                "e" => "0",
+                "mensaje" => "error"
+            );
+        }
+        echo json_encode($data2);
+                       
+    }
+
+
+    public function recuperarClave($jwt){
+        $g = new \Google\Authenticator\GoogleAuthenticator();
+        $secret = $_SESSION["secret"];
+        $usuario=json_decode($_POST['usuario']);
+        if($g->checkCode($secret, $usuario->codigo)){
+            //Si pasa google
+
+            $usuario=json_decode($_POST['usuario']);
+            $sql = "CALL bl_banca(:username, '', '', 'cla_recup', 'fsql', 'usu_login', :clave, '', '', '', '', '', '', '','', '')";
+            $this->conexion=conexion::getConexion();
+            $statemant=$this->conexion->prepare($sql);
+            $statemant->bindParam(":username",$usuario->username);
+            $statemant->bindParam(":clave",$usuario->clave);
+            if($statemant->execute()){
+                $data=$statemant->fetchAll(PDO::FETCH_ASSOC);
+                if($data[0]["e"]=="1"){
+                    $data2 = array(
+                        "e" => $data[0]["e"],
+                        "mensaje" => $data[0]["m"]
+                    );
+                }else{
+                    $data2 = array(
+                        "e" => "0",
+                        "mensaje" => "Error en la consulta"
+                    );
+                }
+            //Si no pasa lo de google
+            }
+        }else{
+            $data2 = array(
+                "e" => "0",
+                "mensaje" => "Código Inválido"
+            );
+        }
+
+        $dataJson=json_encode($data2);
+        echo $dataJson;
     }
 
 
 
 }
-
+    
+        
 
 ?>

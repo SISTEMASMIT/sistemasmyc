@@ -178,8 +178,8 @@ $('#navegador').submit(async function(e) {
         if(info.e=='0'){
             $('#msgReg').html('<p>¡Código Inválido, intente nuevamente</p><br>');
         }else if(info.e=="3"){
-            $('#alertaModal').modal("show");
             $('#modalNav').modal("hide");
+            $('#alertaModal').modal("show");
             if(recordarNavegador=="On"){
                 $('#msgRegNav').html("<p>Su navegador se registró Permanentemente.</p>");
             }else{
@@ -190,5 +190,95 @@ $('#navegador').submit(async function(e) {
             }, 3000);
         }
     }
+});
+
+
+$(document).on('click', '#recuperarC', function() {
+    $('#modalClave').modal("show"); 
+});
+
+//RecuperarClave
+async function recuperarClave(){
+    var usuario =[];
+    let ls = nav_data();
+    var user = $.trim($('#nombreUser').val());
+    usuario = {"username":user,"ls":ls};
+    
+    var info =  await ajax_peticion("/login/validarUsuario", {'usuario': JSON.stringify(usuario)}, "POST");
+
+    console.log(info);
+
+    if(info.e=="1"){
+        $("#mostrarCl").removeClass("invisible");
+    }else{
+        console.log("el usuario no existe");
+        $("#mostrarCl").removeClass("invisible");
+    }
+}
+
+$(document).on('click', '#validarUser', function() {
+    $('.validarUser').addClass("invisible");
+    recuperarClave();
+});
+
+
+
+$('#recuperarCl').submit(async function(e) {
+    e.preventDefault(); 
+    let usuario =[];
+    let c1 = $('#claveN1').val();
+    let ls = nav_data();
+    let user = $.trim($('#nombreUser').val());
+    let codigo = $.trim($('#codigoClave').val());
+    usuario = {"username":user,"clave":c1,"codigo":codigo,"ls":ls};
+    
+    var info =  await ajax_peticion("/login/recuperarClave", {'usuario': JSON.stringify(usuario)}, "POST");
+
+    console.log(info);
+
+    if(info.e=="1"){
+        $("#modalClave").modal("hide");
+        $('#msgClaveCard').html("<p>Su clave se cambió correctamente, en breve podrá iniciar sesión de nuevo.</p>");
+        $("#claveAlerta").modal("show");
+        setTimeout(function(){
+            window.location.href = "/";
+        }, 3000);
+    }else{
+        $("#msgClave").html("<p>El código no es válido.</p>");
+    }
+
+});
+
+$('#claveN1').keyup(function(e) {
+    var strongRegex = new RegExp("^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*\\W).*$", "g");
+    var mediumRegex = new RegExp("^(?=.{7,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))).*$", "g");
+    var enoughRegex = new RegExp("(?=.{6,}).*", "g");
+    if (false == enoughRegex.test($(this).val())) {
+            $('#passstrength').html('Ingrese Clave una más larga.');
+    } else if (strongRegex.test($(this).val())) {
+            $('#passstrength').className = 'ok';
+            $('#passstrength').html('Bien! Clave Fuerte!');
+    } else if (mediumRegex.test($(this).val())) {
+            $('#passstrength').className = 'alert';
+            $('#passstrength').html('Clave Media!');
+    } else {
+            $('#passstrength').className = 'error';
+            $('#passstrength').html('Clave Débil!');
+    }
+    return true;
+});
+
+$('#claveN2').keyup(function(e) {
+    $('#passstrength').html('');
+    let c1 = $('#claveN1').val();
+    let c2 = $('#claveN2').val();
+    if(c1!= c2){
+        $('#passstrength2').html('Las contraseñas no son iguales');
+
+    }else{
+        $('#passstrength2').html('');
+        $('#recuperarClave').removeClass("invisible");
+    }
+    
 });
 
