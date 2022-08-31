@@ -2,7 +2,7 @@
     import {ajax_peticion} from "./Ajax-peticiones.js";
     import {nav_data} from "./info.js";
 
-
+var strong = 0;
 $(document).on('click', '#reactivarUsuario', function() {
     $('#modalActivar').modal("show");
     $('#usuarioA').html('<label id="usuario">'+$('#usuario').val()+'</label>');    
@@ -257,9 +257,11 @@ $('#nuevaClave').keyup(function(e) {
     if (false == enoughRegex.test($(this).val())) {
             $('#passstrengthN').html('Ingrese Clave una más larga.');
     } else if (strongRegex.test($(this).val())) {
+            strong=1;
             $('#passstrengthN').className = 'ok';
             $('#passstrengthN').html('Bien! Clave Fuerte!');
     } else if (mediumRegex.test($(this).val())) {
+            strong=1;
             $('#passstrengthN').className = 'alert';
             $('#passstrengthN').html('Clave Media!');
     } else {
@@ -279,9 +281,11 @@ $('#claveN1').keyup(function(e) {
     } else if (strongRegex.test($(this).val())) {
             $('#passstrength').className = 'ok';
             $('#passstrength').html('Bien! Clave Fuerte!');
+            strong=1;
     } else if (mediumRegex.test($(this).val())) {
             $('#passstrength').className = 'alert';
             $('#passstrength').html('Clave Media!');
+            strong=1;
     } else {
             $('#passstrength').className = 'error';
             $('#passstrength').html('Clave Débil!');
@@ -295,10 +299,14 @@ $('#claveN2').keyup(function(e) {
     let c2 = $('#claveN2').val();
     if(c1!= c2){
         $('#passstrength2').html('Las contraseñas no son iguales');
-
     }else{
-        $('#passstrength2').html('');
-        $('#recuperarClave').removeClass("invisible");
+        if(strong==0){
+            $('#msgClave').html('No puede continuar con una clave Débil');
+        }else{
+            $('#msgClave').html('');
+            $('#passstrength2').html('');
+            $('#recuperarClave').removeClass("invisible");
+        }
     }
     
 });
