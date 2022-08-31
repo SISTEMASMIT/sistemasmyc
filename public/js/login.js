@@ -249,6 +249,27 @@ $('#recuperarCl').submit(async function(e) {
 
 });
 
+
+$('#nuevaClave').keyup(function(e) {
+    var strongRegex = new RegExp("^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*\\W).*$", "g");
+    var mediumRegex = new RegExp("^(?=.{7,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))).*$", "g");
+    var enoughRegex = new RegExp("(?=.{6,}).*", "g");
+    if (false == enoughRegex.test($(this).val())) {
+            $('#passstrengthN').html('Ingrese Clave una más larga.');
+    } else if (strongRegex.test($(this).val())) {
+            $('#passstrengthN').className = 'ok';
+            $('#passstrengthN').html('Bien! Clave Fuerte!');
+    } else if (mediumRegex.test($(this).val())) {
+            $('#passstrengthN').className = 'alert';
+            $('#passstrengthN').html('Clave Media!');
+    } else {
+            $('#passstrengthN').className = 'error';
+            $('#passstrengthN').html('Clave Débil!');
+    }
+    return true;
+});
+
+
 $('#claveN1').keyup(function(e) {
     var strongRegex = new RegExp("^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*\\W).*$", "g");
     var mediumRegex = new RegExp("^(?=.{7,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))).*$", "g");

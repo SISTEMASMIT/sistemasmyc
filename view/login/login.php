@@ -137,8 +137,8 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                             <div class="modal-body">
                                 <label for="">Nombre de este equipo: </label>
                                 <input type="text" autocomplete="off" class="form-control" id="nombreEquipo1" required placeholder="Nombre del equipo">
-                                <label for="">Nueva contraseña: </label>
                                 <input type="password" autocomplete="off" class="form-control" id="nuevaClave" required placeholder="Nueva Contraseña">
+                                <span id="passstrengthN"></span><br>
                                 <br><label for="">¿Este es su equipo de confianza? Marque sí para no pedirle más confirmaciones en el futuro.</label><br>
                                 <br>
                                 <div id="bit00_3">
