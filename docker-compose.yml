@@ -3,7 +3,7 @@ services:
   web:
     image: nginx:1.23   
     ports:
-      - "8080:80"
+      - "8080:443"
     volumes:
       - ./cert:/etc/nginx/conf.d
       - .:/var/www/html
