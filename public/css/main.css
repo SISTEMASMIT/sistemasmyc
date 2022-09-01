@@ -21,6 +21,9 @@
     display: none;
 }
 
+.tamano{
+    font-size: 30px;
+}
 .modal-body{
     text-align: center;
 }
@@ -29,6 +32,34 @@
     border-style: solid;
     border-color: #263238;
 } */
+.progress {
+    height: 20px;
+    margin-left: 25%;
+    width: 50%;
+    border: 1px solid #9fd0fa;
+    border-radius: 5px;
+    background-color: #e6f3fa;
+}
+
+
+.progress-bar{
+    height: 100%;
+    background: #9fd0fa;
+    display: flex;
+    align-items: center;
+    transition: width 0.25s;
+    border-radius: 5px;
+}
+
+.progress-bar-text {
+    margin-left: 10px;
+    font-weight: bold;
+    color: #ff0000;
+}
+
+
+
+
 
 .pest{
     padding: 10px;
@@ -43,21 +74,22 @@
     align-items: center;
   }
 
-#passstrength,#passstrength2,#passstrengthN,#msgClave{
+#passstrength,#passstrength2,#passstrengthN,#msgClave,#passstrengthN2,#msgClaveNueva{
     color:red;
 }
 tbody {
+    cursor: pointer;
     border: 1px solid;
     color: black;
   }
 
 
 #tablaGrupos tbody tr:hover {
-    background-color: rgb(163, 174, 219);
+    background-color: rgb(181, 195, 248);
   }
   
  #tablaGrupos tbody tr:focus {
-    background-color: rgb(99, 99, 234);
+    background-color: rgb(95, 114, 188);
     outline: 0; 
   }
 

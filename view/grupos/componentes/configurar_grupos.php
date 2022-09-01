@@ -8,10 +8,7 @@
                         <div class="card-body">
                             <h4 class="card-title">Grupos Existentes</h4>
                             <p class="card-title-desc">Listado de grupos existentes con sus permisos</p>
-                            <div class=" text-center">
-                                    <button type="button" class="btn btn-primary waves-effect waves-light"
-                                        data-bs-toggle="modal" data-bs-target="#agregarGrupo">Agregar</button>
-                                </div>
+                                    <button type="button" class="btn btn-primary waves-effect waves-light fas fa-person-circle-plus"  style="font-size: 20px;" data-bs-toggle="modal" data-bs-target="#agregarGrupo"></button>
                             <table id="tablaGrupos" class="table table-bordered dt-responsive" tabindex="1">
                                 <thead class="thead">
                                     <tr>

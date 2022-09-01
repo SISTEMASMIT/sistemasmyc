@@ -13,92 +13,114 @@ class loginModel{
 
 	public function iniciarSesion($jwt){
         $usuario=json_decode($_POST['usuario']);
-        $sql = "CALL bl_banca(:username, '', '', 'login', 'fsql', 'usu_login', :clave, '', '', '', '', '', '', '',:jwt, '')";
-        $this->conexion=conexion::getConexion();
-		$statemant=$this->conexion->prepare($sql);
-        $statemant->bindParam(":username",$usuario->username);
-        $statemant->bindParam(":clave",$usuario->clave);
-        $statemant->bindParam(":jwt",$jwt);
-		if($statemant->execute()){
-            $data=$statemant->fetchAll(PDO::FETCH_ASSOC);
-                if($data[0]["e"]=='0'){
-                    if($data[0]["m"]=="Google Aut"){
-                        $g = new \Google\Authenticator\GoogleAuthenticator();
-                        $secret = $g->generateSecret();
-                        $_SESSION["secret"] = $secret;
-                        $url = $g->getURL($usuario->username, 'sistemasmyc.com', $secret);
-                        $data2[] = array(
-                            "e" => $data[0]["e"],
-                            "mensaje" => $data[0]["m"],
-                            "url" => $url
-                        );
-                    }else{
+
+        $urlGoogle = "https://www.google.com/recaptcha/api/siteverify";
+        $keyGoogle = "6Le_9MYhAAAAAGMWxPfsWOgHhYyeMoZmGkiwcJJY";
+        $tokenGoogle = $usuario->token_google;
+        $ip = $_SERVER["REMOTE_ADDR"];
+        $request = file_get_contents($urlGoogle.'?secret='.$keyGoogle.'&response='.$tokenGoogle);
+        $result = json_decode($request);
+        if($result->success == true){
+
+            $sql = "CALL bl_banca(:username, '', '', 'login', 'fsql', 'usu_login', :clave, '', '', '', '', '', '', '',:jwt, '')";
+            $this->conexion=conexion::getConexion();
+            $statemant=$this->conexion->prepare($sql);
+            $statemant->bindParam(":username",$usuario->username);
+            $statemant->bindParam(":clave",$usuario->clave);
+            $statemant->bindParam(":jwt",$jwt);
+            if($statemant->execute()){
+                $data=$statemant->fetchAll(PDO::FETCH_ASSOC);
+                    if($data[0]["e"]=='0'){
+                        if($data[0]["m"]=="Google Aut"){
+                            $g = new \Google\Authenticator\GoogleAuthenticator();
+                            $secret = $g->generateSecret();
+                            $_SESSION["secret"] = $secret;
+                            $url = $g->getURL($usuario->username, 'sistemasmyc.com', $secret);
+                            $data2[] = array(
+                                "e" => $data[0]["e"],
+                                "mensaje" => $data[0]["m"],
+                                "url" => $url
+                            );
+                        }else{
+                            //para traer el Gauth Secret
+                            $sql = "CALL bl_banca(:username, '', '', 'list_google', 'fsql', 'usu_login', :clave, '', '', '', '', '', '', '','', '')";
+                            $this->conexion=conexion::getConexion();
+                            $statemant=$this->conexion->prepare($sql);
+                            $statemant->bindParam(":username",$usuario->username);
+                            $statemant->bindParam(":clave",$usuario->clave);
+                            if($statemant->execute()){
+                                $dataG=$statemant->fetchAll(PDO::FETCH_ASSOC);
+                            }
+                            if(count($dataG)>0){
+                                $_SESSION["secret"] = $dataG[0]["m"];
+                            }
+                            $data2[] = array(
+                                "e" => $data[0]["e"],
+                                "mensaje" => $data[0]["m"]
+                            );
+                        }
+                    $dataJson=json_encode($data2[0]);
+                    echo $dataJson;
+                }else{
+                    if($data[0]["e"]=="2"){
                         //para traer el Gauth Secret
                         $sql = "CALL bl_banca(:username, '', '', 'list_google', 'fsql', 'usu_login', :clave, '', '', '', '', '', '', '','', '')";
                         $this->conexion=conexion::getConexion();
                         $statemant=$this->conexion->prepare($sql);
                         $statemant->bindParam(":username",$usuario->username);
                         $statemant->bindParam(":clave",$usuario->clave);
-                        if($statemant->execute()){
-                            $dataG=$statemant->fetchAll(PDO::FETCH_ASSOC);
-                        }
+                        $statemant->execute();
+                        $dataG=$statemant->fetchAll(PDO::FETCH_ASSOC);
                         $_SESSION["secret"] = $dataG[0]["m"];
                         $data2[] = array(
                             "e" => $data[0]["e"],
-                            "mensaje" => $data[0]["m"]
+                            "user" => $usuario->username,
+                            "clave" => $usuario->clave,
+                            "jwt" => $jwt,
+                            "secret" => $dataG[0]["m"]
                         );
-                    }
-                $dataJson=json_encode($data2[0]);
-                echo $dataJson;
-            }else{
-                if($data[0]["e"]=="2"){
-                    //para traer el Gauth Secret
-                    $sql = "CALL bl_banca(:username, '', '', 'list_google', 'fsql', 'usu_login', :clave, '', '', '', '', '', '', '','', '')";
-                    $this->conexion=conexion::getConexion();
-                    $statemant=$this->conexion->prepare($sql);
-                    $statemant->bindParam(":username",$usuario->username);
-                    $statemant->bindParam(":clave",$usuario->clave);
-                    $statemant->execute();
-                    $dataG=$statemant->fetchAll(PDO::FETCH_ASSOC);
-                    $_SESSION["secret"] = $dataG[0]["m"];
-                    $data2[] = array(
-                        "e" => $data[0]["e"],
-                        "user" => $usuario->username,
-                        "clave" => $usuario->clave,
-                        "jwt" => $jwt,
-                        "secret" => $dataG[0]["m"]
-                    );
-                    $dataJson=json_encode($data2[0]);
-                    echo $dataJson;
-                }else{ 
-                    if(!isset($_SESSION)) {
-                        session_start();
-                    }
-                    //Consulta para recibir el Gauth si existe
-                    $sql = "CALL bl_banca(:username, '', '', 'list_google', 'fsql', 'usu_login', :clave, '', '', '', '', '', '', '','', '')";
-                    $this->conexion=conexion::getConexion();
-                    $statemant=$this->conexion->prepare($sql);
-                    $statemant->bindParam(":username",$usuario->username);
-                    $statemant->bindParam(":clave",$usuario->clave);
-                    $statemant->execute();
-                    $dataG=$statemant->fetchAll(PDO::FETCH_ASSOC);
-                    $data2[] = array(
-                        "e" => $data[0]["e"],
-                        "user" => $usuario->username,
-                        "clave" => $usuario->clave,
-                        "jwt" => $jwt,
-                        "banca" => $data[0]["rec"],
-                        "token" => $data[0]["token"],
-                        "secret" => $dataG[0]["m"]
+                        $dataJson=json_encode($data2[0]);
+                        echo $dataJson;
+                    }else{ 
+                        if(!isset($_SESSION)) {
+                            session_start();
+                        }
+                        //Consulta para recibir el Gauth si existe
+                        $sql = "CALL bl_banca(:username, '', '', 'list_google', 'fsql', 'usu_login', :clave, '', '', '', '', '', '', '','', '')";
+                        $this->conexion=conexion::getConexion();
+                        $statemant=$this->conexion->prepare($sql);
+                        $statemant->bindParam(":username",$usuario->username);
+                        $statemant->bindParam(":clave",$usuario->clave);
+                        $statemant->execute();
+                        $dataG=$statemant->fetchAll(PDO::FETCH_ASSOC);
+                        $data2[] = array(
+                            "e" => $data[0]["e"],
+                            "user" => $usuario->username,
+                            "clave" => $usuario->clave,
+                            "jwt" => $jwt,
+                            "banca" => $data[0]["rec"],
+                            "token" => $data[0]["token"],
+                            "secret" => $dataG[0]["m"]
 
-                    );
-                    $dataJson=json_encode($data2[0]);
-                    $_SESSION["usuario"] = $dataJson;
-                    $_SESSION["inactividad"] = "Off";
-                    echo $dataJson;
+                        );
+                        $dataJson=json_encode($data2[0]);
+                        $_SESSION["usuario"] = $dataJson;
+                        $_SESSION["inactividad"] = "Off";
+                        echo $dataJson;
+                    }
                 }
             }
+
+
+        }else{
+            $data2 = array(
+                "e" => "0",
+                "mensaje" => "Eres un bot"
+            );
+            echo json_encode($data2);
         }
+
+        
     }
 
 
