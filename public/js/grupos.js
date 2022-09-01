@@ -96,7 +96,7 @@ async function recargarTablaGrupos(){
     let html='';
     for(var i in grupos){
         if(grupos[i].grupo!="SUPER"){
-            html+=`<tr>`;
+            html+=`<tr tabindex="0">`;
             html+=`<td class="nombre" data-info="`+grupos[i].niveles+`">`+grupos[i].grupo+`</td><td class="descripcion">`+grupos[i].descripcion+`</td>
         </tr>`;
         }  
@@ -162,7 +162,7 @@ async function consultar_permisos(grupo,niveles,descripcion){
     let datos = {"grupo":grupo,"niveles":niveles};
     let permisos =  await ajax_peticion("/query/grupos/permisos_nombres", {'datos': JSON.stringify(datos)}, "POST");
     let html=``;
-    let head = `<h2>Nombre: `+permisos.nombre+`</h2><p> Descripción: `+descripcion+`</p>`;
+    let head = `<h6><span class="fas fa-user-secret"></span> Nombre: `+permisos.nombre+`</h6><h6> Descripción: `+descripcion+`</h6><h6><span class="fas fa-shield"></span> Permisos Disponibles</h6>`;
     let body = ``;
     for(var i in permisos.permisos){
         head+=`<li>`+permisos.permisos[i]+`</li>`;

@@ -55,7 +55,8 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                                         <div class="row mt-4">
                                             <div class="">
                                                 <label for="" id="invalido"></label><br>
-                                                <button class="btn btn-primary w-md waves-effect waves-light" type="submit">Entrar</button>
+                                                <input type="hidden" id="token_gen" name="token_gen">
+                                                <button class="btn btn-primary w-md waves-effect waves-light"  type="submit">Entrar</button>
                                             </div>
                                             <label id="recuperarC" for="">Recuperar Contraseña</label>
                                         </div>
@@ -129,17 +130,24 @@ $path=$_SERVER['DOCUMENT_ROOT'];
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title mt-0" id="myModalLabel">¡Este es su primer inicio de sesión! por favor siga los pasos</h5>
+                        <h5 class="modal-title mt-0" id="myModalLabel">¡Este es su primer inicio de sesión! Por favor siga los pasos</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body"> 
                         <form id="registroP">
                             <div class="modal-body">
                                 <label for="">Nombre de este equipo: </label>
-                                <input type="text" autocomplete="off" class="form-control" id="nombreEquipo1" required placeholder="Nombre del equipo">
+                                <input type="text" autocomplete="off" class="form-control espaciadoB" id="nombreEquipo1" required placeholder="Nombre del equipo">
                                 <input type="password" autocomplete="off" class="form-control" id="nuevaClave" required placeholder="Nueva Contraseña">
-                                <span id="passstrengthN"></span><br>
-                                <br><label for="">¿Este es su equipo de confianza? Marque sí para no pedirle más confirmaciones en el futuro.</label><br>
+                                <div class="progress">
+                                            <div class="progress-bar" id="progresoClave2">
+                                                <span class="progress-bar-text" id="txt-clave2"></span>
+                                            </div>
+                                        </div>
+                                <input type="password" autocomplete="off" class="form-control" id="nuevaClave2" required placeholder="Repita la Contraseña">
+                                <label for="" id="msgClaveNueva"></label><br>
+                                <span id="passstrengthN2"></span><br>
+                                <br><label for="">¿Desea registrar este equipo de manera permanente? Si no marca "Si" se registrará temporalmente.</label><br>
                                 <br>
                                 <div id="bit00_3">
                                     <label class="switch">
@@ -152,12 +160,12 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                                 </div>
                                 <br>
                                 <label class="labelQr" for="">Tenga a la mano, su celular con la Aplicación "Google Authenticator", de clic en siguiente cuando esté listo.</label>
-                                <button class="btn btn-primary w-md waves-effect waves-light" id="mostrarQr">Siguiente</button>
+                                <button class="btn btn-primary w-md waves-effect waves-light invisible" id="mostrarQr">Siguiente</button>
                                 <img id="imgQr" class="imgQr espaciadoB" src="" />
                                 <label class="labelCodeQr espaciadoB" for="">Escanee este QR y digite el número de 6 digitos que le da Google Authenticator: </label>
                                 <input class="inputCodeQr espaciadoB" id="inputCodeQr" type="text" autocomplete="off" class="form-control" required placeholder="Ingrese el código"><br>
                                 <label for="" id="msgQr"></label><br>
-                                <button class="btn btn-primary w-md waves-effect waves-light" type="submit">Enviar</button>
+                                <button id="primerInicio" class="btn btn-primary w-md waves-effect waves-light invisible" type="submit">Enviar</button>
                             </div>
                         </form>   
                     </div>
@@ -216,6 +224,11 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                                     <button class="btn btn-primary validarUser" type="button"  id="validarUser">Siguiente</button>
                                     <div class="invisible" id="mostrarCl">
                                         <input class="espaciadoB" type="password" class="form-control" id="claveN1" placeholder="Ingrese la nueva Contraseña" required><br>
+                                        <div class="progress">
+                                            <div class="progress-bar" id="progresoClave">
+                                                <span class="progress-bar-text" id="txt-clave"></span>
+                                            </div>
+                                        </div>
                                         <span id="passstrength"></span><br>
                                         <input class="espaciadoB" type="password" class="form-control" id="claveN2" placeholder="Repita la contraseña" required><br>
                                         <span id="passstrength2"></span><br>
@@ -275,6 +288,7 @@ $path=$_SERVER['DOCUMENT_ROOT'];
 
                              
         <!-- JAVASCRIPT -->
+        <script src="https://www.google.com/recaptcha/api.js?render=6Le_9MYhAAAAAHdY3ed_NDcWwDk43Cf-IsbYQ0LL"></script>
         <script src="<? $path;?>/public/libs/jquery/jquery.min.js"></script>
         <script src="<? $path;?>/public/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
         <script src="<? $path;?>/public/libs/metismenu/metisMenu.min.js"></script>

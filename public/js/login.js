@@ -3,6 +3,7 @@
     import {nav_data} from "./info.js";
 
 var strong = 0;
+var strongN = 0;
 $(document).on('click', '#reactivarUsuario', function() {
     $('#modalActivar').modal("show");
     $('#usuarioA').html('<label id="usuario">'+$('#usuario').val()+'</label>');    
@@ -38,9 +39,9 @@ $('#formLogin').submit(async function(e) {
     var usuario =[];
     var user = $.trim($('#usuario').val());
     var clave = $.trim($('#clave').val());
-
+    var token_google = $.trim($('#token_gen').val());
     let ls = nav_data();
-    usuario = {"username":user, "clave":clave,"ls":ls};
+    usuario = {"username":user, "clave":clave,"token_google":token_google,"ls":ls};
  
     var info =  await ajax_peticion("/login/iniciarSesion", {'usuario': JSON.stringify(usuario)}, "POST");
     if(info.e == 'undefined'){
@@ -58,6 +59,8 @@ $('#formLogin').submit(async function(e) {
             $('#invalido').html('<p>¡Usuario Suspendido!</p><a href="#">Reactivar Usuario</a>');
         }else if(info.mensaje=="Banca Inactiva"){
             $('#invalido').html('<p>¡Esta Banca se encuentra inactiva!</p><a href="#">Reactivar Usuario</a>');
+        }else if(info.mensaje=="Eres un bot"){
+            $('#invalido').html('<p>BOT ALERTA</p>');
         }else{
             $('#invalido').html('<p>¡Su usuario o clave son inválidos, intente nuevamente!</p>');
         }   
@@ -252,43 +255,85 @@ $('#recuperarCl').submit(async function(e) {
 
 $('#nuevaClave').keyup(function(e) {
     var strongRegex = new RegExp("^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*\\W).*$", "g");
-    var mediumRegex = new RegExp("^(?=.{7,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))).*$", "g");
-    var enoughRegex = new RegExp("(?=.{6,}).*", "g");
+    var mediumRegex = new RegExp("^(?=.{5,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))).*$", "g");
+    var enoughRegex = new RegExp("(?=.{3,}).*", "g");
     if (false == enoughRegex.test($(this).val())) {
-            $('#passstrengthN').html('Ingrese Clave una más larga.');
+        document.getElementById("txt-clave2").innerHTML ='';
+        document.getElementById("progresoClave2").style.width="10%";
+        document.getElementById("progresoClave2").style.background="#9fd0fa";
+        document.getElementById("txt-clave2").style.color="#ff0000";
     } else if (strongRegex.test($(this).val())) {
-            strong=1;
-            $('#passstrengthN').className = 'ok';
-            $('#passstrengthN').html('Bien! Clave Fuerte!');
+            strongN=1;
+            document.getElementById("progresoClave2").style.width="100%";
+            document.getElementById("progresoClave2").style.background="#49ba32";
+            document.getElementById("txt-clave2").style.color="#ffffff";
+            document.getElementById("txt-clave2").innerHTML ='Fuerte';
     } else if (mediumRegex.test($(this).val())) {
-            strong=1;
-            $('#passstrengthN').className = 'alert';
-            $('#passstrengthN').html('Clave Media!');
+            strongN=1;
+            document.getElementById("progresoClave2").style.width="50%";
+            document.getElementById("progresoClave2").style.background="#e0a85e";
+            document.getElementById("txt-clave2").style.color="#ffffff";
+            document.getElementById("txt-clave2").innerHTML ='Media';
     } else {
-            $('#passstrengthN').className = 'error';
-            $('#passstrengthN').html('Clave Débil!');
+        document.getElementById("progresoClave2").style.width="20%";
+        document.getElementById("progresoClave2").style.background="#ff0000";
+        document.getElementById("txt-clave2").style.color="#ffffff";
+        document.getElementById("txt-clave2").innerHTML ='Debil';
     }
     return true;
 });
 
 
+$('#nuevaClave2').keyup(function(e) {
+    $('#passstrengthN').html('');
+    let c1 = $('#nuevaClave').val();
+    let c2 = $('#nuevaClave2').val();
+    if(c1!=c2){
+        $('#passstrengthN2').html('Las contraseñas no son iguales');
+        $('#primerInicio').addClass("invisible");
+    }else{
+        $('#passstrengthN2').html('');
+        if(strongN==0){
+            $('#msgClaveNueva').html('No puede continuar con una clave Débil');
+            $('#primerInicio').addClass("invisible");
+            $('#mostrarQr').addClass("invisible");
+        }else{
+            $('#msgClaveNueva').html('');
+            $('#primerInicio').removeClass("invisible");
+            $('#mostrarQr').removeClass("invisible");
+        }
+    }
+    
+});
+
+
+
 $('#claveN1').keyup(function(e) {
     var strongRegex = new RegExp("^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*\\W).*$", "g");
-    var mediumRegex = new RegExp("^(?=.{7,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))).*$", "g");
-    var enoughRegex = new RegExp("(?=.{6,}).*", "g");
+    var mediumRegex = new RegExp("^(?=.{5,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))).*$", "g");
+    var enoughRegex = new RegExp("(?=.{3,}).*", "g");
     if (false == enoughRegex.test($(this).val())) {
-            $('#passstrength').html('Ingrese Clave una más larga.');
+            document.getElementById("txt-clave").innerHTML ='';
+            document.getElementById("progresoClave").style.width="10%";
+            document.getElementById("progresoClave").style.background="#9fd0fa";
+            document.getElementById("txt-clave").style.color="#ff0000";
     } else if (strongRegex.test($(this).val())) {
-            $('#passstrength').className = 'ok';
-            $('#passstrength').html('Bien! Clave Fuerte!');
+            document.getElementById("progresoClave").style.width="100%";
+            document.getElementById("progresoClave").style.background="#49ba32";
+            document.getElementById("txt-clave").style.color="#ffffff";
+            document.getElementById("txt-clave").innerHTML ='Fuerte';
             strong=1;
     } else if (mediumRegex.test($(this).val())) {
-            $('#passstrength').className = 'alert';
-            $('#passstrength').html('Clave Media!');
+            document.getElementById("progresoClave").style.width="50%";
+            document.getElementById("progresoClave").style.background="#e0a85e";
+            document.getElementById("txt-clave").style.color="#ffffff";
+            document.getElementById("txt-clave").innerHTML ='Media';
             strong=1;
     } else {
-            $('#passstrength').className = 'error';
-            $('#passstrength').html('Clave Débil!');
+        document.getElementById("progresoClave").style.width="20%";
+        document.getElementById("progresoClave").style.background="#ff0000";
+        document.getElementById("txt-clave").style.color="#ffffff";
+        document.getElementById("txt-clave").innerHTML ='Debil';
     }
     return true;
 });
@@ -300,6 +345,7 @@ $('#claveN2').keyup(function(e) {
     if(c1!= c2){
         $('#passstrength2').html('Las contraseñas no son iguales');
     }else{
+        $('#passstrength2').html('');
         if(strong==0){
             $('#msgClave').html('No puede continuar con una clave Débil');
         }else{
@@ -310,4 +356,13 @@ $('#claveN2').keyup(function(e) {
     }
     
 });
+
+
+grecaptcha.ready(function() {
+    grecaptcha.execute('6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI', {action: 'submit'}).then(function(token) {
+    var response = document.getElementById("token_gen");
+    response.vale = token;
+    });
+});
+
 
