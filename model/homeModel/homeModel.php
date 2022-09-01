@@ -51,8 +51,7 @@ class homeModel{
 				header("Location: /logout/logout");
 			}
 		}
-		$niveles=$this->crearArbol($arboles);
-		print_r($this->array_sort($niveles, 'posicion', SORT_DESC)); 
+		$niveles=$this->crearArbol($arboles); 
 	return json_encode($niveles);
 }
 

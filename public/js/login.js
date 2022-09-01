@@ -359,9 +359,9 @@ $('#claveN2').keyup(function(e) {
 
 
 grecaptcha.ready(function() {
-    grecaptcha.execute('6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI', {action: 'submit'}).then(function(token) {
+    grecaptcha.execute('6Le_9MYhAAAAAHdY3ed_NDcWwDk43Cf-IsbYQ0LL', {action: 'submit'}).then(function(token) {
     var response = document.getElementById("token_gen");
-    response.vale = token;
+    response.value = token;
     });
 });
 
