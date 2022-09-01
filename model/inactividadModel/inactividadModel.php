@@ -3,7 +3,6 @@
 class inactividadModel{
 
     function comprobacion(){
-        
         $usuario=json_decode($_SESSION["usuario"]);
         $datos=json_decode($_POST['datos']);
         if($usuario->clave == $datos->clave){
@@ -11,7 +10,7 @@ class inactividadModel{
             echo "1";
         }else{
             destruir_session();
-            echo "0";
+            echo "0"; 
         }
 
     }

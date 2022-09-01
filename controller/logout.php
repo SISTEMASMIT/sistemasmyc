@@ -21,9 +21,10 @@ class Logout extends Controller
             header('Location: /');
         }
     }
-     
-
-
+    public  function __construct1(){
+        parent::__construct();
+        $this->view->render("logout/logout");
+    }
 }
 
  ?>

@@ -16,7 +16,7 @@ $(document).on("submit","#confirmacion", async function(e) {
     }else{
         $('#msgReg').html('<p>¡Clave Invalida!</p>');
         setTimeout(function(){
-            window.location.href=window.location.origin+"/";
+            window.location.href=window.location.origin+"/logout/logout";
         }, 2000);
         
     }
