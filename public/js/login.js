@@ -61,6 +61,8 @@ $('#formLogin').submit(async function(e) {
             $('#invalido').html('<p>¡Esta Banca se encuentra inactiva!</p><a href="#">Reactivar Usuario</a>');
         }else if(info.mensaje=="Eres un bot"){
             $('#invalido').html('<p>BOT ALERTA</p>');
+        }else if(info.mensaje=="Error tecnico"){
+            $('#invalido').html('<p>Error Técnico</p>');
         }else{
             $('#invalido').html('<p>¡Su usuario o clave son inválidos, intente nuevamente!</p>');
         }   

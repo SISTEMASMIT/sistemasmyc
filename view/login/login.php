@@ -137,7 +137,7 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                         <form id="registroP">
                             <div class="modal-body">
                                 <label for="">Nombre de este equipo: </label>
-                                <input type="text" autocomplete="off" class="form-control espaciadoB" id="nombreEquipo1" required placeholder="Nombre del equipo">
+                                <input type="text" autocomplete="off" class="form-control espaciadoB" id="nombreEquipo1" placeholder="Nombre del equipo" required />
                                 <input type="password" autocomplete="off" class="form-control" id="nuevaClave" required placeholder="Nueva Contraseña">
                                 <div class="progress">
                                             <div class="progress-bar" id="progresoClave2">
@@ -260,7 +260,7 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                     <form id="navegador">
                         <div class="modal-body">
                             <label for="">Nombre de este equipo: </label>
-                            <input type="text" class="form-control" id="nombreEquipo" required placeholder="Nombre del equipo">
+                            <input type="text" class="form-control" id="nombreEquipo" placeholder="Nombre del equipo" required />
                             <br><label for="">¿Este es su equipo de confianza? Marque sí para no pedirle más confirmaciones en el futuro.</label><br>
                             <br><div id="bit00_3">
                                     <label class="switch">
@@ -273,7 +273,7 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                                     <br>
                                 </div>
                             <label for="">Ingrese el código que le indica Google Authenticator.</label>
-                            <input type="text" class="form-control espaciadoB" id="codigo" required placeholder="Código recibidoo">
+                            <input type="text" class="form-control espaciadoB" id="codigo" required placeholder="Código recibido">
                             <label for="" id="msgReg"></label><br>
                             <button class="btn btn-primary w-md waves-effect waves-light" type="submit">Enviar</button>
                         </div>
