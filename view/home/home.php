@@ -375,10 +375,8 @@ require_once($path.'/view/header.php');
                                     </tbody>
                                 </table>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="menuTabla">
-                                    <a class="dropdown-item" href="#">Action</a>
-                                    <a class="dropdown-item" href="#">Another action</a>
-                                    <a class="dropdown-item" href="#">Something else here</a>
-                                    </div>
+                                    
+                                </div>
                             </div>
                     </div>
                 </div>

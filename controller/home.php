@@ -24,7 +24,8 @@ class Home extends Controller
             $this->view->data["menu"]=$this->model->niveles();
             $this->view->render("/home/home");
         }else{
-            header("Location:/");
+            $this->view->render("/home/home");
+            //header("Location:/");
         }
      }
 

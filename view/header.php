@@ -19,6 +19,7 @@ $path=$_SERVER['DOCUMENT_ROOT'];
     <link href="<? $path;?>/public/css/rwd-table.min.css" rel="stylesheet" type="text/css">
     <link href="<? $path;?>/public/css/main.css?1" rel="stylesheet" type="text/css">
     <script src="https://kit.fontawesome.com/ce19f53d03.js" crossorigin="anonymous"></script>
+    <link href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" rel="stylesheet">
 
 
     <link rel="stylesheet" type="text/css" href="assets/datatables/datatables.css" />
@@ -355,6 +356,7 @@ $path=$_SERVER['DOCUMENT_ROOT'];
 
 
 <!--- CARGA DE JS --->
+
 <script src="<? $path;?>/public/libs/jquery/jquery.min.js"></script>
 <script src="<? $path;?>/public/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
@@ -365,4 +367,5 @@ $path=$_SERVER['DOCUMENT_ROOT'];
 <script src="<? $path;?>/public/js/rwd-table.min.js"></script>
 <script src="<? $path;?>/public/js/table-responsive.init.js"></script>
 <script type="text/javascript" src="<? $path;?>/public/js/jstree.min.js"></script>
+<script src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 

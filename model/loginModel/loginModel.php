@@ -27,12 +27,18 @@ class loginModel{
                     $score=$result->score;
             }
             if($score >= 0.5){
-                $sql = "CALL bl_banca(:username, '', '', 'login', 'fsql', 'usu_login', :clave, '', '', '', '', '', '', '',:jwt, '')";
+                $consulta_login = array(
+                    "comando" => "usu_login",
+                    "orden" => "login",
+                    "usuario" => $usuario->username,
+                    "clave" => $usuario->clave,
+                    "jwt" => $jwt
+                );
+                $consulta_login = json_encode($consulta_login);
+                $sql = "CALL bl_banca(:consulta_login)";
                 $this->conexion=conexion::getConexion();
                 $statemant=$this->conexion->prepare($sql);
-                $statemant->bindParam(":username",$usuario->username);
-                $statemant->bindParam(":clave",$usuario->clave);
-                $statemant->bindParam(":jwt",$jwt);
+                $statemant->bindParam(":consulta_login",$consulta_login);
                 if($statemant->execute()){
                     $data=$statemant->fetchAll(PDO::FETCH_ASSOC);
                         if($data[0]["e"]=='0'){
@@ -48,11 +54,16 @@ class loginModel{
                                 );
                             }else{
                                 //para traer el Gauth Secret
-                                $sql = "CALL bl_banca(:username, '', '', 'list_google', 'fsql', 'usu_login', :clave, '', '', '', '', '', '', '','', '')";
+                                $consulta_list_google = array(
+                                    "comando" => "usu_login",
+                                    "orden" => "list_google",
+                                    "usuario" => $usuario->username
+                                );
+                                $consulta_list_google = json_encode($consulta_list_google);
+                                $sql = "CALL bl_banca(:consulta_list_google)";
                                 $this->conexion=conexion::getConexion();
                                 $statemant=$this->conexion->prepare($sql);
-                                $statemant->bindParam(":username",$usuario->username);
-                                $statemant->bindParam(":clave",$usuario->clave);
+                                $statemant->bindParam(":consulta_list_google",$consulta_list_google);
                                 if($statemant->execute()){
                                     $dataG=$statemant->fetchAll(PDO::FETCH_ASSOC);
                                 }
@@ -69,11 +80,16 @@ class loginModel{
                     }else{
                         if($data[0]["e"]=="2"){
                             //para traer el Gauth Secret
-                            $sql = "CALL bl_banca(:username, '', '', 'list_google', 'fsql', 'usu_login', :clave, '', '', '', '', '', '', '','', '')";
+                            $consulta_list_google = array(
+                                "comando" => "usu_login",
+                                "orden" => "list_google",
+                                "usuario" => $usuario->username
+                            );
+                            $consulta_list_google = json_encode($consulta_list_google);
+                            $sql = "CALL bl_banca(:consulta_list_google)";
                             $this->conexion=conexion::getConexion();
                             $statemant=$this->conexion->prepare($sql);
-                            $statemant->bindParam(":username",$usuario->username);
-                            $statemant->bindParam(":clave",$usuario->clave);
+                            $statemant->bindParam(":consulta_list_google",$consulta_list_google);
                             $statemant->execute();
                             $dataG=$statemant->fetchAll(PDO::FETCH_ASSOC);
                             $_SESSION["secret"] = $dataG[0]["m"];
@@ -91,11 +107,16 @@ class loginModel{
                                 session_start();
                             }
                             //Consulta para recibir el Gauth si existe
-                            $sql = "CALL bl_banca(:username, '', '', 'list_google', 'fsql', 'usu_login', :clave, '', '', '', '', '', '', '','', '')";
+                            $consulta_list_google = array(
+                                "comando" => "usu_login",
+                                "orden" => "list_google",
+                                "usuario" => $usuario->username
+                            );
+                            $consulta_list_google = json_encode($consulta_list_google);
+                            $sql = "CALL bl_banca(:consulta_list_google)";
                             $this->conexion=conexion::getConexion();
                             $statemant=$this->conexion->prepare($sql);
-                            $statemant->bindParam(":username",$usuario->username);
-                            $statemant->bindParam(":clave",$usuario->clave);
+                            $statemant->bindParam(":consulta_list_google",$consulta_list_google);
                             $statemant->execute();
                             $dataG=$statemant->fetchAll(PDO::FETCH_ASSOC);
                             $data2[] = array(
@@ -144,17 +165,27 @@ class loginModel{
             //Si pasa google
 
             if($usuario->temporalidad=="On"){
-                $sql = "CALL bl_banca(:username, '', '', 'register_perm', 'fsql', 'usu_login', '',:equipo, :codigo, '', '', '', '', '',:jwt, '')";
+                $consulta_registrar_equipo = array(
+                    "comando" => "usu_login",
+                    "orden" => "register_perm",
+                    "jwt" => $jwt,
+                    "usuario" => $usuario->username,
+                    "nombre_equipo" => $usuario->equipo
+                );
             }else{
-                $sql = "CALL bl_banca(:username, '', '', 'register_temp', 'fsql', 'usu_login', '',:equipo, :codigo, '', '', '', '', '',:jwt, '')";
+                $consulta_registrar_equipo = array(
+                    "comando" => "usu_login",
+                    "orden" => "register_temp",
+                    "jwt" => $jwt,
+                    "usuario" => $usuario->username,
+                    "nombre_equipo" => $usuario->equipo
+                );
             }
+            $consulta_registrar_equipo = json_encode($consulta_registrar_equipo);
+            $sql = "CALL bl_banca(:consulta_registrar_equipo)";
             $this->conexion=conexion::getConexion();
             $statemant=$this->conexion->prepare($sql);
-            $statemant->bindParam(":username",$usuario->username);
-            $statemant->bindParam(":codigo",$usuario->codigo);
-            $statemant->bindParam(":equipo",$usuario->equipo);
-            $statemant->bindParam(":jwt",$jwt);
-
+            $statemant->bindParam(":consulta_registrar_equipo",$consulta_registrar_equipo);
             if($statemant->execute()){
                 $data=$statemant->fetchAll(PDO::FETCH_ASSOC);
                 if($data[0]["e"]=='0'){
@@ -178,12 +209,18 @@ class loginModel{
                         echo $dataJson;
                     }else{
                         //Inicia sesion de nuevo
-                        $sql = "CALL bl_banca(:username, '', '', 'login', 'fsql', 'usu_login', :clave, '', '', '', '', '', '', '',:jwt, '')";
+                        $consulta_login = array(
+                            "comando" => "usu_login",
+                            "orden" => "login",
+                            "usuario" => $usuario->username,
+                            "clave" => $usuario->clave,
+                            "jwt" => $jwt
+                        );
+                        $consulta_login = json_encode($consulta_login);
+                        $sql = "CALL bl_banca(:consulta_login)";
                         $this->conexion=conexion::getConexion();
                         $statemant=$this->conexion->prepare($sql);
-                        $statemant->bindParam(":username",$usuario->username);
-                        $statemant->bindParam(":clave",$usuario->clave);
-                        $statemant->bindParam(":jwt",$jwt);
+                        $statemant->bindParam(":consulta_login",$consulta_login);
                         if($statemant->execute()){
                             $data=$statemant->fetchAll(PDO::FETCH_ASSOC);
                             if(!isset($_SESSION)) {
@@ -225,25 +262,35 @@ class loginModel{
         $datos = array();
             if($g->checkCode($secret, $usuario->codigo)){       
                 //Primero registramos el secreto del QR
-                $sql = "CALL bl_banca(:username, '', '', 'register_google', 'fsql', 'usu_login', '', '', '', '', '', '', '', '','', :secret)";
+                $consulta_register_google = array(
+                "comando" => "usu_login",
+                "orden" => "register_google",
+                "usuario" => $usuario->username,
+                "google_aut" => $secret
+                );
+                $consulta_register_google = json_encode($consulta_register_google);
+                $sql = "CALL bl_banca(:consulta_register_google)";
                 $this->conexion=conexion::getConexion();
                 $statemant=$this->conexion->prepare($sql);
-                $statemant->bindParam(":username",$usuario->username);
-                $statemant->bindParam(":secret",$secret);
+                $statemant->bindParam(":consulta_register_google",$consulta_register_google);
                 if($statemant->execute()){
                     $data=$statemant->fetchAll(PDO::FETCH_ASSOC);
                     $datos["google"] = '1'.$data[0]["m"];
                 }
 
                 //Cambiar la Clave
-                $sql = "CALL bl_banca(:username, :banca, :token, 'cla_cambia', 'fsql', 'usu_login', :clave, '', '', '', '', '', '', '','', :claveNueva)";
+                $consulta_cambiar_clave = array(
+                    "comando" => "usu_login",
+                    "orden" => "cla_cambia",
+                    "usuario" => $usuario->username,
+                    "clave" => $usuario->clave,
+                    "clave_nueva" => $usuario->claveNueva
+                );
+                $consulta_cambiar_clave = json_encode($consulta_cambiar_clave);
+                $sql = "CALL bl_banca(:consulta_cambiar_clave)";
                 $this->conexion=conexion::getConexion();
                 $statemant=$this->conexion->prepare($sql);
-                $statemant->bindParam(":username",$usuario->username);
-                $statemant->bindParam(":banca",$usuario->banca);
-                $statemant->bindParam(":token",$usuario->token);
-                $statemant->bindParam(":clave",$usuario->clave);
-                $statemant->bindParam(":claveNueva",$usuario->claveNueva);
+                $statemant->bindParam(":consulta_cambiar_clave",$consulta_cambiar_clave);
                 if($statemant->execute()){
                     $data=$statemant->fetchAll(PDO::FETCH_ASSOC);
                     $datos["clave"] = '1'.$data[0]["m"];
@@ -251,18 +298,27 @@ class loginModel{
     
                 //Registrar el navegador
                 if($usuario->temporalidad=="On"){
-                    $sql = "CALL bl_banca(:username, :banca, :token, 'register_perm', 'fsql', 'usu_login', '',:equipo, '1234', '', '', '', '', '',:jwt, '')";
+                    $consulta_registrar_equipo = array(
+                        "comando" => "usu_login",
+                        "orden" => "register_perm",
+                        "jwt" => $jwt,
+                        "usuario" => $usuario->username,
+                        "nombre_equipo" => $usuario->equipo
+                    );
                 }else{
-                    $sql = "CALL bl_banca(:username, :banca, :token, 'register_temp', 'fsql', 'usu_login', '',:equipo, '1234', '', '', '', '', '',:jwt, '')";
+                    $consulta_registrar_equipo = array(
+                        "comando" => "usu_login",
+                        "orden" => "register_temp",
+                        "jwt" => $jwt,
+                        "usuario" => $usuario->username,
+                        "nombre_equipo" => $usuario->equipo
+                    );
                 }
+                $consulta_registrar_equipo = json_encode($consulta_registrar_equipo);
+                $sql = "CALL bl_banca(:consulta_registrar_equipo)";
                 $this->conexion=conexion::getConexion();
                 $statemant=$this->conexion->prepare($sql);
-                $statemant->bindParam(":username",$usuario->username);
-                $statemant->bindParam(":equipo",$usuario->equipo);
-                $statemant->bindParam(":banca",$usuario->banca);
-                $statemant->bindParam(":token",$usuario->token);
-                $statemant->bindParam(":jwt",$jwt);
-
+                $statemant->bindParam(":consulta_registrar_equipo",$consulta_registrar_equipo);
                 if($statemant->execute()){
                     $data=$statemant->fetchAll(PDO::FETCH_ASSOC);
                     $datos["equipo"] = '1'.$data[0]["m"];
@@ -290,11 +346,16 @@ class loginModel{
             //Si pasa google
 
             $usuario=json_decode($_POST['usuario']);
-            $sql = "CALL bl_banca(:username, '', '', 'active_user', 'fsql', 'usu_login', '', '', :codigo, '', '', '', '', '','', '')";
+            $consulta_activar_usuario  = array(
+                "comando" => "usu_login",
+                "orden" => "active_user",
+                "usuario" => $usuario->username
+            );
+            $consulta_activar_usuario = json_encode($consulta_activar_usuario);
+            $sql = "CALL bl_banca(:consulta_activar_usuario)";
             $this->conexion=conexion::getConexion();
             $statemant=$this->conexion->prepare($sql);
-            $statemant->bindParam(":username",$usuario->username);
-            $statemant->bindParam(":codigo",$usuario->codigo);
+            $statemant->bindParam(":consulta_activar_usuario",$consulta_activar_usuario);
             if($statemant->execute()){
                 $data=$statemant->fetchAll(PDO::FETCH_ASSOC);
             }
@@ -324,10 +385,16 @@ class loginModel{
 
     function validarUsuario($jwt){
         $usuario=json_decode($_POST['usuario']);
-        $sql = "CALL bl_banca(:username, '', '', 'list_google', 'fsql', 'usu_login', '', '', '', '', '', '', '', '','', '')";
+        $consulta_list_google = array(
+            "comando" => "usu_login",
+            "orden" => "list_google",
+            "usuario" => $usuario->username
+        );
+        $consulta_list_google = json_encode($consulta_list_google);
+        $sql = "CALL bl_banca(:consulta_list_google)";
         $this->conexion=conexion::getConexion();
-		$statemant=$this->conexion->prepare($sql);
-        $statemant->bindParam(":username",$usuario->username);
+        $statemant=$this->conexion->prepare($sql);
+        $statemant->bindParam(":consulta_list_google",$consulta_list_google);
         if($statemant->execute()){
             $dataG=$statemant->fetchAll(PDO::FETCH_ASSOC);
             if(count($dataG)>0){
@@ -358,11 +425,17 @@ class loginModel{
             //Si pasa google
 
             $usuario=json_decode($_POST['usuario']);
-            $sql = "CALL bl_banca(:username, '', '', 'cla_recup', 'fsql', 'usu_login', :clave, '', '', '', '', '', '', '','', '')";
+            $consulta_recuperar_clave = array(
+                "comando" => "usu_login",
+                "orden" => "cla_recup",
+                "usuario" => $usuario->username,
+                "clave_nueva" => $usuario->clave
+            );
+            $consulta_recuperar_clave = json_encode($consulta_recuperar_clave);
+            $sql = "CALL bl_banca(:consulta_recuperar_clave)";
             $this->conexion=conexion::getConexion();
             $statemant=$this->conexion->prepare($sql);
-            $statemant->bindParam(":username",$usuario->username);
-            $statemant->bindParam(":clave",$usuario->clave);
+            $statemant->bindParam(":consulta_recuperar_clave",$consulta_recuperar_clave);
             if($statemant->execute()){
                 $data=$statemant->fetchAll(PDO::FETCH_ASSOC);
                 if($data[0]["e"]=="1"){

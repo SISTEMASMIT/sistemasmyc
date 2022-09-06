@@ -39,7 +39,7 @@ class Perfil extends Controller
                     $this->loadModel("homeModel");
                     $this->view->data["menu"]=$this->model->niveles();
                     $this->view->data["nombreComponente"] = "view/".$url[0]."/componentes"."/".$url2.".php";
-                    $this->view->render('perfil/grupos');
+                    $this->view->render('perfil/perfil');
                 }
             }
         }else{

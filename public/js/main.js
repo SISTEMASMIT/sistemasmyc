@@ -3,10 +3,19 @@
     import {nav_data} from "./info.js";
 
     $(document).ready(function(){
+        $('#tech-companies-1').DataTable({
+            "pageLength": 10,
+            "lengthMenu": [ 10, 25, 50, 75, 100 ],
+            "autoFill": true
+         });
+        var elementos=[];
+    elementos = `{"Datos":[{"Agno":1990,"Periodo":"Enero","Parametro":"1990","Valor":64.1,"Estado":null,"Notas":null},{"Agno":1990,"Periodo":"Febrero","Parametro":"Febrero","Valor":64.4,"Estado":null,"Notas":null},{"Agno":1990,"Periodo":"Marzo","Parametro":"Marzo","Valor":63.8,"Estado":null,"Notas":null},{"Agno":1990,"Periodo":"Abril","Parametro":"Abril","Valor":65.8,"Estado":null,"Notas":null},{"Agno":1990,"Periodo":"Mayo","Parametro":"Mayo","Valor":64.4,"Estado":null,"Notas":null},{"Agno":1990,"Periodo":"Junio","Parametro":"Junio","Valor":63.7,"Estado":null,"Notas":null},{"Agno":1990,"Periodo":"Julio","Parametro":"Julio","Valor":62.5,"Estado":null,"Notas":null},{"Agno":1990,"Periodo":"Agosto","Parametro":"Agosto","Valor":61.5,"Estado":null,"Notas":null},{"Agno":1990,"Periodo":"Septiembre","Parametro":"Septiembre","Valor":61,"Estado":null,"Notas":null},{"Agno":1990,"Periodo":"Octubre","Parametro":"Octubre","Valor":61.1,"Estado":null,"Notas":null},{"Agno":1990,"Periodo":"Noviembre","Parametro":"Noviembre","Valor":61.9,"Estado":null,"Notas":null},{"Agno":1990,"Periodo":"Diciembre","Parametro":"Diciembre","Valor":61.9,"Estado":null,"Notas":null},{"Agno":1991,"Periodo":"Enero","Parametro":"1991","Valor":60.8,"Estado":null,"Notas":null},{"Agno":1991,"Periodo":"Febrero","Parametro":"Febrero","Valor":61.5,"Estado":null,"Notas":null},{"Agno":1991,"Periodo":"Marzo","Parametro":"Marzo","Valor":62,"Estado":null,"Notas":null},{"Agno":1991,"Periodo":"Abril","Parametro":"Abril","Valor":60.7,"Estado":null,"Notas":null},{"Agno":1991,"Periodo":"Mayo","Parametro":"Mayo","Valor":60.6,"Estado":null,"Notas":null},{"Agno":1991,"Periodo":"Junio","Parametro":"Junio","Valor":61,"Estado":null,"Notas":null},{"Agno":1991,"Periodo":"Julio","Parametro":"Julio","Valor":61.8,"Estado":null,"Notas":null},{"Agno":1991,"Periodo":"Agosto","Parametro":"Agosto","Valor":61.4,"Estado":null,"Notas":null},{"Agno":1991,"Periodo":"Septiembre","Parametro":"Septiembre","Valor":62.1,"Estado":null,"Notas":null},{"Agno":1991,"Periodo":"Octubre","Parametro":"Octubre","Valor":64.3,"Estado":null,"Notas":null},{"Agno":1991,"Periodo":"Noviembre","Parametro":"Noviembre","Valor":64.4,"Estado":null,"Notas":null},{"Agno":1991,"Periodo":"Diciembre","Parametro":"Diciembre","Valor":64,"Estado":null,"Notas":null},{"Agno":1992,"Periodo":"Enero","Parametro":"1992","Valor":64.8,"Estado":null,"Notas":null},{"Agno":1992,"Periodo":"Febrero","Parametro":"Febrero","Valor":65.7,"Estado":null,"Notas":null}]}`;
+    
+        pintarTabla(elementos);
     $(".mm-active").removeClass("mm-active");
 });
 
-//
+
 
 $('#search').keyup(function(){
     $('#folder_jstree').jstree(true).show_all();
@@ -145,18 +154,48 @@ $('th').dblclick(function() {
 
 
 $("th").on('contextmenu', function(e) {
-	$('th').css('box-shadow', 'none');
-  var top = e.pageY - 220;
-  var left = e.pageX - 220;
+    var elementos=[];
+    elementos  =  {"item":"abrir enlace,/home","item2":"abrir reporte,/inactividad"};
+  let html = abrirMenu(elementos);
+  console.log(html);
+  $("#menuTabla").html(html);
+
+
+    const bd = document.body.classList.contains(
+        'sidebar-enable'
+       );
+
+
+ $('th').css('box-shadow', 'none');
+ if(!bd){
+    var top = e.pageY - 200;
+    var left = e.pageX - 220;
+ }else{
+    var top = e.pageY - 200;
+    var left = e.pageX-50;
+ }
+
   $(this).css('box-shadow', 'inset 1px 1px 0px 0px red, inset -1px -1px 0px 0px red');
   $("#menuTabla").css({
     display: "block",
     top: top,
     left: left
   });
+
+   
   return false; 
   
 });
+
+function abrirMenu (elementos){
+    let html = ``;
+    for(var i in elementos){
+        var elemento = elementos[i].split(","); 
+        html+=`<a class="dropdown-item" href="`+elemento[1]+`">`+elemento[0]+`</a>`;
+    }
+    return html;
+    
+}
 
 $(".table").on("click", function() {
 	if ( $("#menuTabla").css('display') == 'block' ){
@@ -168,3 +207,23 @@ $(".table").on("click", function() {
 $("#menuTabla a").on("click", function() {
   $(this).parent().hide();
 });
+
+
+function pintarTabla(elementos){
+        let html=``;
+        console.log(elementos.Datos);
+        var elemento = elementos[0];
+        let head =`
+            <table id="tech-companies-1" class="table table-striped">
+            <thead><tr>`;
+            let body =``;
+            for (var i in elemento){
+                console.log(elemento);
+
+            }
+    
+        let foot = `</tbody>
+        </table>`;
+        
+
+}

@@ -14,7 +14,7 @@ $('#reactivar').submit(async function(e){
     var usuario = [];
     var user = $.trim($('#usuario').val());
     var codigo = $.trim($('#codigoActivar').val());
-    let ls = nav_data();
+    let ls = nav_data(user);
     usuario = {"username":user, "codigo":codigo,"ls":ls};
 
     var info =  await ajax_peticion("/login/activarUsuario", {'usuario': JSON.stringify(usuario)}, "POST");
@@ -40,7 +40,7 @@ $('#formLogin').submit(async function(e) {
     var user = $.trim($('#usuario').val());
     var clave = $.trim($('#clave').val());
     var token_google = $.trim($('#token_gen').val());
-    let ls = nav_data();
+    let ls = nav_data(user);
     usuario = {"username":user, "clave":clave,"token_google":token_google,"ls":ls};
  
     var info =  await ajax_peticion("/login/iniciarSesion", {'usuario': JSON.stringify(usuario)}, "POST");
@@ -107,18 +107,27 @@ $('#registroP').submit(async function(e) {
         var fin = i+ equipo.length/3;
         partes.push(equipo.substring(inicio,fin));
     }
-    localStorage.setItem('UserAgent',  btoa(partes[0]));
-    localStorage.setItem('Local',  btoa(partes[1]));
-    localStorage.setItem('Net',  btoa(partes[2]));
+    let id = Math.floor(Math.random() * 99999);
+    if(localStorage.getItem(btoa(userP))===null){
+        localStorage.setItem(btoa(userP), id);
+        localStorage.setItem(id,  'UserAgent-'+id+',Local-'+id+',Net-'+id);
+        localStorage.setItem('UserAgent-'+id,  btoa(partes[0]));
+        localStorage.setItem('Local-'+id,  btoa(partes[1]));
+        localStorage.setItem('Net-'+id,  btoa(partes[2]));
+    }
+    
 
-    if (localStorage.getItem("UserAgent") !== null) {
+    if (localStorage.getItem(btoa(userP)) !== null) {
         let ls = [];
-        ls.push(localStorage.getItem('UserAgent'));
-        ls.push(localStorage.getItem('Local'));
-        ls.push(localStorage.getItem('Net'));
+        let id=localStorage.getItem(btoa(userP));
+        let data = localStorage.getItem(id);
+        let dataF = data.split(",");
+        ls.push(localStorage.getItem(dataF[0]));
+        ls.push(localStorage.getItem(dataF[1]));
+        ls.push(localStorage.getItem(dataF[2]));
 
         usuario = {"username":userP, "clave":clave, "claveNueva":claveNueva, "equipo":equipo, "temporalidad":temporalidad,"codigo":codigo,"ls":ls};
-        console.log(usuario);
+        
         var confirmar =  await ajax_peticion("/login/confirmarQr", {'usuario': JSON.stringify(usuario)}, "POST");
 
         if(confirmar.google.charAt(0)=="1"){
@@ -129,7 +138,7 @@ $('#registroP').submit(async function(e) {
                     $('#msgSesion').html("<p>Se han validado todos los datos, en breve podrás iniciar sesion con tu nueva clave.</p>");
                     setTimeout(function(){
                         window.location.href = "/home";
-                    }, 5000);
+                    }, 3000);
                 }else{
                     $('#msgQr').html("<p>Equipo Inválido.</p>");
                 }
@@ -166,15 +175,23 @@ $('#navegador').submit(async function(e) {
         var fin = i+ equipo.length/3;
         partes.push(equipo.substring(inicio,fin));
     }
-    localStorage.setItem('UserAgent',  btoa(partes[0]));
-    localStorage.setItem('Local',  btoa(partes[1]));
-    localStorage.setItem('Net',  btoa(partes[2]));
+    let id = Math.floor(Math.random() * 99999);
+    if(localStorage.getItem(btoa(user))===null){
+        localStorage.setItem(btoa(user), id);
+        localStorage.setItem(id,  'UserAgent-'+id+',Local-'+id+',Net-'+id);
+        localStorage.setItem('UserAgent-'+id,  btoa(partes[0]));
+        localStorage.setItem('Local-'+id,  btoa(partes[1]));
+        localStorage.setItem('Net-'+id,  btoa(partes[2]));
+    }
 
-    if (localStorage.getItem("UserAgent") !== null) {
+    if (localStorage.getItem(btoa(user)) !== null) {
         let ls = [];
-        ls.push(localStorage.getItem('UserAgent'));
-        ls.push(localStorage.getItem('Local'));
-        ls.push(localStorage.getItem('Net'));
+        let id=localStorage.getItem(btoa(user));
+        let data = localStorage.getItem(id);
+        let dataF = data.split(",");
+        ls.push(localStorage.getItem(dataF[0]));
+        ls.push(localStorage.getItem(dataF[1]));
+        ls.push(localStorage.getItem(dataF[2]));
 
         usuario = {"username":user, "clave":clave , "equipo":equipo, "temporalidad":temporalidad,"codigo":codigo,"ls":ls};
 
@@ -205,10 +222,9 @@ $(document).on('click', '#recuperarC', function() {
 //RecuperarClave
 async function recuperarClave(){
     var usuario =[];
-    let ls = nav_data();
     var user = $.trim($('#nombreUser').val());
+    let ls = nav_data(user);
     usuario = {"username":user,"ls":ls};
-    
     var info =  await ajax_peticion("/login/validarUsuario", {'usuario': JSON.stringify(usuario)}, "POST");
 
     console.log(info);
@@ -232,11 +248,10 @@ $('#recuperarCl').submit(async function(e) {
     e.preventDefault(); 
     let usuario =[];
     let c1 = $('#claveN1').val();
-    let ls = nav_data();
     let user = $.trim($('#nombreUser').val());
+    let ls = nav_data(user);
     let codigo = $.trim($('#codigoClave').val());
     usuario = {"username":user,"clave":c1,"codigo":codigo,"ls":ls};
-    
     var info =  await ajax_peticion("/login/recuperarClave", {'usuario': JSON.stringify(usuario)}, "POST");
 
     console.log(info);
