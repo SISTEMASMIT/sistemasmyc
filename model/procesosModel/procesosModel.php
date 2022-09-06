@@ -4,6 +4,9 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 class ProcesosModel{
+    function monitoreo_de_loterias(){
+        echo "";
+    }
 }
 
 
