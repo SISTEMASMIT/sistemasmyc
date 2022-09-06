@@ -30,11 +30,14 @@ class homeModel{
 		$arboles=array();
 		$niveles=array();
 		$usuario=$_SESSION["usuario"];
+		
 		$usuario=json_decode($usuario);
+		var_dump($usuario);
 		$sql = "CALL bl_banca(:json)";
 		$this->conexion=conexion::getConexion();
 		$statemant=$this->conexion->prepare($sql);
-		$statemant->bindParam(":username",json_encode(array("comando"=>"menu_usu","usuario"=>$usuario->user,"token"=>$usuario->token)));
+		$data=json_encode(array("comando"=>"menu_usu","orden"=>"list","usuario"=>$usuario->user,"token"=>$usuario->token));
+		$statemant->bindParam(":json",$data);
 		if($statemant->execute()){
 			$row2=$statemant;
 			if($row2->rowCount()>1){
@@ -45,8 +48,8 @@ class homeModel{
 					array_push($arboles,new Arbol($row["id"],$row["parentid"],$row["icono"],$row["item"],$row["posicion"],$row["link"],$row["etiqueta"]));
 				}
 			}else{
-				destruir_session();
-				header("Location: /logout/logout");
+				// destruir_session();
+				// header("Location: /logout/logout");
 			}
 		}
 		$niveles=$this->crearArbol($arboles); 
