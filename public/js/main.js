@@ -211,17 +211,12 @@ $("#menuTabla a").on("click", function() {
 
 function pintarTabla(elementos){
         let html=``;
-        console.log(elementos.Datos);
         var elemento = elementos[0];
         let head =`
             <table id="tech-companies-1" class="table table-striped">
             <thead><tr>`;
             let body =``;
-            for (var i in elemento){
-                console.log(elemento);
 
-            }
-    
         let foot = `</tbody>
         </table>`;
         

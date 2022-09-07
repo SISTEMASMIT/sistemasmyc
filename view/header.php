@@ -9,6 +9,7 @@ $path=$_SERVER['DOCUMENT_ROOT'];
     <title>Portal | Sistemas MYC</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Themesbrand" name="author">
+    
     <!-- App favicon -->
     <link rel="shortcut icon" href="<? $path;?>/public/images/favicon.ico">
     <!-- App favicon -->
@@ -30,6 +31,9 @@ $path=$_SERVER['DOCUMENT_ROOT'];
     <link href="<? $path;?>/public/css/toggles-full.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="<? $path;?>/public/jstree/dist/themes/default/style.min.css">
 
+    <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
+
 
 
     <!-- Bootstrap Css -->
@@ -40,7 +44,7 @@ $path=$_SERVER['DOCUMENT_ROOT'];
     <link href="<? $path;?>/public/css/app.min.css" id="app-style" rel="stylesheet" type="text/css">
     <!-- Custom Css-->
     <link href="<? $path;?>/public/css/custom.css" rel="stylesheet" type="text/css" />
-
+    
 </head>
 
 
@@ -356,16 +360,17 @@ $path=$_SERVER['DOCUMENT_ROOT'];
 
 
 <!--- CARGA DE JS --->
-
 <script src="<? $path;?>/public/libs/jquery/jquery.min.js"></script>
+
 <script src="<? $path;?>/public/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
 <script src="<? $path;?>/public/libs/metismenu/metisMenu.min.js"></script>
 <script src="<? $path;?>/public/libs/simplebar/simplebar.min.js"></script>
 <script src="<? $path;?>/public/libs/node-waves/waves.min.js"></script>
-<script src="https://maps.google.com/maps/api/js?key=AIzaSyCtSAR45TFgZjOs4nBFFZnII-6mMHLfSYI"></script>
 <script src="<? $path;?>/public/js/rwd-table.min.js"></script>
 <script src="<? $path;?>/public/js/table-responsive.init.js"></script>
 <script type="text/javascript" src="<? $path;?>/public/js/jstree.min.js"></script>
 <script src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-

@@ -2,6 +2,7 @@
 $path=$_SERVER['DOCUMENT_ROOT'];
 require_once($path.'/view/header.php');
 ?>
+
 <body data-sidebar="dark">
 <div class="container"></div>
 <div class="main-content" id="result">
