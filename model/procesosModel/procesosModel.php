@@ -5,7 +5,7 @@ error_reporting(E_ALL);
 
 class ProcesosModel{
     function monitoreo_de_loterias(){
-        // var_dump($_SESSION["usuario"]);
+        var_dump($_SESSION["usuario"]);
         echo "";
     }
     function listado_general(){

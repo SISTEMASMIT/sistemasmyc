@@ -32,12 +32,11 @@ $path=$_SERVER['DOCUMENT_ROOT'];
     <link rel="stylesheet" type="text/css" href="<? $path;?>/public/jstree/dist/themes/default/style.min.css">
 
     <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
 
 
     <!-- Bootstrap Css -->
-    <link href="<? $path;?>/public/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css">
     <!-- Icons Css -->
     <link href="<? $path;?>/public/css/icons.min.css" rel="stylesheet" type="text/css">
     <!-- App Css-->
@@ -361,10 +360,10 @@ $path=$_SERVER['DOCUMENT_ROOT'];
 
 <!--- CARGA DE JS --->
 <script src="<? $path;?>/public/libs/jquery/jquery.min.js"></script>
+<script src="<? $path;?>/public/js/monitoreo.js" type="module"></script>
 
-<script src="<? $path;?>/public/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
 <script src="<? $path;?>/public/libs/metismenu/metisMenu.min.js"></script>
@@ -374,3 +373,4 @@ $path=$_SERVER['DOCUMENT_ROOT'];
 <script src="<? $path;?>/public/js/table-responsive.init.js"></script>
 <script type="text/javascript" src="<? $path;?>/public/js/jstree.min.js"></script>
 <script src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>

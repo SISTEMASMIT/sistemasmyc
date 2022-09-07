@@ -1,6 +1,4 @@
 
-    import {ajax_peticion} from "./Ajax-peticiones.js";
-    import {nav_data} from "./info.js";
 
     $(document).ready(function(){
         $('#tech-companies-1').DataTable({

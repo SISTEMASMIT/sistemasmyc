@@ -20,6 +20,7 @@ require_once($path.'/view/header.php');
 <!-- JAVASCRIPT -->
 
 <!-- App js -->
+
 <script src="<? $path;?>/public/js/app.js"></script>
 <script src="<? $path;?>/public/js/ajax.js"></script>
 

@@ -24,7 +24,7 @@ class Procesos extends Controller
             if($this->loadModel($url[0]."Model")){
                 $url2=str_replace("-","_",$url[1]);
                 if(method_exists($this->model,$url2)){
-                    $this->view->data["vista"]=$this->model->{$url2}();
+                    $this->{$url2}();
                     $this->loadModel("homeModel");
                     $this->view->data["menu"]=$this->model->niveles();
                     $this->view->data["nombreComponente"] = "view/".$url[0]."/componentes"."/".$url2.".php";
@@ -39,6 +39,13 @@ class Procesos extends Controller
         }else{
             header("Location:/");
         }
+     }
+
+    function monitoreo_de_loterias(){
+        $this->loadModel("loteriaModel");
+        $this->view->data["loterias"]=$this->model->loterias();
+        $this->loadModel("receptoresModel");
+        $this->view->data["receptores"]=$this->model->receptores();
      }
 
 }
