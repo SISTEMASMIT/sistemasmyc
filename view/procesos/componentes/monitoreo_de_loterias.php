@@ -14,10 +14,10 @@
                             </option>
                         </select> -->
                         <select class="selectpicker" data-live-search="true" >
-                        <option data-tokens="ketchup mustard" Selected>Todos</option>
-                          <option data-tokens="ketchup mustard" data-subtext="Rep Alabama" Selected>Hot Dog, Fries and a Soda</option>
-                          <option data-tokens="mustard" Selected>Burger, Shake and a Smile</option>
-                          <option data-tokens="frosting" Selected>Sugar, Spice and all things nice</option>
+                        <option data-tokens="ketchup mustard" selected="selected">Todos</option>
+                          <option data-tokens="ketchup mustard" data-subtext="Rep Alabama">Hot Dog, Fries and a Soda</option>
+                          <option data-tokens="mustard">Burger, Shake and a Smile</option>
+                          <option data-tokens="frosting">Sugar, Spice and all things nice</option>
                         </select>
 
                     </div>

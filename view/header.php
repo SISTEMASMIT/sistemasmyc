@@ -9,7 +9,6 @@ $path=$_SERVER['DOCUMENT_ROOT'];
     <title>Portal | Sistemas MYC</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Themesbrand" name="author">
-    
     <!-- App favicon -->
     <link rel="shortcut icon" href="<? $path;?>/public/images/favicon.ico">
     <!-- App favicon -->
@@ -30,21 +29,16 @@ $path=$_SERVER['DOCUMENT_ROOT'];
     <link href="<? $path;?>/public/css/jquery.switchButton.css" rel="stylesheet">
     <link href="<? $path;?>/public/css/toggles-full.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="<? $path;?>/public/jstree/dist/themes/default/style.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
 
-    <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
-
-
-
-    <!-- Bootstrap Css -->
-    <link href="<? $path;?>/public/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css">
-    <!-- Icons Css -->
+    <!-- Bootstrap Css -    <!-- Icons Css -->
     <link href="<? $path;?>/public/css/icons.min.css" rel="stylesheet" type="text/css">
     <!-- App Css-->
     <link href="<? $path;?>/public/css/app.min.css" id="app-style" rel="stylesheet" type="text/css">
     <!-- Custom Css-->
     <link href="<? $path;?>/public/css/custom.css" rel="stylesheet" type="text/css" />
-    
+
 </head>
 
 
@@ -272,34 +266,34 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                                     if(count($arbol->hijos)>0){
                                         $html=$html."<li class=''>
                                                 <a href='javascript: void(0);' class='has-arrow waves-effect'>
-                                                <i class='dripicons-network-1'></i>
+                                                
                                                 <span>".$arbol->titulo."</span>
                                                 </a>";
                                         $html=$html."<ul class='sub-menu mm-collapse ' aria-expanded='false' >";
                                         #primer nivel
                                         foreach($arbol->hijos as $hijos1){
                                             if(count($hijos1->hijos)>0){
-                                                $html=$html."<li class=''><a href='javascript: void(0);'  class='has-arrow' aria-expanded='false'>".$hijos1->titulo."</a>";
+                                                $html=$html."<li class=''><a href='javascript: void(0);'  class='has-arrow' aria-expanded='false'><i class='".$hijos1->icono."'></i>".$hijos1->titulo."</a>";
                                                 $html=$html."<ul class='sub-menu mm-collapse ' aria-expanded='false' style=''>";
                                                 foreach($hijos1->hijos as $hijos2){
                                                     if(count($hijos2->hijos)>0){
-                                                        $html=$html."<li class=''><a href='javascript: void(0);' class='has-arrow' aria-expanded='false'>".$hijos2->titulo."</a>";
+                                                        $html=$html."<li class=''><a href='javascript: void(0);' class='has-arrow' aria-expanded='false'><i class='".$hijos2->icono."'></i>".$hijos2->titulo."</a>";
                                                         $html=$html."<ul class='sub-menu mm-collapse ' aria-expanded='false' style='margin-left: 15px;'>";
                                                         foreach($hijos2->hijos as $hijos3){
                                                             $url=str_replace(" ","-",strtolower(trim($hijos3->titulo)));
-                                                            $html=$html."<li><a href='javascript: void(0);' id='redirect' data-url='$url'>".$hijos3->titulo."</a></li>";        
+                                                            $html=$html."<li><a href='javascript: void(0);' id='redirect' data-url='$url'><i class='".$hijos3->icono."'></i>".$hijos3->titulo."</a></li>";        
                                                         }
                                                         $html=$html."</ul></li>";
                                                     }else{
                                                         $url=str_replace(" ","-",strtolower(trim($hijos2->link)));
-                                                        $html=$html."<li><a href='javascript: void(0);' aria-expanded='false' id='redirect' data-url='$url'>".$hijos2->titulo."</a></li>";
+                                                        $html=$html."<li><a href='javascript: void(0);' aria-expanded='false' id='redirect' data-url='$url'><i class='".$hijos2->icono."'></i>".$hijos2->titulo."</a></li>";
                                                     }                                                  
                                                     
                                                 }
                                                 $html=$html."</ul></li>";
                                 }else{  
                                     $url=str_replace(" ","-",strtolower(trim($hijos1->link)));
-                                                $html=$html."<li><a href='javascript: void(0);' aria-expanded='false' id='redirect' data-url='$url' >".$hijos1->titulo."</a></li>";   
+                                                $html=$html."<li><a href='javascript: void(0);' aria-expanded='false' id='redirect' data-url='$url' ><i class='".$hijos1->icono."'></i>".$hijos1->titulo."</a></li>";   
                                             }
                                         }
                                         $html=$html."</ul>";
@@ -360,17 +354,18 @@ $path=$_SERVER['DOCUMENT_ROOT'];
 
 
 <!--- CARGA DE JS --->
+
 <script src="<? $path;?>/public/libs/jquery/jquery.min.js"></script>
-
-<script src="<? $path;?>/public/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
 <script src="<? $path;?>/public/libs/metismenu/metisMenu.min.js"></script>
 <script src="<? $path;?>/public/libs/simplebar/simplebar.min.js"></script>
 <script src="<? $path;?>/public/libs/node-waves/waves.min.js"></script>
+<script src="https://maps.google.com/maps/api/js?key=AIzaSyCtSAR45TFgZjOs4nBFFZnII-6mMHLfSYI"></script>
 <script src="<? $path;?>/public/js/rwd-table.min.js"></script>
 <script src="<? $path;?>/public/js/table-responsive.init.js"></script>
 <script type="text/javascript" src="<? $path;?>/public/js/jstree.min.js"></script>
 <script src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+
+
