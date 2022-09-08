@@ -25,9 +25,9 @@ class Query extends Controller
 
     public function __construct1($url){
         parent::__construct();
-        if($this->loadModel($url[1]."Model")){
-            if(method_exists($this->model,$url[2])){
-                $this->model->{$url[2]}();
+        if($this->loadModel($url[0]."Model")){
+            if(method_exists($this->model,$url[1])){
+                $this->model->{$url[1]}();
             }else{
                 echo "Método Inexistente";
             }

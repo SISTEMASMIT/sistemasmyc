@@ -161,5 +161,4 @@
             </div><!-- div row  -->
         </div> <!-- container-fluid -->
     </div>  <!--- page-content --->
-</div>
-<!-- FIN CONTENIDO WEB -->
+</div><!-- FIN CONTENIDO WEB -->

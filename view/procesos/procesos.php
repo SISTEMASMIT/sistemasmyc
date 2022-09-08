@@ -1,9 +1,11 @@
 <?php
 $path=$_SERVER['DOCUMENT_ROOT'];
+require_once($path.'/view/head.php');
+require_once($path.'/view/footer.php');
 require_once($path.'/view/header.php');
-?>
 
-<body data-sidebar="dark">
+?>
+<body data-sidebar="dark" data-keep-enlarged="true" class="vertical-collpsed">
 <div class="container"></div>
 <div class="main-content" id="result">
 
@@ -22,7 +24,7 @@ require_once($path.'/view/header.php');
 <!-- App js -->
 <script src="<? $path;?>/public/js/app.js"></script>
 <script src="<? $path;?>/public/js/ajax.js"></script>
-
+<script type="module" src="<? $path;?>/public/js/monitoreo_linea.js" ></script>
 </body>
 
 </html>

@@ -1,13 +1,43 @@
 
-export function crearTabla(parametro){
+export function crear_tabla(parametro,tb,hd,bd){
     let html=``;
-    let head =`<div class="table-rep-plugin">
-    <div class="table-responsive mb-0" data-bs-pattern="priority-columns">
-        <table id="tech-companies-1" class="table table-striped">
-        <thead><th>`;
-        let body =``;
+    let head =``;
+    head+=crear_head(parametro.head);
+    let body =``
+    body = crear_body(parametro.data);
+    let foot = `</table>`;
+    html += head+body+foot;
+    $(hd).html(head);
+    $(bd).html(body);
 
-    let foot = `</tbody>
-    </table></div></div>`;
-    return html;
+    $(tb).DataTable({
+        "pageLength": 10,
+        "lengthMenu": [ 10, 25, 50, 75, 100 ],
+        "autoFill": true,
+        "responsive": true,
+        "select": true
+     });
+}
+
+function crear_head(data){
+    let head = `<tr>`;
+    for(var i in data){
+        head+=`<th>`+data[i]+`</th>`;
+    }
+    head+=`</tr>`;
+    return head;
+}
+
+function crear_body(data){
+    let body = ``;
+    for(var i in data){
+        body+=`<tr>`
+        for(var a in data[i]){
+             body+=`<td>`+data[i][a]+`</td>`;
+        }
+        body+=`</tr>`
+    }
+    body+=``;
+
+    return body
 }

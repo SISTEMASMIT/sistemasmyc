@@ -1,6 +1,4 @@
 
-    import {ajax_peticion} from "./Ajax-peticiones.js";
-    import {nav_data} from "./info.js";
 
     $(document).ready(function(){
         $('#tech-companies-1').DataTable({
@@ -71,69 +69,69 @@ $('#formUsuarios').submit(function(e) {
     usuario.push(nombre,username,clave,receptor,telefono,dias_consulta, dias_cargo, pagos_ajustes,estado_usuario,monitoreo,permisos);
 });
 
-//Funcion para desplegar los permisos
-$(document).on("click","#abrirPermisos",function(){
-    let grupos;
-    let peticion=ajax_peticion("query/grupos/mostrarGrupos",{},"POST");
-    peticion.done(function(data){
-        grupos=data;
-    });
-    var html='<option selected id="">Seleccione un Grupo</option>';
-    for(var i in grupos){
-        html+='<option id="'+i+'" value="'+grupos[i].niveles+'">'+grupos[i].descripcion+'</option>';
-    }
-    $("#grupo").html(html);
-        var folder_jsondata;
-        $.ajax({
-            url: "query/",
-            dataType: "json",
-            method: "POST",
-            async: false,
-            data: {},
-            success: function(data) {
-                folder_jsondata = data;
-                $('#folder_jstree').jstree({
-                    'core': {
-                        'check_callback': true,
-                        "themes": { "stripes": true },
-                        'data': folder_jsondata,
-                        'multiple': true
-                    },
-                    "types" : {
-                        "root" : {
-                          "icon" : "fa-regular fa-building-lock"
-                        },
-                        "child" : {
-                            "icon" : "fa-regular fa-circle-user"
-                        }
-                    },
-                    'search': {
-                        'case_insensitive': true,
-                        'show_only_matches' : true
-                    },
-                    'checkbox': { 'keep_selected_style': false },
-                    'plugins': ['checkbox', 'types' ,'search'],
-                    'themes': {
-                        'theme': 'apple',
-                        "dots": true,
-                        "icons": true
-                    },
-                    'plugins': ['checkbox', 'search','types', 'html_data', 'themes', 'ui']
-                }).on('search.jstree', function (nodes, str, res) {
-                    if (str.nodes.length===0) {
-                        $('#search').jstree(true).hide_all();
-                    }
-                })
+// //Funcion para desplegar los permisos
+// $(document).on("click","#abrirPermisos",function(){
+//     let grupos;
+//     let peticion=ajax_peticion("query/grupos/mostrarGrupos",{},"POST");
+//     peticion.done(function(data){
+//         grupos=data;
+//     });
+//     var html='<option selected id="">Seleccione un Grupo</option>';
+//     for(var i in grupos){
+//         html+='<option id="'+i+'" value="'+grupos[i].niveles+'">'+grupos[i].descripcion+'</option>';
+//     }
+//     $("#grupo").html(html);
+//         var folder_jsondata;
+//         $.ajax({
+//             url: "query/",
+//             dataType: "json",
+//             method: "POST",
+//             async: false,
+//             data: {},
+//             success: function(data) {
+//                 folder_jsondata = data;
+//                 $('#folder_jstree').jstree({
+//                     'core': {
+//                         'check_callback': true,
+//                         "themes": { "stripes": true },
+//                         'data': folder_jsondata,
+//                         'multiple': true
+//                     },
+//                     "types" : {
+//                         "root" : {
+//                           "icon" : "fa-regular fa-building-lock"
+//                         },
+//                         "child" : {
+//                             "icon" : "fa-regular fa-circle-user"
+//                         }
+//                     },
+//                     'search': {
+//                         'case_insensitive': true,
+//                         'show_only_matches' : true
+//                     },
+//                     'checkbox': { 'keep_selected_style': false },
+//                     'plugins': ['checkbox', 'types' ,'search'],
+//                     'themes': {
+//                         'theme': 'apple',
+//                         "dots": true,
+//                         "icons": true
+//                     },
+//                     'plugins': ['checkbox', 'search','types', 'html_data', 'themes', 'ui']
+//                 }).on('search.jstree', function (nodes, str, res) {
+//                     if (str.nodes.length===0) {
+//                         $('#search').jstree(true).hide_all();
+//                     }
+//                 })
                 
-                $('#deliverable_search').keyup(function(){
-                    $('#folder_jstree').jstree(true).show_all();
-                    $('#folder_jstree').jstree('search', $(this).val());
-                });
+//                 $('#deliverable_search').keyup(function(){
+//                     $('#folder_jstree').jstree(true).show_all();
+//                     $('#folder_jstree').jstree('search', $(this).val());
+//                 });
 
-            }
-        })
+//             }
+//         })
 
-});
+// });
 
 
 

@@ -1,6 +1,8 @@
 <?php
 $path=$_SERVER['DOCUMENT_ROOT'];
+require_once($path.'/view/head.php');
 require_once($path.'/view/header.php');
+require_once($path.'/view/footer.php');
 ?>
 <body data-sidebar="dark">
 <div class="container"></div>

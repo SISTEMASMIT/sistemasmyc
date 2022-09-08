@@ -1,6 +1,8 @@
 <?php
 $path=$_SERVER['DOCUMENT_ROOT'];
+require_once($path.'/view/head.php');
 require_once($path.'/view/header.php');
+require_once($path.'/view/footer.php');
 ?>
 <body data-sidebar="dark">
 <div class="container"></div>
@@ -13,14 +15,14 @@ require_once($path.'/view/header.php');
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
-            <button type="button" class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#modalForm">Registrar</button>
+            <button type="button" class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#modalForm">Registrar</button>
                 <!-- sample modal content -->
                 <div id="modalForm" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title mt-0" id="myModalLabel">Registrar Usuario</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                             </div>
                         <div class="modal-body"> 
                             <form id="formUsuarios">
@@ -120,10 +122,10 @@ require_once($path.'/view/header.php');
                                     </div>
                                     <input id="target" type="button" value="LOTERIAS">
                                 </div>
-                                <button type="button" class="btn btn-dark waves-effect waves-light" id="abrirPermisos" data-bs-toggle="modal" data-bs-target="#modalNiveles">Niveles</button>
+                                <button type="button" class="btn btn-dark waves-effect waves-light" id="abrirPermisos" data-toggle="modal" data-target="#modalNiveles">Niveles</button>
                         </div>
                         <div class="modal-footer">
-                        <button type="button" class="btn btn-danger waves-effect" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Cancelar</button>
                         <button type="submit" id="btnGuardar" class="btn btn-dark">Guardar</button>
                     </div>
                     </form>    
@@ -155,8 +157,8 @@ require_once($path.'/view/header.php');
                     </div>
                     <div class="modal-footer">
                         <div id="lblPlanta"></div>
-                        <button type="button" class="btn btn-danger waves-effect" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="button" id="btnNivel" data-dismiss="modal" class="btn btn-dark" onclick="guardarPermisos()"  data-bs-dismiss="modal">Guardar</button>
+                        <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Cancelar</button>
+                        <button type="button" id="btnNivel" data-dismiss="modal" class="btn btn-dark" onclick="guardarPermisos()"  data-dismiss="modal">Guardar</button>
                     </div>
                 </div>
             </div>
@@ -165,7 +167,7 @@ require_once($path.'/view/header.php');
 
     </div>
     </div>
-        <div class="row">
+            <div class="row">
             <!--div class="container caja"-->
             <div class="col-12">
                 <div class="card">
@@ -173,7 +175,7 @@ require_once($path.'/view/header.php');
                     <h4 class="card-title">Información</h4>
                     <p class="card-title-desc">Muestra la Información de los usuarios.</p>
                     <div class="table-rep-plugin">
-                            <div class="table-responsive mb-0" data-bs-pattern="priority-columns">
+                            <div class="table-responsive mb-0" data-pattern="priority-columns">
                                 <table id="tech-companies-1" class="table table-striped">
                                     <thead class="thead">
                                         <tr>
@@ -377,7 +379,7 @@ require_once($path.'/view/header.php');
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="menuTabla">
                                     
                                 </div>
-                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
