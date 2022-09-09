@@ -128,8 +128,10 @@ tbody {
     display: none;
 }
 .page-content{
-    min-height: auto;
+    min-height: 1200px;
 }
+
+
 
 .btn{
     /* margin-bottom: 10px; */
