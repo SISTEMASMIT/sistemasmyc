@@ -185,6 +185,7 @@
         <div class="vertical-menu">
 
             <div data-simplebar class="h-100">
+                
 
                 <!--- Sidemenu -->
                 <div id="sidebar-menu">
@@ -247,6 +248,7 @@
                     <!-- Fin del menú -->
                 </div>
                 <!-- Sidebar -->
+
             </div>
         </div>
         <!-- Left Sidebar End -->

@@ -16,7 +16,7 @@
                         if($key==0){
                             echo "<option value=".$receptor->receptor." data-subtext=".$receptor->receptor." selected>".$receptor->receptor."</option>";
                         }else{
-                            echo "<option value=".$receptor->receptor." data-subtext=".$receptor->receptor.">".$receptor->nombre."</option>";
+                            echo "<option value=".$receptor->receptor." data-subtext=".$receptor->nombre.">".$receptor->receptor."</option>";
                         }
                     }
                         }catch(Exception $e){
@@ -70,16 +70,14 @@
                 </div>
                 <div class="row">
                     <div id="tabla_res">
-                        <div class="table-rep-plugin">
-                            <div class="table-responsive mb-0" data-bs-pattern="priority-columns">
-                                <table id="tabla1" class="table table-striped">
-                                    <thead class="thead" id="head">
-                                    </thead>
-                                    <tbody id="body">
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                        <table id="tablaf" class="cell-border">
+                        </table>
+                        <table id="tabla1" class="cell-border display">
+                            <thead class="thead" id="thead1">
+                            </thead>
+                            <tbody id="tbody1">
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div> <!-- Row general -->
