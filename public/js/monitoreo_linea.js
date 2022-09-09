@@ -37,11 +37,9 @@ function crear_body(columns, rows){
 }
 
 
-
 $(document).on('click', '#monitorear', async function() {
 
-    $('#tablaf').DataTable().destroy();
-    $('#tablaf').html('');
+    $('#f').html('');
 
     let data = [];
     let receptores = $('#receptores').selectpicker('val');
@@ -51,9 +49,13 @@ $(document).on('click', '#monitorear', async function() {
 
     data = {"comando":"monitoreo_linea","receptor":receptores,"signo":signo,"seleccion":loterias,"cifras":cifras,"monto":"0","limite":"1000"};
 
-
+    $("#tabla_res").append(`<div id="preloader" style="display: none;">
+    <div id="status" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+</div>`);
     var info =  await ajax_peticion("/query/monitoreo", {'data': JSON.stringify(data)}, "POST");
-
+ 
     crear_tabla(info,"#tabla1","#thead1","#tbody1");
 
 });

@@ -97,7 +97,14 @@ $('#registroP').submit(async function(e) {
     var usuario =[];
     var userP = $.trim($('#usuario').val());
     var clave = $.trim($('#clave').val());
-    var equipo = $.trim($('#nombreEquipo1').val());
+
+    let eu = Math.floor(Math.random() * 9999999999);
+    if(localStorage.getItem("Id")===null){
+        localStorage.setItem("Id", eu);
+    }else{
+        eu = localStorage.getItem("Id");
+    }
+    var equipo = eu;
     var temporalidad = recordarNavegador;
     var codigo = $.trim($('#inputCodeQr').val());
     var claveNueva = $.trim($('#nuevaClave').val());
@@ -126,7 +133,7 @@ $('#registroP').submit(async function(e) {
         ls.push(localStorage.getItem(dataF[1]));
         ls.push(localStorage.getItem(dataF[2]));
 
-        usuario = {"username":userP, "clave":clave, "claveNueva":claveNueva, "equipo":equipo, "temporalidad":temporalidad,"codigo":codigo,"ls":ls};
+        usuario = {"username":userP, "clave":clave, "claveNueva":claveNueva, "equipo":eu, "temporalidad":temporalidad,"codigo":codigo,"ls":ls};
         
         var confirmar =  await ajax_peticion("/login/confirmarQr", {'usuario': JSON.stringify(usuario)}, "POST");
 
@@ -166,7 +173,13 @@ $('#navegador').submit(async function(e) {
     var usuario =[];
     var user = $.trim($('#usuario').val());
     var clave = $.trim($('#clave').val());
-    var equipo = $.trim($('#nombreEquipo').val());
+    let eu = Math.floor(Math.random() * 9999999999);
+    if(localStorage.getItem("Id")===null){
+        localStorage.setItem("Id", eu);
+    }else{
+        eu = localStorage.getItem("Id");
+    }
+    var equipo = eu;
     var temporalidad = recordarNavegador;
     var codigo = $.trim($('#codigo').val());
     let partes = [];
@@ -193,7 +206,7 @@ $('#navegador').submit(async function(e) {
         ls.push(localStorage.getItem(dataF[1]));
         ls.push(localStorage.getItem(dataF[2]));
 
-        usuario = {"username":user, "clave":clave , "equipo":equipo, "temporalidad":temporalidad,"codigo":codigo,"ls":ls};
+        usuario = {"username":user, "clave":clave , "equipo":eu, "temporalidad":temporalidad,"codigo":codigo,"ls":ls};
 
         var info =  await ajax_peticion("/login/registrarEquipo", {'usuario': JSON.stringify(usuario)}, "POST");
 

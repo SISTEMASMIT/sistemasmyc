@@ -1,30 +1,27 @@
-export function crear_tabla(parametro,tb,hd,bd){
+export async function crear_tabla(parametro,tb,hd,bd){
+    
     let html=``;
     let head =``;
     head+=crear_head(parametro.head);
     let body =``
     body = crear_body(parametro.data);
-    let foot = `</table>`;
-    html += head+body+foot;
+    await $(tb).DataTable().clear();    
+    await $(tb).DataTable().destroy();
+    html += head+body;
     $(hd).html(head);
     $(bd).html(body);
-    var inv = [0,1,2,6,7,8,12];
+    var inv = [1,2,6,7,8,12];
     var vis = [];
-
-    console.log(parametro.head.length);
     for(var i=0;i<parametro.head.length-1;i++){
         if(!inv.includes(i)){
             vis.push(i);
         }
     }
-
-    var table = $(tb).DataTable({
-        "language": {
-            "lengthMenu": "Muestra _MENU_ registros por página",
-            "zeroRecords": "Nada encontrado - sorry",
-            "info": "Mostrando Página _PAGE_ de _PAGES_",
-            "infoEmpty": "No se encuentra resultado",
-            "infoFiltered": "(buscado en _MAX_ registros)"
+    $(tb).DataTable({   
+        destroy: true,
+        columnDefs:  [{ targets: inv, visible: false }],
+        language: {
+            "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"
         },
         "dom": 'Bfrtip',
         "buttons": [
@@ -58,14 +55,13 @@ export function crear_tabla(parametro,tb,hd,bd){
             },
         'pageLength'
         ],
-        "columnDefs":  [{ targets: inv, visible: false }],
         "pageLength": 10,
         "lengthMenu": [ [10, 50, 100, -1], [10, 50, 100, "Todos"] ],
-        "autoFill": true,
         "responsive": true,
-        "select": true
+        "ordering": false,
+        "select": true,
      });
-
+    //  $(tb).DataTable().clear();
 }
 
 function crear_head(data){

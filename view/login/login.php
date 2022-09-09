@@ -136,8 +136,6 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                     <div class="modal-body"> 
                         <form id="registroP">
                             <div class="modal-body">
-                                <label for="">Nombre de este equipo: </label>
-                                <input type="text" autocomplete="off" class="form-control espaciadoB" id="nombreEquipo1" placeholder="Nombre del equipo" required />
                                 <input type="password" autocomplete="off" class="form-control" id="nuevaClave" required placeholder="Nueva Contraseña">
                                 <div class="progress">
                                             <div class="progress-bar" id="progresoClave2">
@@ -259,8 +257,6 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                 <div class="modal-body"> 
                     <form id="navegador">
                         <div class="modal-body">
-                            <label for="">Nombre de este equipo: </label>
-                            <input type="text" class="form-control" id="nombreEquipo" placeholder="Nombre del equipo" required />
                             <br><label for="">¿Este es su equipo de confianza? Marque sí para no pedirle más confirmaciones en el futuro.</label><br>
                             <br><div id="bit00_3">
                                     <label class="switch">

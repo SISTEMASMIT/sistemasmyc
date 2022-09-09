@@ -16,7 +16,12 @@ class Login extends Controller
     }
     public  function __construct0(){
         parent::__construct();
-        $this->view->render("/login/login");
+        if(!isset($_SESSION["usuario"])){
+            $this->view->render("/login/login");
+        }else{
+            header('Location: /home');
+        }
+        
      }
      public function __construct1($url){
         parent::__construct();
