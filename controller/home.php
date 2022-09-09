@@ -21,6 +21,7 @@ class Home extends Controller
         parent::__construct();
         $this->loadModel("homeModel");
         if(isset($_SESSION["usuario"])){
+            
             $this->view->data["menu"]=$this->model->niveles();
             $this->view->render("/home/home");
         }else{
