@@ -20,11 +20,12 @@ class Logout extends Controller
     }
     public  function __construct1(){
         parent::__construct();
-        $this->view->render("logout/logout");
+        
         if(isset($_SESSION['usuario'])) {
             destruir_session();
             header('Location: /');
         }
+        $this->view->render("logout/logout");
     }
 }
 
