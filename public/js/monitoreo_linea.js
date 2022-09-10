@@ -57,8 +57,7 @@ $(document).on('click', '#monitorear', async function() {
     var info =  await ajax_peticion("/query/monitoreo", {'data': JSON.stringify(data)}, "POST");
  
     crear_tabla(info,"#tabla1","#thead1","#tbody1");
-    var workTable = $('#tabla1').dataTable();
-    workTable.api().row.add(receptores).draw();
+
 });
 
 

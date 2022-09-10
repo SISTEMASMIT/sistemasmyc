@@ -31,17 +31,6 @@ export async function crear_tabla(parametro,tb,hd,bd){
                         columns: vis,
                         modifier: {
                             page: 'current'
-                        },
-                        customize: function ( win ) {
-                            $(win.document.body)
-                                .css( 'font-size', '10pt' )
-                                .prepend(
-                                    '<img src="https://i.pinimg.com/originals/a9/4d/f4/a94df4a6fe1f740cd82d245e718e831b.png" style="position:absolute; top:0; left:0;" />'
-                                );
-                                $(win.document.body).find( 'table' )
-                            .addClass( 'compact' )
-                            .css( 'font-size', 'inherit' );
-                
                         }
                     }
                 },
