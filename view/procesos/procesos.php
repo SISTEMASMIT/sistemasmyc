@@ -1,5 +1,6 @@
 <?php
 $path=$_SERVER['DOCUMENT_ROOT'];
+$importer=new Importer();
 require_once($path.'/view/head.php');
 require_once($path.'/view/footer.php');
 require_once($path.'/view/header.php');

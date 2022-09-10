@@ -1,5 +1,5 @@
 <?php
-
+error_reporting(0);
 class Logout extends Controller
 {
     /**
@@ -14,18 +14,13 @@ class Logout extends Controller
             call_user_func_array(array($this,$funcion_constructor),$params);
         }
     }
-    public  function __construct0(){
-        parent::__construct();
-        
-    }
+
     public  function __construct1(){
         parent::__construct();
-        
-        if(isset($_SESSION['usuario'])) {
-            destruir_session();
-            header('Location: /');
-        }
         $this->view->render("logout/logout");
+        if(isset($_SESSION['usuario'])) {
+            destruir_session();        
+        }
     }
 }
 

@@ -7,23 +7,10 @@
                     <!-- Aqui debemos agregar un modal emergente para cuando estemos con loterias seleccionar -->
                     <div class="col-3">
                 <!-- Aqui van los receptores -->
-                    <label class="form-label">Receptores</label>
-                    <select class="selectpicker" data-live-search="true" id="receptores">
-                    <?php try{
-                    $receptores=json_decode($this->data["receptores"]);
-                    if ($receptores->estado==200){
-                        foreach($receptores->receptores as $key => $receptor)
-                        if($key==0){
-                            echo "<option value=".$receptor->receptor." data-subtext=".$receptor->receptor." selected>".$receptor->receptor."</option>";
-                        }else{
-                            echo "<option value=".$receptor->receptor." data-subtext=".$receptor->nombre.">".$receptor->receptor."</option>";
-                        }
-                    }
-                        }catch(Exception $e){
-                        echo `<option>Todas</option>`;
-                        }
+                    <?php
+                    $data = file_get_contents($path."/view/receptores.json");
+                    echo $importer->select_search_shadow("receptor",$data);
                     ?>
-                    </select>
                 </div>
                 <div class="col-3">
                     <label class="form-label">Loterias</label>
