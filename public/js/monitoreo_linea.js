@@ -38,26 +38,27 @@ function crear_body(columns, rows){
 
 
 $(document).on('click', '#monitorear', async function() {
-
+    var w = document.getElementById("tabla_res").clientWidth;
+    var h = document.getElementById("tabla_res").clientHeight;
+    h = h+300;
     $('#f').html('');
-
+    $("#carga").addClass('carga');
+    $("#carga").width( w );
+    $("#carga").height( h );
+    $("#load").addClass('spinner');
     let data = [];
     let receptores = $('#receptores').selectpicker('val');
-    let loterias = $('#loterias').selectpicker('val').join(',');;
+    let loterias = $('#loterias').selectpicker('val').join(',');
     let signo = $('#signo').selectpicker('val');
     let cifras = $('#cifras').selectpicker('val');
 
     data = {"comando":"monitoreo_linea","receptor":receptores,"signo":signo,"seleccion":loterias,"cifras":cifras,"monto":"0","limite":"1000"};
 
-    $("#tabla_res").append(`<div id="preloader" style="display: none;">
-    <div id="status" style="display: none;">
-        <div class="spinner"></div>
-    </div>
-</div>`);
     var info =  await ajax_peticion("/query/monitoreo", {'data': JSON.stringify(data)}, "POST");
  
     crear_tabla(info,"#tabla1","#thead1","#tbody1");
-
+    var workTable = $('#tabla1').dataTable();
+    workTable.api().row.add(receptores).draw();
 });
 
 

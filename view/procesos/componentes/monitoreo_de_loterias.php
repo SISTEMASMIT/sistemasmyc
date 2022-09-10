@@ -69,9 +69,10 @@
                     <button type="button" class="btn btn-danger btn-lg btn-block">Detener</button>
                 </div>
                 <div class="row">
+                    <div id="carga"><div id="load"></div></div>
+                
                     <div id="tabla_res" class="espaciadoT">
-                        <div id="f"><table id="tablaf" class="cell-border">
-                        </table></div>
+                        <div id="f"><table id="tablaf" class="cell-border"></table></div>
                         <table id="tabla1" class="cell-border display">
                             <thead class="thead" id="thead1">
                                 <tr><th></th><th></th></tr>

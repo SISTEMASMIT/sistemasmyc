@@ -68,7 +68,7 @@
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    width: calc(100% - 240px);
+    width: calc(100% - 20em);
     right: 0;
     height: 70px;
     padding: 0 15px;
@@ -348,7 +348,7 @@ body[data-layout=horizontal] .page-content {
     position: absolute;
     right: 0;
     color: #74788d;
-    left: 240px;
+    left: 20em;
     height: 60px;
     background-color: #fff
 }
@@ -474,7 +474,7 @@ body[data-layout=horizontal] .footer {
 }
 
 .main-content {
-    margin-left: 240px;
+    margin-left: 20em;
     overflow: hidden
 }
 
@@ -1370,7 +1370,7 @@ body[data-layout-size=boxed] #page-topbar {
 
 body[data-layout-size=boxed] .footer {
     margin: 0 auto;
-    max-width: calc(1300px - 240px)
+    max-width: calc(1300px - 20em)
 }
 
 body[data-layout-size=boxed].vertical-collpsed .footer {

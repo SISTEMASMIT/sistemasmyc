@@ -1,5 +1,5 @@
 export async function crear_tabla(parametro,tb,hd,bd){
-    
+   
     let html=``;
     let head =``;
     head+=crear_head(parametro.head);
@@ -17,51 +17,85 @@ export async function crear_tabla(parametro,tb,hd,bd){
             vis.push(i);
         }
     }
-    $(tb).DataTable({   
-        destroy: true,
-        columnDefs:  [{ targets: inv, visible: false }],
-        language: {
-            "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"
-        },
-        "dom": 'Bfrtip',
-        "buttons": [
-            {
-                extend: 'pdf',
-                exportOptions: {
-                    columns: vis,
-                    modifier: {
-                        page: 'current'
-                    }
-                }
+        $(tb).DataTable({   
+            destroy: true,
+            columnDefs:  [{ targets: inv, visible: false }],
+            language: {
+                "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"
             },
-            {
-                extend: 'print',
-                text: 'Imprimir',
-                exportOptions: {
-                    columns: vis,
-                    modifier: {
-                        page: 'current'
+            "dom": 'Bftip',
+            "buttons": [
+                {
+                    extend: 'pdf',
+                    exportOptions: {
+                        columns: vis,
+                        modifier: {
+                            page: 'current'
+                        },
+                        customize: function ( win ) {
+                            $(win.document.body)
+                                .css( 'font-size', '10pt' )
+                                .prepend(
+                                    '<img src="https://i.pinimg.com/originals/a9/4d/f4/a94df4a6fe1f740cd82d245e718e831b.png" style="position:absolute; top:0; left:0;" />'
+                                );
+                                $(win.document.body).find( 'table' )
+                            .addClass( 'compact' )
+                            .css( 'font-size', 'inherit' );
+                
+                        }
                     }
-                }
-            },
-            {
-                extend: 'excelHtml5',
-                exportOptions: {
-                    columns: vis,
-                    modifier: {
-                        page: 'current'
+                },
+                {
+                    extend: 'print',
+                    text: 'Imprimir',
+                    exportOptions: {
+                        columns: vis,
+                        modifier: {
+                            page: 'current'
+                        },
+                        customize: function ( win ) {
+                            $(win.document.body)
+                                .css( 'font-size', '10pt' )
+                                .prepend(
+                                    '<img src="https://i.pinimg.com/originals/a9/4d/f4/a94df4a6fe1f740cd82d245e718e831b.png" style="position:absolute; top:0; left:0;" />'
+                                );
+                                $(win.document.body).find( 'table' )
+                            .addClass( 'compact' )
+                            .css( 'font-size', 'inherit' );
+                
+                        }
+                        
                     }
-                }
+                },
+                {
+                    extend: 'excelHtml5',
+                    exportOptions: {
+                        columns: vis,
+                        modifier: {
+                            page: 'current'
+                        }
+                    }
+                },
+            'pageLength', {
+                extend: 'colvis',
+                columns: vis,
             },
-        'pageLength'
-        ],
-        "pageLength": 10,
-        "lengthMenu": [ [10, 50, 100, -1], [10, 50, 100, "Todos"] ],
-        "responsive": true,
-        "ordering": false,
-        "select": true,
-     });
-    //  $(tb).DataTable().clear();
+            ],
+            "processing":true,
+            "pageLength": 10,
+            "lengthMenu": [ [10, 50, 100, -1], [10, 50, 100, "Todos"] ],
+            "responsive": true,
+            "ordering": false,
+            "select": true,
+
+            initComplete: function () {
+                $("#load").removeClass("spinner");
+                $("#carga").removeClass("carga");
+                $("#carga").removeAttr( 'style' );
+            }
+
+
+         });
 }
 
 function crear_head(data){
@@ -86,3 +120,9 @@ function crear_body(data){
 
     return body
 }
+
+
+
+
+
+  
