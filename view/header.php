@@ -4,7 +4,6 @@
 <head>
 
     <meta charset="utf-8">
-    <title>Icon Sidebar | Admiria - Admin & Dashboard Template</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description">
     <meta content="Themesbrand" name="author">
@@ -64,10 +63,11 @@
                     </button>
 
                     <div class="d-none d-sm-block ms-2">
-                        <h4 class="page-title">@@pagetitle</h4>
+                        <h4 class="page-title"><? echo isset($this->title)?$this->title:"";  ?></h4>
                     </div>
-                </div>
-
+                </div>          
+                <div class="d-flex" id="idUs"><label>Usuario: <? echo json_decode($_SESSION["usuario"])->user;  ?></label></div>
+                <div class="d-flex" id="idEq"></div>
                 <div class="d-flex">
 
                     <div class="dropdown d-none d-lg-inline-block me-2">
@@ -198,7 +198,7 @@
                                 if(is_array($arboles)){
                                     foreach($arboles as $arbol){
                                             if(count($arbol->hijos)>0){
-                                                $html=$html."<li class=''>
+                                                $html=$html."<li class='item-menu'>
                                                         <a href='javascript: void(0);' class='has-arrow waves-effect'>
                                                         <i class='".$arbol->icono."'></i>
                                                         <span>".$arbol->titulo."</span>

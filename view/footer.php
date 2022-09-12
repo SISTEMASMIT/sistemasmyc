@@ -25,7 +25,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
 <!-- Latest compiled and minified JavaScript -->
-
+<script src="https://kit.fontawesome.com/ce19f53d03.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
 <script src="<? $path;?>/public/libs/metismenu/metisMenu.min.js"></script>
 <script src="<? $path;?>/public/libs/simplebar/simplebar.min.js"></script>

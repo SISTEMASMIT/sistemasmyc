@@ -27,7 +27,20 @@ File: Main Js File
                 $('body').removeClass('vertical-collpsed');
             }
         });
+
     }
+
+    
+
+        $('.item-menu').on('click', function (event) {
+            event.preventDefault();
+            if($('body').hasClass('vertical-collpsed')){
+                $('body').removeClass('vertical-collpsed');
+                $('body').addClass('sidebar-enable');
+            }
+        });
+
+   
 
     function initActiveMenu() {
         // === following js will activate the menu in left side bar based on url ====

@@ -1,7 +1,7 @@
 import {ajax_peticion} from "./Ajax-peticiones.js";
 import {crear_tabla} from "./table.js";
-
-
+var intervalo;
+var totalTime = 50;
 $(document).ready(function () {
     var columns = 6;
     var rows = 10;
@@ -37,10 +37,32 @@ function crear_body(columns, rows){
 }
 
 
+$(document).on('click', '#detener', async function() {
+    clearInterval(intervalo);
+});
+
+function updateClock() {
+    document.getElementById('countdown').innerHTML = totalTime;
+    if(totalTime==0){
+    
+    }else{
+    totalTime-=1;
+    setTimeout(()=>{updateClock()},1000);
+    }
+}
+
 $(document).on('click', '#monitorear', async function() {
+    montar_tabla();
+    intervalo = setInterval(montar_tabla, 50000);
+    
+});
+
+
+async function montar_tabla(){
+    
     var w = document.getElementById("tabla_res").clientWidth;
     var h = document.getElementById("tabla_res").clientHeight;
-    h = h+300;
+    h = h+500;
     $('#f').html('');
     $("#carga").addClass('carga');
     $("#carga").width( w );
@@ -54,11 +76,14 @@ $(document).on('click', '#monitorear', async function() {
 
     data = {"comando":"monitoreo_linea","receptor":receptores,"signo":signo,"seleccion":loterias,"cifras":cifras,"monto":"0","limite":"1000"};
 
-    var info =  await ajax_peticion("/query/monitoreo", {'data': JSON.stringify(data)}, "POST");
- 
-    crear_tabla(info,"#tabla1","#thead1","#tbody1");
 
-});
+    var info =  await ajax_peticion("/query/monitoreo", {'data': JSON.stringify(data)}, "POST");
+    let labels = {"receptores":receptores,"loterias":loterias,"signo":signo,"cifras":cifras};
+    let invisibiles = [3,7,8,9,10,11,12];
+    let total = [4];
+    crear_tabla(info,"#tabla1","#thead1","#tbody1",invisibiles,total,labels);
+    updateClock();
+}
 
 
 

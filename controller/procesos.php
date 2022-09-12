@@ -28,6 +28,7 @@ class Procesos extends Controller
                     $this->loadModel("homeModel");
                     $this->view->data["menu"]=$this->model->niveles();
                     $this->view->data["nombreComponente"] = "view/".$url[0]."/componentes"."/".$url2.".php";
+                    $this->view->title = strtoupper(str_replace("_"," ",$url2));
                     $this->view->render($url[0]."/".$url[0]);
                 }else{
                     $this->loadModel("homeModel");

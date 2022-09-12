@@ -66,7 +66,12 @@
                 </div><!-- div row  -->
                 <div class="row">
                     <button type="button" id="monitorear" class="btn btn-success btn-lg btn-block">Monitorear</button>
-                    <button type="button" class="btn btn-danger btn-lg btn-block">Detener</button>
+                    <button type="button" id="detener"class="btn btn-danger btn-lg btn-block">Detener</button>
+                    <span id="countdown" style="display: flex; align-items: center;
+  justify-content: center;
+  height: 3vh;
+  font-size: 2vw;
+"></span>
                 </div>
                 <div class="row">
                     <div id="carga"><div id="load"></div></div>

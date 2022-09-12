@@ -1,16 +1,15 @@
 
 
     $(document).ready(function(){
+
+        let id= localStorage.getItem("Id");
+        $("#idEq").html('<label> Id: '+id+'</label>');
+
         $('#tech-companies-1').DataTable({
             "pageLength": 10,
             "lengthMenu": [ 10, 25, 50, 75, 100 ],
             "autoFill": true
          });
-        var elementos=[];
-    elementos = `{"Datos":[{"Agno":1990,"Periodo":"Enero","Parametro":"1990","Valor":64.1,"Estado":null,"Notas":null},{"Agno":1990,"Periodo":"Febrero","Parametro":"Febrero","Valor":64.4,"Estado":null,"Notas":null},{"Agno":1990,"Periodo":"Marzo","Parametro":"Marzo","Valor":63.8,"Estado":null,"Notas":null},{"Agno":1990,"Periodo":"Abril","Parametro":"Abril","Valor":65.8,"Estado":null,"Notas":null},{"Agno":1990,"Periodo":"Mayo","Parametro":"Mayo","Valor":64.4,"Estado":null,"Notas":null},{"Agno":1990,"Periodo":"Junio","Parametro":"Junio","Valor":63.7,"Estado":null,"Notas":null},{"Agno":1990,"Periodo":"Julio","Parametro":"Julio","Valor":62.5,"Estado":null,"Notas":null},{"Agno":1990,"Periodo":"Agosto","Parametro":"Agosto","Valor":61.5,"Estado":null,"Notas":null},{"Agno":1990,"Periodo":"Septiembre","Parametro":"Septiembre","Valor":61,"Estado":null,"Notas":null},{"Agno":1990,"Periodo":"Octubre","Parametro":"Octubre","Valor":61.1,"Estado":null,"Notas":null},{"Agno":1990,"Periodo":"Noviembre","Parametro":"Noviembre","Valor":61.9,"Estado":null,"Notas":null},{"Agno":1990,"Periodo":"Diciembre","Parametro":"Diciembre","Valor":61.9,"Estado":null,"Notas":null},{"Agno":1991,"Periodo":"Enero","Parametro":"1991","Valor":60.8,"Estado":null,"Notas":null},{"Agno":1991,"Periodo":"Febrero","Parametro":"Febrero","Valor":61.5,"Estado":null,"Notas":null},{"Agno":1991,"Periodo":"Marzo","Parametro":"Marzo","Valor":62,"Estado":null,"Notas":null},{"Agno":1991,"Periodo":"Abril","Parametro":"Abril","Valor":60.7,"Estado":null,"Notas":null},{"Agno":1991,"Periodo":"Mayo","Parametro":"Mayo","Valor":60.6,"Estado":null,"Notas":null},{"Agno":1991,"Periodo":"Junio","Parametro":"Junio","Valor":61,"Estado":null,"Notas":null},{"Agno":1991,"Periodo":"Julio","Parametro":"Julio","Valor":61.8,"Estado":null,"Notas":null},{"Agno":1991,"Periodo":"Agosto","Parametro":"Agosto","Valor":61.4,"Estado":null,"Notas":null},{"Agno":1991,"Periodo":"Septiembre","Parametro":"Septiembre","Valor":62.1,"Estado":null,"Notas":null},{"Agno":1991,"Periodo":"Octubre","Parametro":"Octubre","Valor":64.3,"Estado":null,"Notas":null},{"Agno":1991,"Periodo":"Noviembre","Parametro":"Noviembre","Valor":64.4,"Estado":null,"Notas":null},{"Agno":1991,"Periodo":"Diciembre","Parametro":"Diciembre","Valor":64,"Estado":null,"Notas":null},{"Agno":1992,"Periodo":"Enero","Parametro":"1992","Valor":64.8,"Estado":null,"Notas":null},{"Agno":1992,"Periodo":"Febrero","Parametro":"Febrero","Valor":65.7,"Estado":null,"Notas":null}]}`;
-    
-        pintarTabla(elementos);
-    $(".mm-active").removeClass("mm-active");
 });
 
 

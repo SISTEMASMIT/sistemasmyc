@@ -45,6 +45,7 @@ class homeModel{
 					}
 					array_push($arboles,new Arbol($row["id"],$row["parentid"],$row["icono"],$row["item"],$row["posicion"],$row["link"],$row["etiqueta"]));
 				}
+				
 			}else{
 				destruir_session();
 				header("Location: /logout/logout");
