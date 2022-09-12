@@ -104,7 +104,7 @@ $('#registroP').submit(async function(e) {
     }else{
         eu = localStorage.getItem("Id");
     }
-    var equipo = eu;
+    var equipo = eu.toString();
     var temporalidad = recordarNavegador;
     var codigo = $.trim($('#inputCodeQr').val());
     var claveNueva = $.trim($('#nuevaClave').val());
