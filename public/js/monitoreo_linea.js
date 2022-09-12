@@ -1,7 +1,7 @@
 import {ajax_peticion} from "./Ajax-peticiones.js";
 import {crear_tabla} from "./table.js";
 var intervalo;
-var totalTime = 50;
+
 $(document).ready(function () {
     var columns = 6;
     var rows = 10;
@@ -41,15 +41,7 @@ $(document).on('click', '#detener', async function() {
     clearInterval(intervalo);
 });
 
-function updateClock() {
-    document.getElementById('countdown').innerHTML = totalTime;
-    if(totalTime==0){
-    
-    }else{
-    totalTime-=1;
-    setTimeout(()=>{updateClock()},1000);
-    }
-}
+
 
 $(document).on('click', '#monitorear', async function() {
     montar_tabla();
@@ -82,7 +74,7 @@ async function montar_tabla(){
     let invisibiles = [3,7,8,9,10,11,12];
     let total = [4];
     crear_tabla(info,"#tabla1","#thead1","#tbody1",invisibiles,total,labels);
-    updateClock();
+    
 }
 
 

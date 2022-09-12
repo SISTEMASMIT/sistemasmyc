@@ -1,4 +1,6 @@
+var totalTime = 50;
 export async function crear_tabla(parametro,tb,hd,bd,inv,ttl,labels){
+    
     let html=``;
     let head =``;
     head+=crear_head(parametro.head);
@@ -208,6 +210,8 @@ export async function crear_tabla(parametro,tb,hd,bd,inv,ttl,labels){
                 $("#load").removeClass("spinner");
                 $("#carga").removeClass("carga");
                 $("#carga").removeAttr( 'style' );
+                totalTime = 50;
+                updateClock();
                 
                 
             }
@@ -253,6 +257,14 @@ function crear_foot(data){
 
 
 
-
+function updateClock() {
+    document.getElementById('countdown').innerHTML = totalTime;
+    if(totalTime==0){
+    
+    }else{
+    totalTime-=1;
+    setTimeout(()=>{updateClock()},1000);
+    }
+}
 
   
