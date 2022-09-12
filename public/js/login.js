@@ -179,7 +179,7 @@ $('#navegador').submit(async function(e) {
     }else{
         eu = localStorage.getItem("Id");
     }
-    var equipo = eu;
+    var equipo = eu.toString();
     var temporalidad = recordarNavegador;
     var codigo = $.trim($('#codigo').val());
     let partes = [];
@@ -240,7 +240,6 @@ async function recuperarClave(){
     usuario = {"username":user,"ls":ls};
     var info =  await ajax_peticion("/login/validarUsuario", {'usuario': JSON.stringify(usuario)}, "POST");
 
-    console.log(info);
 
     if(info.e=="1"){
         $("#mostrarCl").removeClass("invisible");
@@ -267,7 +266,6 @@ $('#recuperarCl').submit(async function(e) {
     usuario = {"username":user,"clave":c1,"codigo":codigo,"ls":ls};
     var info =  await ajax_peticion("/login/recuperarClave", {'usuario': JSON.stringify(usuario)}, "POST");
 
-    console.log(info);
 
     if(info.e=="1"){
         $("#modalClave").modal("hide");
