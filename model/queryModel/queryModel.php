@@ -5,9 +5,28 @@ error_reporting(E_ALL);
 
 class QueryModel{
     
+    function getFiltros($url){
+        $usuario=json_decode($_SESSION["usuario"]);
+        $filtros_consulta=Array(
+            "comando"=>$url,
+            "usuario"=>$usuario->user,
+            "token"=>$usuario->token
+        );
+        $consulta_filtros = json_encode($filtros_consulta);
+        $sql = "CALL bl_parametros(:consulta_filtros)";
+        $this->conexion=conexion::getConexion();
+        $statemant=$this->conexion->prepare($sql);
+        $statemant->bindParam(":consulta_filtros",$consulta_filtros);
+        if($statemant->execute()){
+            $response=$statemant->fetchAll(PDO::FETCH_ASSOC);
+            return $response;
+        }else{
+            return -1;
+        }
+    }
+
 
     function monitoreo(){
-
         $usuario = json_decode($_SESSION["usuario"]);
         $data = json_decode($_POST["data"], true);
         $data['usuario'] = $usuario->user;

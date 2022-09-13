@@ -28,7 +28,13 @@ $path=$_SERVER['DOCUMENT_ROOT'];
     <link rel="shortcut icon" href="<? $path;?>/public/images/favicon.ico">
 
     <!--- my css -->
-    <link href="<? $path;?>/public/css/bracket.css" rel="stylesheet" type="text/css">
+    <!-- <link href="/public/css/bracket.css" rel="stylesheet" type="text/css"> -->
+    <?php 
+        $f = file_get_contents($path."/public/css/bracket.css");
+        echo "<style>";
+        echo $f;
+        echo "</style>";
+    ?>
     <link href="<? $path;?>/public/css/rwd-table.min.css" rel="stylesheet" type="text/css">
     <link href="<? $path;?>/public/css/main.css?1" rel="stylesheet" type="text/css"> 
 

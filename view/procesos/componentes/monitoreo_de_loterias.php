@@ -5,74 +5,24 @@
             <div class="row">
                 <div class="row">
                     <!-- Aqui debemos agregar un modal emergente para cuando estemos con loterias seleccionar -->
-                    <div class="col-3">
+                    
                 <!-- Aqui van los receptores -->
-                    <label class="form-label">Receptores</label>
-                    <select class="selectpicker" data-live-search="true" id="receptores">
-                    <?php try{
-                    $receptores=json_decode($this->data["receptores"]);
-                    if ($receptores->estado==200){
-                        foreach($receptores->receptores as $key => $receptor)
-                        if($key==0){
-                            echo "<option value=".$receptor->receptor." data-subtext=".$receptor->receptor." selected>".$receptor->receptor."</option>";
-                        }else{
-                            echo "<option value=".$receptor->receptor." data-subtext=".$receptor->nombre.">".$receptor->receptor."</option>";
-                        }
-                    }
-                        }catch(Exception $e){
-                        echo `<option>Todas</option>`;
+                    <?php
+                        if($this->filtros!=-1){
+                            $array=json_decode($this->filtros[0]["jsr"]);
+                            
+                            foreach($array->filtros as $filtro){
+                                if(method_exists($importer,$filtro->tipo)){
+                                    echo $importer->{$filtro->tipo}($filtro->label,$filtro->datos);
+                                }                        
+                            }
                         }
                     ?>
-                    </select>
-                </div>
-                <div class="col-3">
-                    <label class="form-label">Loterias</label>
-                    <select class="selectpicker" id="loterias" data-live-search="true" multiple>
-                    <?php 
-                    try{
-                        $lote = "Abiertas";
-                        $loterias=json_decode($this->data["loterias"]);
-                        if ($loterias->estado==200){
-                        foreach($loterias->loterias as $key => $loteria)
-                            if($key==0){
-                            echo "<option value='Abiertas' selected>Abiertas</option>";
-                            }else{
-                            echo "<option value=".$loteria->loteria.">".$loteria->nombre."</option>";
-                            }    
-                        }
-                        }catch(Exception $e){
-                        echo `<option>Todas</option>`;
-                        }
-                    ?>
-                    </select>
-                    </div>
-                    <div class="col-3">
-                        <label class="form-label">Signo</label>
-                        <select class="selectpicker" id="signo">
-                        <option value="N" Selected>Todos</option>
-                        <option value="Con_signo">Con signo</option>
-                        <option value="Sin_signo">Sin Signo</option>
-                        </select>
-                    </div>
-                    <div class="col-3">
-                        <label class="form-label">Cifras</label>
-                        <select class="selectpicker" id="cifras">
-                        <option value="Todos" Selected>Todos</option>
-                        <option value="triples">Triples</option>
-                        <option value="terminales">Terminales</option>
-                        <option value="cuadruples">Cuadruples</option>
-                        </select>
-                    </div>   
+                
+                
+                     
                 </div><!-- div row  -->
-                <div class="row">
-                    <button type="button" id="monitorear" class="btn btn-success btn-lg btn-block">Monitorear</button>
-                    <button type="button" id="detener"class="btn btn-danger btn-lg btn-block">Detener</button>
-                    <span id="countdown" style="display: flex; align-items: center;
-  justify-content: center;
-  height: 3vh;
-  font-size: 2vw;
-"></span>
-                </div>
+                
                 <div class="row">
                     <div id="carga"><div id="load"></div></div>
                 
