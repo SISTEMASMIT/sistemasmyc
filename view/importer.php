@@ -10,13 +10,13 @@ class Importer
     {   
         try {
             $html = "<div class='col-12 col-sm-12 col-md-3 col-lg-3 col-xl-3'><label class='form-label'>" . $label . "</label>";
-            $html .= "<select class='selectpicker' data-live-search='true' id='$label'>";
+            $html .= "<select class='selectpicker' data-live-search='true' id='".strtolower(str_replace(" ","_",$label))."'>";
             foreach ($json as $key => $select) {
                 if (!isset($select->id)) {
                     $select->id = $select->label;
                 }
                 if ($key == 0) {
-                    $html .= "<option value='Todas' selected>Todas</option>";
+                    $html .= "<option value='Todos' selected='selected'>Todos</option>";
                     $html .= "<option value=" . $select->id . " data-subtext=" . $select->label . ">" . $select->id . "</option>";
                 } else {
                     $html .= "<option value=" . $select->id . " data-subtext=" . $select->label . ">" . $select->id . "</option>";
@@ -40,9 +40,9 @@ class Importer
                 }
                 if ($key == 0) {
                     $html .= "<option value='Abiertas' selected>Abiertas</option>";
-                    $html .= "<option value=" . $select->id . ">" . $select->id . "</option>";
+                    $html .= "<option value=" . $select->id . ">" . $select->label . "</option>";
                 } else {
-                    $html .= "<option value=" . $select->id . ">" . $select->id . "</option>";
+                    $html .= "<option value=" . $select->id . ">" . $select->label . "</option>";
                 }
             }
             $html .= "</select></div>";
@@ -62,9 +62,9 @@ class Importer
                 }
                 if ($key == 0) {
                     
-                    $html .= "<option value=" . $select->id . " selected>" . $select->id . "</option>";
+                    $html .= "<option value=" . $select->id . " selected>" . $select->label . "</option>";
                 } else {
-                    $html .= "<option value=" . $select->id . ">" . $select->id . "</option>";
+                    $html .= "<option value=" . $select->id . ">" . $select->label . "</option>";
                 }
             }
             $html .= "</select></div>";

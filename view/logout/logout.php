@@ -110,7 +110,7 @@ div:after{
   <script src="https://cpwebassets.codepen.io/assets/editor/iframe/iframeRefreshCSS-4793b73c6332f7f14a9b6bba5d5e62748e9d1bd0b5c52d7af6376f3d1c625d7e.js"></script>
 
 <script>
-  //  setTimeout(function(){ window.location.href="/"; }, 4000);
+   setTimeout(function(){ window.location.href="/"; }, 4000);
 </script>
 
  

@@ -1,6 +1,6 @@
 var totalTime = 50;
 export async function crear_tabla(parametro,tb,hd,bd,inv,ttl,labels){
-    
+   
     let html=``;
     let head =``;
     head+=crear_head(parametro.head);
@@ -215,7 +215,7 @@ export async function crear_tabla(parametro,tb,hd,bd,inv,ttl,labels){
                 $("#carga").removeClass("carga");
                 $("#carga").removeAttr( 'style' );
                 totalTime = 50;
-                updateClock();
+                // updateClock();
                 
                 
             }

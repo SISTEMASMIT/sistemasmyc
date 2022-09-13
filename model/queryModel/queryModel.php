@@ -32,6 +32,7 @@ class QueryModel{
         $data['usuario'] = $usuario->user;
         $data['banca'] = $usuario->banca;
         $data['token'] = $usuario->token;
+        $data['comando'] = json_decode($_SESSION["aceptar"])->comando;
         $consulta_monitoreo = json_encode($data);
         $sql = "CALL bl_banca(:consulta_monitoreo)";
         $this->conexion=conexion::getConexion();
@@ -43,17 +44,42 @@ class QueryModel{
                 $col = $statemant->getColumnMeta($i);
                 $head[] = $col['name'];
             }
-            $info = array(
+            $data = array(
                 "head" => $head,
                 "data" => $response
             );
         }else{
-            $info = array(
+            $data = array(
                 "e" => "0",
                 "mensaje" => "Error en la consulta"
             );
         }
+
+        //Sacando los 2dos resultado
+
+        $segunda_respuesta=Array(
+            "comando"=>json_decode($_SESSION["aceptar"])->comando.",NO",
+            "usuario"=>$usuario->user,
+            "token"=>$usuario->token
+        );
         
+        $segunda_respuesta = json_encode($segunda_respuesta);
+        $sql = "CALL bl_parametros(:segunda_respuesta)";
+        $this->conexion=conexion::getConexion();
+        $statemant=$this->conexion->prepare($sql);
+        $statemant->bindParam(":segunda_respuesta",$segunda_respuesta);
+        if($statemant->execute()){
+            $response=$statemant->fetchAll(PDO::FETCH_ASSOC);
+            $settings = $response[0];
+        }else{
+            $settings = "0";
+        }
+        
+        $info = array(
+            "data"=> $data,
+            "settings" => $settings
+        );
+
         echo json_encode($info);
         
 

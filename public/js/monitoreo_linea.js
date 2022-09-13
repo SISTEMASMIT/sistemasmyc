@@ -43,11 +43,11 @@ $(document).on('click', '#detener', async function() {
 
 
 
-$(document).on('click', '#monitorear', async function() {
+$(document).on('click', '#aceptar', async function() {
     $('#tabla1').removeClass('invisible');
-    $('#monitorear').prop('disabled', true);
+    // $('#aceptar').prop('disabled', true);
     montar_tabla();
-    intervalo = setInterval(montar_tabla, 50000);
+    // intervalo = setInterval(montar_tabla, 50000);
     
 });
 
@@ -64,17 +64,40 @@ async function montar_tabla(){
     let data = [];
     let receptores = $('#receptores').selectpicker('val');
     let loterias = $('#loterias').selectpicker('val').join(',');
-    let signo = $('#signo').selectpicker('val');
     let cifras = $('#cifras').selectpicker('val');
+    let signo = $('#signo').selectpicker('val');
 
-    data = {"comando":"monitoreo_linea","receptor":receptores,"signo":signo,"seleccion":loterias,"cifras":cifras,"monto":"0","limite":"1000"};
+    data = {"receptor":receptores,"signo":signo,"seleccion":loterias,"cifras":cifras,"monto":"0","limite":"1000","accion":"aceptar"};
 
 
     var info =  await ajax_peticion("/query/monitoreo", {'data': JSON.stringify(data)}, "POST");
-    let labels = {"receptores":receptores,"loterias":loterias,"signo":signo,"cifras":cifras};
-    let invisibiles = [3,7,8,9,10,11,12];
+    let set = Object.values(JSON.parse(info.settings.jsr));
+
+    let invisibles = [];
+    let sumatorias = [];
+    invisibles = set[0].find(function(x){    
+        return x.label == 'c96';
+    });
+
+    sumatorias = set[0].find(function(x){    
+        return x.label == 'c97';
+    });
+
+    invisibles=invisibles.datos.c_invisible.split(",");
+    invisibles = invisibles.map(function(x){    
+        return parseInt(x);
+    });   
+
+    sumatorias=sumatorias.datos.c_sumatoria.split(",");
+    sumatorias = sumatorias.map(function(x){    
+        return parseInt(x);
+    });  
+
+
+    let labels = {"Receptores":receptores,"Loterias":loterias,"Signo":signo,"Cifras":cifras};
+    
     let total = [4];
-    crear_tabla(info,"#tabla1","#thead1","#tbody1",invisibiles,total,labels);
+    crear_tabla(info.data,"#tabla1","#thead1","#tbody1",invisibles,sumatorias,labels);
     
 }
 
