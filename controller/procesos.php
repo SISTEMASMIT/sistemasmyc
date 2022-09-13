@@ -27,6 +27,8 @@ class Procesos extends Controller
                     $this->{$url2}();
                     $this->loadModel("homeModel");
                     $this->view->data["menu"]=$this->model->niveles();
+                    $this->loadModel("queryModel");
+                    $this->view->filtros=$this->model->getFiltros($url[1]);
                     $this->view->data["nombreComponente"] = "view/".$url[0]."/componentes"."/".$url2.".php";
                     $this->view->render($url[0]."/".$url[0]);
                 }else{
