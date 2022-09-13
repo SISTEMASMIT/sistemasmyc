@@ -1,5 +1,5 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,500|Source+Sans+Pro:400,600,700&display=swap);
-
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.css");
 #page-topbar {
     position: fixed;
     top: 0;
@@ -489,12 +489,14 @@ body[data-layout=horizontal] .footer {
 }
 
 #sidebar-menu .mm-active>.has-arrow:after {
-    content: "\F0140"
+    content: '\f0dd';
+    font-weight: 900;
 }
 
 #sidebar-menu .has-arrow:after {
-    content: "\F0142";
-    font-family: 'Material Design Icons';
+    font-weight: 900;
+    content: "\f0da";
+    font-family: 'Font Awesome 5 Free';
     display: block;
     float: right;
     -webkit-transition: -webkit-transform .2s;
@@ -1065,11 +1067,12 @@ body[data-sidebar=colored].vertical-collpsed .vertical-menu #sidebar-menu ul li 
 }
 
 [dir=rtl] #sidebar-menu .has-arrow:after {
-    content: "\F0141"
+    content: "\f0da"
 }
 
 [dir=rtl] #sidebar-menu .mm-active>.has-arrow:after {
-    content: "\F0140"
+    content: "\f0da";
+    font-weight: 900;
 }
 
 .topnav {

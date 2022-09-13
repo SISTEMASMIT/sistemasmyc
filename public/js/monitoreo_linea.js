@@ -44,6 +44,8 @@ $(document).on('click', '#detener', async function() {
 
 
 $(document).on('click', '#monitorear', async function() {
+    $('#tabla1').removeClass('invisible');
+    $('#monitorear').prop('disabled', true);
     montar_tabla();
     intervalo = setInterval(montar_tabla, 50000);
     
@@ -51,7 +53,6 @@ $(document).on('click', '#monitorear', async function() {
 
 
 async function montar_tabla(){
-    
     var w = document.getElementById("tabla_res").clientWidth;
     var h = document.getElementById("tabla_res").clientHeight;
     h = h+500;

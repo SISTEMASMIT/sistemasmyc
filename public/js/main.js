@@ -3,7 +3,7 @@
     $(document).ready(function(){
 
         let id= localStorage.getItem("Id");
-        $("#idEq").html('<label> Id: '+id+'</label>');
+        $("#idEq").html('<label><i class="fa-solid fa-computer"></i>  '+id+'</label>');
 
         $('#tech-companies-1').DataTable({
             "pageLength": 10,

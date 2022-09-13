@@ -333,3 +333,7 @@ input:checked+.slider .off {
       transform: rotate(360deg);
     }
   }
+
+  div.dt-button-collection .dt-button {
+    min-width: 175px !important;
+}

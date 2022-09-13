@@ -15,15 +15,14 @@ require_once($path.'/view/header.php');
 <!-- CONTENIDO WEB -->
 <? require_once($this->data["nombreComponente"]); ?>
 <!---Mi Js--->
-
+<script src="<? $path;?>/public/js/app.js"></script>
+<script src="<? $path;?>/public/js/ajax.js"></script>
 <script type="module" src="<? $path;?>/public/js/main.js"></script>
 
 
 <!-- JAVASCRIPT -->
 
-<!-- App js -->
-<script src="<? $path;?>/public/js/app.js"></script>
-<script src="<? $path;?>/public/js/ajax.js"></script>
+
 <script type="module" src="<? $path;?>/public/js/monitoreo_linea.js" ></script>
 </body>
 

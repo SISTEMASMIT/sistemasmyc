@@ -376,9 +376,9 @@ body[data-layout="horizontal"] .footer {
 #sidebar-menu {
   padding: 10px 0 30px 0; }
   #sidebar-menu .mm-active > .has-arrow:after {
-    content: "\F0140"; }
+    content: "\f0da"; }
   #sidebar-menu .has-arrow:after {
-    content: "\F0142";
+    content: "\f0dd";
     font-family: 'Material Design Icons';
     display: block;
     float: left;
@@ -716,7 +716,7 @@ body[data-sidebar="colored"].vertical-collpsed .vertical-menu #sidebar-menu ul l
 
 [dir="rtl"]
 #sidebar-menu .mm-active > .has-arrow:after {
-  content: "\F0140"; }
+  content: "\f0da"; }
 
 .topnav {
   background: #263238;

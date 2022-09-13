@@ -11,24 +11,19 @@
     <link rel="shortcut icon" href="<? $path;?>/public/images/favicon.ico">
 
     <!-- Bootstrap Css -->
-    <link href="<? $path;?>/public/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css">
-    <!-- Icons Css -->
-    <link href="<? $path;?>/public/css/icons.min.css" rel="stylesheet" type="text/css">
-    <!-- App Css-->
-    <link href="<? $path;?>/public/css/app.min.css" id="app-style" rel="stylesheet" type="text/css">
-    <!-- Custom Css-->
-    <link href="<? $path;?>/public/css/custom.css" rel="stylesheet" type="text/css" />
+    
+
 
 </head>
 
 <body data-sidebar="dark" data-keep-enlarged="true" class="vertical-collpsed">
 
     <!-- Loader -->
-    <div id="preloader">
+    <!-- <div id="preloader">
         <div id="status">
             <div class="spinner"></div>
         </div>
-    </div>
+    </div> -->
 
     <!-- Begin page -->
     <div id="layout-wrapper">
@@ -59,35 +54,35 @@
 
                     <button type="button" class="btn btn-sm px-3 font-size-24 header-item waves-effect"
                         id="vertical-menu-btn">
-                        <i class="mdi mdi-menu"></i>
+                        <i class="fa-solid fa-bars"></i>
                     </button>
 
                     <div class="d-none d-sm-block ms-2">
                         <h4 class="page-title"><? echo isset($this->title)?$this->title:"";  ?></h4>
                     </div>
                 </div>          
-                <div class="d-flex" id="idUs"><label>Usuario: <? echo json_decode($_SESSION["usuario"])->user;  ?></label></div>
+                <div class="d-flex" id="idUs"><label><i class="fa-solid fa-user"></i> Usuario: <? echo json_decode($_SESSION["usuario"])->user;  ?></label></div>
                 <div class="d-flex" id="idEq"></div>
                 <div class="d-flex">
 
-                    <div class="dropdown d-none d-lg-inline-block me-2">
+                    <!-- <div class="dropdown d-none d-lg-inline-block me-2">
                         <button type="button" class="btn header-item toggle-search noti-icon waves-effect"
                             data-target="#search-wrap">
-                            <i class="mdi mdi-magnify"></i>
+                            <i class="fa-solid fa-magnifying-glass"></i>
                         </button>
-                    </div>
+                    </div> -->
 
                     <div class="dropdown d-none d-lg-inline-block me-2">
                         <button type="button" class="btn header-item noti-icon waves-effect"
                             data-bs-toggle="fullscreen">
-                            <i class="mdi mdi-fullscreen"></i>
+                            <i class="fa-solid fa-expand"></i>
                         </button>
                     </div>
 
                     <div class="dropdown d-inline-block me-2">
                         <button type="button" class="btn header-item noti-icon waves-effect"
-                            id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="ion ion-md-notifications"></i>
+                            id="page-header-notifications-dropdown" data-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-bell"></i>
                             <span class="badge bg-danger rounded-pill">3</span>
                         </button>
                         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"

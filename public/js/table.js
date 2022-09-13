@@ -28,6 +28,7 @@ export async function crear_tabla(parametro,tb,hd,bd,inv,ttl,labels){
         $('<tfoot/>').append( $(tb+" thead tr").clone() )
     );
         $(tb).DataTable({   
+            scrollX: true,
             processing: true,
             destroy: true,
             columnDefs:  [{ targets: inv, visible: false }],
@@ -36,151 +37,154 @@ export async function crear_tabla(parametro,tb,hd,bd,inv,ttl,labels){
             },
             "dom": 'Bftip',
             "buttons": [
-                {
-                    extend: 'pdf',
-                    filename: "reporte ",
-                    messageBottom: "",
-                    exportOptions: {
-                        columns: vis,
-                        modifier: {
-                            page: 'current'
-                        }
-                    },
-                    //Titulo del pdf
-                    title: "Sistemas MYC PDF",
-                    footer: true,
-                    customize: function (doc) { 
 
-                        var colCount = new Array();
-                        $(tb).find('tbody tr:first-child td').each(function(){
-                            if($(this).attr('colspan')){
-                                for(var i=1;i<=$(this).attr('colspan');$i++){
-                                    colCount.push('*');
-                                }
-                            }else{ colCount.push('*'); }
-                        });
-
-                        doc.content[1].table.widths = colCount;
-                        let hoy = new Date();
-                        let fecha = hoy.getDate() + '-' + ( hoy.getMonth() + 1 ) + '-' + hoy.getFullYear();
-                        let hora = hoy.getHours() + ':' + hoy.getMinutes() + ':' + hoy.getSeconds();
-                        // doc.content.splice(0,1);
-                        doc.pageMargins = [20,60,20,30];
-                        doc.defaultStyle.fontSize = 8;
-                        doc.styles.tableHeader.fontSize = 8;
-                        for (var label in labels) {
-                            doc.content.splice( 1, 0, {
-                                margin: [ 0, 0, 0, 12 ],
-                                alignment: 'left',
-                                text: label+ ` : `+labels[label],
-                                fontSize: 14
-                               
-                            } );
-                        }
-
-                        
-                                  doc['header']=(function() {          
-                                      return {
-                                          columns: [
-                                              {
-                                                  alignment: 'right',
-                                                  italics: true,
-                                                  text: 'Reporte Generado :'+fecha+ ` / `+hora,
-                                                  fontSize: 12,
-                                                  margin: [10,0]
-                                              },
-                                          ],
-                                          margin: 20,
-                                      }
-                                  });
-                                  
-                             
-
-                                  doc['footer']=(function(page, pages) {
-                                      return {
-                                          columns: [
-                                              {
-                                                  alignment: 'left',
-                                                  text: ['Creado: ', { text: fecha.toString() }]
-                                              },
-                                              {
-                                                  alignment: 'right',
-                                                  text: ['Página ', { text: page.toString() },  ' de ', { text: pages.toString() }]
-                                              }
-                                          ],
-                                          margin: 20
-                                      }
-                                  });
-                                  var objLayout = {};
-                                  objLayout['hLineWidth'] = function(i) { return 2; };
-                                  objLayout['vLineWidth'] = function(i) { return 2; };
-                                  objLayout['hLineColor'] = function(i) { return '#aaa'; };
-                                  objLayout['vLineColor'] = function(i) { return '#aaa'; };
-                                  objLayout['paddingLeft'] = function(i) { return 4; };
-                                  objLayout['paddingRight'] = function(i) { return 4; };
-                                  doc.content[0].layout = objLayout;
-                                 
-                       
-                        }, 
-                    titleAttr: 'SISTEMAS MYC PDF', 
-                    className: 'btn-outline-danger btn-sm ', 
-                         
-                },
-                {
-                    extend: 'print',
-                    text: 'Imprimir',
-                    footer: true,
-                    autoPrint: false,
-                    customize: function ( win ) {
-                        var hoy = new Date();
-                        var fecha = hoy.getDate() + '-' + ( hoy.getMonth() + 1 ) + '-' + hoy.getFullYear();
-                        var hora = hoy.getHours() + ':' + hoy.getMinutes() + ':' + hoy.getSeconds();
-                        for (var label in labels) {
-                                $(win.document.body)
-                                .css( 'font-size', '10pt' )
-                                .prepend(
-                                    `<h3>`+label+`: `+labels[label]+`</h3>`
-                                );
-                                
-                            }
-                            $(win.document.body)
-                            .css( 'font-size', '10pt' )
-                            .prepend(
-                                `<h1>Reporte generado: `+fecha+` - `+hora+`</h1><br>`
-                            );
-
-                        $(win.document.body).find( 'table' )
-                        .addClass( 'compact' )
-                        .css( 'font-size', 'inherit' );
-            
-                    },
-                    exportOptions: {
-                        columns: vis,
-                        modifier: {
-                            page: 'current'
-                        },      
-                    }
-                },
-                {
-                    extend: 'excelHtml5',
-                    stripHtml: false,
-                    footer: true,
-                    messageTop: msj,
-                    exportOptions: {
-                        columns: vis,
-                        modifier: {
-                            page: 'current'
-                        }
-                    }
-                },
             'pageLength', {
                 extend: 'colvis',
                 columns: vis,
             },
+            {
+                extend: 'pdf',
+                filename: "reporte ",
+                messageBottom: "",
+                exportOptions: {
+                    columns: vis,
+                    modifier: {
+                        page: 'current'
+                    }
+                },
+                //Titulo del pdf
+                title: "Sistemas MYC PDF",
+                footer: true,
+                customize: function (doc) { 
+
+                    var colCount = new Array();
+                    $(tb).find('tbody tr:first-child td').each(function(){
+                        if($(this).attr('colspan')){
+                            for(var i=1;i<=$(this).attr('colspan');$i++){
+                                colCount.push('*');
+                            }
+                        }else{ colCount.push('*'); }
+                    });
+
+                    doc.content[1].table.widths = colCount;
+                    let hoy = new Date();
+                    let fecha = hoy.getDate() + '-' + ( hoy.getMonth() + 1 ) + '-' + hoy.getFullYear();
+                    let hora = hoy.getHours() + ':' + hoy.getMinutes() + ':' + hoy.getSeconds();
+                    // doc.content.splice(0,1);
+                    doc.pageMargins = [20,60,20,30];
+                    doc.defaultStyle.fontSize = 8;
+                    doc.styles.tableHeader.fontSize = 8;
+                    for (var label in labels) {
+                        doc.content.splice( 1, 0, {
+                            margin: [ 0, 0, 0, 12 ],
+                            alignment: 'left',
+                            text: label+ ` : `+labels[label],
+                            fontSize: 14
+                           
+                        } );
+                    }
+
+                    
+                              doc['header']=(function() {          
+                                  return {
+                                      columns: [
+                                          {
+                                              alignment: 'right',
+                                              italics: true,
+                                              text: 'Reporte Generado :'+fecha+ ` / `+hora,
+                                              fontSize: 12,
+                                              margin: [10,0]
+                                          },
+                                      ],
+                                      margin: 20,
+                                  }
+                              });
+                              
+                         
+
+                              doc['footer']=(function(page, pages) {
+                                  return {
+                                      columns: [
+                                          {
+                                              alignment: 'left',
+                                              text: ['Creado: ', { text: fecha.toString() }]
+                                          },
+                                          {
+                                              alignment: 'right',
+                                              text: ['Página ', { text: page.toString() },  ' de ', { text: pages.toString() }]
+                                          }
+                                      ],
+                                      margin: 20
+                                  }
+                              });
+                              var objLayout = {};
+                              objLayout['hLineWidth'] = function(i) { return 2; };
+                              objLayout['vLineWidth'] = function(i) { return 2; };
+                              objLayout['hLineColor'] = function(i) { return '#aaa'; };
+                              objLayout['vLineColor'] = function(i) { return '#aaa'; };
+                              objLayout['paddingLeft'] = function(i) { return 4; };
+                              objLayout['paddingRight'] = function(i) { return 4; };
+                              doc.content[0].layout = objLayout;
+                             
+                   
+                    }, 
+                titleAttr: 'SISTEMAS MYC PDF', 
+                className: 'btn-outline-danger btn-sm ', 
+                     
+            },
+            {
+                extend: 'print',
+                text: 'Imprimir',
+                footer: true,
+                className: 'btn-outline-secondary btn-sm ', 
+                autoPrint: true,
+                customize: function ( win ) {
+                    var hoy = new Date();
+                    var fecha = hoy.getDate() + '-' + ( hoy.getMonth() + 1 ) + '-' + hoy.getFullYear();
+                    var hora = hoy.getHours() + ':' + hoy.getMinutes() + ':' + hoy.getSeconds();
+                    for (var label in labels) {
+                            $(win.document.body)
+                            .css( 'font-size', '10pt' )
+                            .prepend(
+                                `<h3>`+label+`: `+labels[label]+`</h3>`
+                            );
+                            
+                        }
+                        $(win.document.body)
+                        .css( 'font-size', '10pt' )
+                        .prepend(
+                            `<h1>Reporte generado: `+fecha+` - `+hora+`</h1><br>`
+                        );
+
+                    $(win.document.body).find( 'table' )
+                    .addClass( 'compact' )
+                    .css( 'font-size', 'inherit' );
+        
+                },
+                exportOptions: {
+                    columns: vis,
+                    modifier: {
+                        page: 'current'
+                    },      
+                }
+            },
+            {
+                extend: 'excelHtml5',
+                stripHtml: false,
+                footer: true,
+                messageTop: msj,
+                className: 'btn-outline-success btn-sm ', 
+                exportOptions: {
+                    columns: vis,
+                    modifier: {
+                        page: 'current'
+                    }
+                }
+            },
             ],
             "pageLength": 10,
             "lengthMenu": [ [10, 50, 100, -1], [10, 50, 100, "Todos"] ],
-            "responsive": true,
+            "responsive": false,
             "ordering": false,
             "select": true,
             
