@@ -1,5 +1,5 @@
 var totalTime = 50;
-export async function crear_tabla(parametro,tb,hd,bd,inv,ttl,labels){
+export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels){
    
     let html=``;
     let head =``;
@@ -28,6 +28,20 @@ export async function crear_tabla(parametro,tb,hd,bd,inv,ttl,labels){
         $('<tfoot/>').append( $(tb+" thead tr").clone() )
     );
         $(tb).DataTable({   
+
+            //configurar el hover del dclick
+            rowCallback: function(row, data, index){
+            if(isd){
+                if(dc==98){
+                    $(row).addClass('dclick');
+                }else{
+                    //para cuando son varias celdas se recorre dc
+                }
+            }
+            //   if(data[2].toUpperCase() == 'EE'){
+            //       $(row).find('td:eq(2)').css('color', 'blue');
+            //   }
+            },
             scrollX: true,
             processing: true,
             destroy: true,
@@ -186,11 +200,14 @@ export async function crear_tabla(parametro,tb,hd,bd,inv,ttl,labels){
             "lengthMenu": [ [10, 50, 100, -1], [10, 50, 100, "Todos"] ],
             "responsive": false,
             "ordering": false,
-            "select": true,
+            // "select": true,
             
             "footerCallback": function (row, data, start, end, display) {
+                if(isNaN(sum)){
+                    sum=[];
+                }
                 var api = this.api(), data;
-                var colNumber = ttl;
+                var colNumber = sum;
      
                 var intVal = function (i) {
                     return typeof i === 'string' ?

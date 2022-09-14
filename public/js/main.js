@@ -143,11 +143,11 @@ $(document).on("click","#redirect",function(e){
 })
 //Funcion para pintar los permisos según el grupo
 
-/*
+
 $('th').dblclick(function() {
     alert($(this).text());
 });
-*/
+
 
 
 $("th").on('contextmenu', function(e) {

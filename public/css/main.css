@@ -4,8 +4,13 @@
 }
 
 .thead{
-    background-color: #007bff;
+    background-color: #c6c8cc;
 }
+
+.dclick:hover{
+    background-color: rgb(168, 203, 207);
+  }
+
 
 .card{
     background-color: #ffffff !important;

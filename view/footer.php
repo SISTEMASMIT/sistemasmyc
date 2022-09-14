@@ -47,6 +47,11 @@
 <script src="<? $path;?>/public/js/datatables.min.js"></script>
 <script src="<? $path;?>/public/js/pdfmake.min.js"></script>
 <script src="<? $path;?>/public/js/vfs_fonts.js"></script> 
+
+
+<!--- fechas --->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <!-- <script src="<? $path;?>/public/js/jquery.dataTables.min.js"></script>
 <script src="<? $path;?>/public/js/dataTables.buttons.min.js"></script>
 <script src="<? $path;?>/public/js/buttons.dataTables.min.js"></script>

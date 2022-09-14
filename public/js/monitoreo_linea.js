@@ -2,6 +2,16 @@ import {ajax_peticion} from "./Ajax-peticiones.js";
 import {crear_tabla} from "./table.js";
 var intervalo;
 
+var id='';
+var isdclick = false;
+var isrclick = false;
+var dclick = [];
+var rclick = [];
+var emergente = '';
+var parametros = [];
+var etiquetas = [];
+var comando = '';
+var orden = '';
 $(document).ready(function () {
     var columns = 6;
     var rows = 10;
@@ -73,43 +83,98 @@ async function montar_tabla(){
     var info =  await ajax_peticion("/query/monitoreo", {'data': JSON.stringify(data)}, "POST");
     let set = Object.values(JSON.parse(info.settings.jsr));
 
+    console.log(set);
+
+
     let invisibles = [];
     let sumatorias = [];
+
     invisibles = set[0].find(function(x){    
-        return x.label == 'c96';
+        return x.label == '96';
     });
 
     sumatorias = set[0].find(function(x){    
-        return x.label == 'c97';
+        return x.label == '97';
     });
+
+    
+    dclick = set[0].find(function(x){    
+        return x.label == '98';
+    });
+
+    rclick = set[0].find(function(x){    
+        return x.label == '99';
+    });
+
+    if(dclick!=undefined){
+        isdclick=true;
+        comando = dclick.datos["comando"];
+        orden = dclick.datos["orden"];
+        etiquetas = dclick.datos["etiquetas"].split(",");
+        parametros = dclick.datos["parametros"];
+        emergente = dclick.datos["emergente"];
+        dclick = dclick.label;
+    }
+
+    if(rclick!=undefined){
+        isrclick=true;
+    }
+    
 
     invisibles=invisibles.datos.c_invisible.split(",");
     invisibles = invisibles.map(function(x){    
         return parseInt(x);
     });   
 
+    
     sumatorias=sumatorias.datos.c_sumatoria.split(",");
     sumatorias = sumatorias.map(function(x){    
         return parseInt(x);
     });  
 
-
     let labels = {"Receptores":receptores,"Loterias":loterias,"Signo":signo,"Cifras":cifras};
-    
-    let total = [4];
-    crear_tabla(info.data,"#tabla1","#thead1","#tbody1",invisibles,sumatorias,labels);
-    
+    crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels);
 }
 
 
 
-$('#tabla1 tbody').on('click', 'tr', function () {
-    var table = $('#tabla1').DataTable();
+// $('#tabla1 tbody').on('click', 'tr', function () {
+//     var table = $('#tabla1').DataTable();
 
-    if ($(this).hasClass('selected')) {
-        $(this).removeClass('selected');
-    } else {
-        table.$('tr.selected').removeClass('selected');
-        $(this).addClass('selected');
+//     if ($(this).hasClass('selected')) {
+//         $(this).removeClass('selected');
+//     } else {
+//         table.$('tr.selected').removeClass('selected');
+//         $(this).addClass('selected');
+//     }
+// });
+
+
+$('#tabla1 tbody').on('dblclick', 'tr', function () {
+    if(isdclick){
+        for (let i = 0; i < etiquetas.length; i++) {
+            if(Number.isInteger(parseInt(etiquetas[i]))){
+                console.log($(this).find("td").eq(parseInt(etiquetas[i])).text());
+            }else{
+                if(etiquetas[i]=="f1" || etiquetas[i] == "f2"){
+                    if($("#"+etiquetas[i]).daterangepicker()==null){
+                        const date = new Date();
+                        let day = date.getDate();
+                        let month = date.getMonth() + 1;
+                        let year = date.getFullYear();
+                        let f1 = `${day}-${month}-${year}`;
+                        console.log(console.log(etiquetas[i]+ ": "+f1));
+                    }else{
+                        console.log(etiquetas[i]+ ": "+$("#"+etiquetas[i]).daterangepicker());
+                    }
+                    
+                }else{
+                    console.log(etiquetas[i]+ ": "+$("#"+etiquetas[i]).selectpicker('val'));
+                } 
+            }
+        }
     }
-});
+    
+}
+);
+
