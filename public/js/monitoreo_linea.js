@@ -156,18 +156,17 @@ $('#tabla1 tbody').on('dblclick', 'tr', function () {
             if(Number.isInteger(parseInt(etiquetas[i]))){
                 console.log($(this).find("td").eq(parseInt(etiquetas[i])).text());
             }else{
-                if(etiquetas[i]=="f1" || etiquetas[i] == "f2"){
-                    if($("#"+etiquetas[i]).daterangepicker()==null){
+                if(etiquetas[i]=="f1" && etiquetas[i] == "f2"){
+                    if($("#"+etiquetas[i]).length < 1){
                         const date = new Date();
                         let day = date.getDate();
                         let month = date.getMonth() + 1;
                         let year = date.getFullYear();
-                        let f1 = `${day}-${month}-${year}`;
-                        console.log(console.log(etiquetas[i]+ ": "+f1));
+                        let f = `${day}-${month}-${year}`;
+                        console.log(console.log(etiquetas[i]+ ": "+f));
                     }else{
                         console.log(etiquetas[i]+ ": "+$("#"+etiquetas[i]).daterangepicker());
                     }
-                    
                 }else{
                     console.log(etiquetas[i]+ ": "+$("#"+etiquetas[i]).selectpicker('val'));
                 } 
