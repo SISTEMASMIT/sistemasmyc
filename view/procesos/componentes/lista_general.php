@@ -2,69 +2,62 @@
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
-            <div class="container" style="background-color: white;border-radius:6px; padding:2em;">
-                <div class="row">
+        <button type="button" class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#modalForm">Registrar</button>
+            <?php
+                    $pathlocal=$path."/view/".$this->url[0]."/componentes"."/";
+                   // Abrimos la carpeta que nos pasan como parámetro
+                    $dir = opendir($pathlocal);
+                    // Leo todos los ficheros de la carpeta
+                    while ($elemento = readdir($dir)){
+                        // Tratamos los elementos . y .. que tienen todas las carpetas
+                        if( $elemento != "." && $elemento != ".."){
+                            // Si es una carpeta
+                            if(!is_dir($pathlocal.$elemento) ){
+                                if(strpos($elemento, str_replace("-","_",$this->url[1]))!=false){
+                                    $modal=file_get_contents($pathlocal.$elemento);
+                                    echo $modal;
+                                }  
+                            } 
+                        }
+                    }
+            ?>
+            <div class="row">
+                <div class="row divFiltro">
                     <!-- Aqui debemos agregar un modal emergente para cuando estemos con loterias seleccionar -->
-                    <div class="col-12">
-                        <!-- Aqui van los receptores -->
-                        <label class="form-label">Receptores</label>
-                        <select class="form-select" aria-label="Default select example">    
-                            <option>    
-                                Todos Los receptores
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-6">
-                        <label class="form-label">Lista de loterias</label>
-                        <select class="form-select" aria-label="Default select example">    
-                            <option>    
-                                Todos Los receptores
-                            </option>
-                        </select>
-                    </div>
-
-                    <div class="col-6">
-                        <label class="form-label">Fecha De Jugadas</label>
-
-                    </div>
-
-                    <div class="col-3">
-                        <label class="form-label">Cifras</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="cifras" id="todos1" checked>
-                            <label class="form-check-label" for="todos1">
-                              Todos
-                            </label>
-                          </div>
-                          <div class="form-check">
-                            <input class="form-check-input" type="radio" name="cifras" id="triples2" >
-                            <label class="form-check-label" for="triples2">
-                              Triples
-                            </label>
-                          </div>
-                          <div class="form-check">
-                            <input class="form-check-input" type="radio" name="cifras" id="terminales2" >
-                            <label class="form-check-label" for="terminales2">
-                              Terminales
-                            </label>
-                          </div>
-                          <div class="form-check">
-                            <input class="form-check-input" type="radio" name="cifras" id="cuadruples2" >
-                            <label class="form-check-label" for="cuadruples2">
-                              Cuadruples
-                            </label>
-                          </div>
-                    </div>
                     
+                <!-- Aqui van los receptores -->
+                    <?php
+                        if($this->filtros!=-1){
+                            $array=json_decode($this->filtros[0]["jsr"]);
+                            foreach($array->filtros as $filtro){
+                                if(method_exists($importer,$filtro->tipo)){
+                                    echo $importer->{$filtro->tipo}($filtro->label,$filtro->datos);
+                                }                        
+                            }
+                        }
+                    ?>
+                
+                
+                     
                 </div><!-- div row  -->
+                
                 <div class="row">
-                    <div class="d-grid" role="group" aria-label="Basic mixed styles example">
-                        <button type="button" class="btn btn-success">Monitorear</button>
-                        <button type="button" class="btn btn-danger">Detener</button>
-                      </div>
+                    <div id="carga"><div id="load"></div></div>
+                    <div id="countdown"></div>
+                    <div id="tabla_res" class="espaciadoT">
+                        <div id="f"><table id="tablaf" class="cell-border nowrap" style="width:100%"></table></div>
+                        <table id="tabla1" class="cell-border display nowrap invisible" style="width:100%">
+                            <thead class="thead" id="thead1">
+                                <tr><th></th></tr>
+                            </thead>
+                            <tbody id="tbody1">
+                            <tr><td></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
+            </div> <!-- Row general -->
         </div> <!-- container-fluid -->
     </div>  <!--- page-content --->
-</div>
-<!-- FIN CONTENIDO WEB -->
+</div><!-- FIN CONTENIDO WEB -->
+<script type="module" src="<? $path;?>/public/js/<?php echo str_replace("-","_",$this->url[1])?>.js" ></script>
