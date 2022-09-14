@@ -6,6 +6,7 @@ var id='';
 var isdclick = false;
 var isrclick = false;
 var dclick = [];
+var dclickN = [];
 var rclick = [];
 var emergente = '';
 var parametros = [];
@@ -82,8 +83,10 @@ async function montar_tabla(){
     let invisibles = [];
     let sumatorias = [];
 
-    if(set.length > 1){
-        
+    if(set.length > 0){
+        console.log(set);
+
+
 
         invisibles = set[0].find(function(x){    
             return x.label == '96';
@@ -92,11 +95,19 @@ async function montar_tabla(){
         sumatorias = set[0].find(function(x){    
             return x.label == '97';
         });
-
         
-        dclick = set[0].find(function(x){    
-            return x.label == '98';
+        dclickN = set[0].find(function(x){    
+            return x.label != '98';
         });
+
+        dclick.push(set[0].filter(function(x){ 
+            if(x.label!='98' && x.label!='99' && x.label!='97' && x.label != '96'){
+                return x;
+            }else if(x.label=='98'){
+                return x;
+            }
+            
+        }));
 
         rclick = set[0].find(function(x){    
             return x.label == '99';
@@ -104,18 +115,19 @@ async function montar_tabla(){
 
         if(dclick!=undefined){
             isdclick=true;
-            comando = dclick.datos["comando"];
-            orden = dclick.datos["orden"];
-            etiquetas = dclick.datos["etiquetas"].split(",");
-            parametros = dclick.datos["parametros"];
-            emergente = dclick.datos["emergente"];
-            dclick = dclick.label;
+            
+            console.log(dclick);
+            // comando = dclick.datos["comando"];
+            // orden = dclick.datos["orden"];
+            // etiquetas = dclick.datos["etiquetas"].split(",");
+            // parametros = dclick.datos["parametros"].split(",");
+            // emergente = dclick.datos["emergente"];
+            // dclick = dclick.label;
         }
 
         if(rclick!=undefined){
             isrclick=true;
         }
-        
 
         invisibles=invisibles.datos.c_invisible.split(",");
         invisibles = invisibles.map(function(x){    
@@ -156,31 +168,54 @@ function getCurrentDate(){
     let f = `${day}/${month}/${year}`;
     return f;
 }
-$('#tabla1 tbody').on('dblclick', 'tr', function () {
-    if(isdclick){
-        for (let i = 0; i < etiquetas.length; i++) {
-            if(Number.isInteger(parseInt(etiquetas[i]))){
-                console.log($(this).find("td").eq(parseInt(etiquetas[i])).text());
-            }else{
-                if(etiquetas[i]=="f1"){
-                    if($("#"+etiquetas[i]).length < 1){
-                        let f = getCurrentDate();
-                        console.log(console.log(etiquetas[i]+ ": "+f));
-                    }else{
-                        console.log(etiquetas[i]+ ": "+$("#"+etiquetas[i]).daterangepicker());
-                    }       
-                }else if(etiquetas[i]=="f2"){
-                    if($("#"+etiquetas[i]).length < 1 ){
-                        let f = getCurrentDate();
-                        console.log(console.log(etiquetas[i]+ ": "+f));
-                    }else{
-                        console.log(etiquetas[i]+ ": "+$("#"+etiquetas[i]).daterangepicker());
+
+// $('td').dblclick(function() {
+//     alert($(this).text());
+// });
+
+$('#tabla1 tbody').on('dblclick', 'td', function () {
+    var column = $(this).parent().children().index(this);
+    if(isdclick){  
+        for (let a = 0; a < dclick[0].length; a++) {
+            if(dclick[0][a].label!='98'){
+                if (column==dclick[0][a].label){
+                    parametros = dclick[0][a].datos["parametros"].split(",")
+
+                    for (let i = 0; i < parametros.length; i++) {
+                        if(Number.isInteger(parseInt(parametros[i]))){
+                            console.log($(this).parent().find("td").eq(parseInt(parametros)).text());
+                        }
                     }
-                }else{
-                    console.log(etiquetas[i]+ ": "+$("#"+etiquetas[i]).selectpicker('val'));
-                } 
+                }
+            }else{
+                parametros = dclick[0][0].datos["parametros"].split(",")
+                for (let i = 0; i < parametros.length; i++) {
+                    if(Number.isInteger(parseInt(parametros[i]))){
+                        console.log($(this).parent().find("td").eq(parseInt(parametros[i])).text());
+                    }else{
+                        if(dclick[0][a].parametros[i]=="f1"){
+                            if($("#"+parametros[i]).length < 1){
+                                let f = getCurrentDate();
+                                console.log(console.log(parametros[i]+ ": "+f));
+                            }else{
+                                console.log(parametros[i]+ ": "+$("#"+parametros[i]).daterangepicker());
+                            }       
+                        }else if(parametros[i]=="f2"){
+                            if($("#"+parametros[i]).length < 1 ){
+                                let f = getCurrentDate();
+                                console.log(console.log(parametros[i]+ ": "+f));
+                            }else{
+                                console.log(parametros[i]+ ": "+$("#"+parametros[i]).daterangepicker());
+                            }
+                        }else{
+                            console.log(parametros[i]+ ": "+$('#'+parametros[i]).selectpicker('val'));
+                        } 
+                    }
+                }
             }
         }
+        
+       
     }
     
 }

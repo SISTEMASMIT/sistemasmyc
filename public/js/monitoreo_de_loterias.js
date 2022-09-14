@@ -88,49 +88,50 @@ async function montar_tabla(){
 
     let invisibles = [];
     let sumatorias = [];
+    if(set.length > 0){
+        invisibles = set[0].find(function(x){    
+            return x.label == '96';
+        });
 
-    invisibles = set[0].find(function(x){    
-        return x.label == '96';
-    });
+        sumatorias = set[0].find(function(x){    
+            return x.label == '97';
+        });
 
-    sumatorias = set[0].find(function(x){    
-        return x.label == '97';
-    });
+        
+        dclick = set[0].find(function(x){    
+            return x.label == '98';
+        });
 
-    
-    dclick = set[0].find(function(x){    
-        return x.label == '98';
-    });
+        rclick = set[0].find(function(x){    
+            return x.label == '99';
+        });
 
-    rclick = set[0].find(function(x){    
-        return x.label == '99';
-    });
+        if(dclick!=undefined){
+            isdclick=true;
+            comando = dclick.datos["comando"];
+            orden = dclick.datos["orden"];
+            etiquetas = dclick.datos["etiquetas"].split(",");
+            parametros = dclick.datos["parametros"];
+            emergente = dclick.datos["emergente"];
+            dclick = dclick.label;
+        }
+        
+        if(rclick!=undefined){
+            isrclick=true;
+        }
+        
 
-    if(dclick!=undefined){
-        isdclick=true;
-        comando = dclick.datos["comando"];
-        orden = dclick.datos["orden"];
-        etiquetas = dclick.datos["etiquetas"].split(",");
-        parametros = dclick.datos["parametros"];
-        emergente = dclick.datos["emergente"];
-        dclick = dclick.label;
+        invisibles=invisibles.datos.c_invisible.split(",");
+        invisibles = invisibles.map(function(x){    
+            return parseInt(x);
+        });   
+
+        
+        sumatorias=sumatorias.datos.c_sumatoria.split(",");
+        sumatorias = sumatorias.map(function(x){    
+            return parseInt(x);
+        });  
     }
-
-    if(rclick!=undefined){
-        isrclick=true;
-    }
-    
-
-    invisibles=invisibles.datos.c_invisible.split(",");
-    invisibles = invisibles.map(function(x){    
-        return parseInt(x);
-    });   
-
-    
-    sumatorias=sumatorias.datos.c_sumatoria.split(",");
-    sumatorias = sumatorias.map(function(x){    
-        return parseInt(x);
-    });  
 
     let labels = {"Receptores":receptores,"Loterias":loterias,"Signo":signo,"Cifras":cifras};
     crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels);

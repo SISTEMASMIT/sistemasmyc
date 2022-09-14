@@ -31,12 +31,16 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels){
 
             //configurar el hover del dclick
             rowCallback: function(row, data, index){
+                
             if(isd){
-                if(dc==98){
-                    $(row).addClass('dclick');
-                }else{
-                    //para cuando son varias celdas se recorre dc
+                for (let i = 0; i < dc[0].length; i++) {
+                    if(dc[0][i].label==98){
+                        $(row).addClass('dclick');
+                    }else{
+                        $(row).find('td:eq('+dc[0][i].label+')').addClass('dclick');
+                    }         
                 }
+                
             }
             //   if(data[2].toUpperCase() == 'EE'){
             //       $(row).find('td:eq(2)').css('color', 'blue');
@@ -157,14 +161,24 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels){
                     var hoy = new Date();
                     var fecha = hoy.getDate() + '-' + ( hoy.getMonth() + 1 ) + '-' + hoy.getFullYear();
                     var hora = hoy.getHours() + ':' + hoy.getMinutes() + ':' + hoy.getSeconds();
+                    $(win.document.body)
+                    .prepend(
+                        `</div>`
+                    );
+                    let tam = Object.values(labels).length;
+                    console.log(tam);
                     for (var label in labels) {
                             $(win.document.body)
                             .css( 'font-size', '10pt' )
                             .prepend(
-                                `<h3>`+label+`: `+labels[label]+`</h3>`
+                                `<div class="col"><h4>`+label+`: `+labels[label]+`</h4></div>`
                             );
                             
                         }
+                        $(win.document.body)
+                    .prepend(
+                        `<div class="row">`
+                    );
                         $(win.document.body)
                         .css( 'font-size', '10pt' )
                         .prepend(
@@ -200,7 +214,7 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels){
             "pageLength": 10,
             "lengthMenu": [ [10, 50, 100, -1], [10, 50, 100, "Todos"] ],
             "responsive": false,
-            "select": true,
+            // "select": true,
             
             "footerCallback": function (row, data, start, end, display) {
                 if(isNaN(sum)){
