@@ -29,7 +29,7 @@
                     <div id="tabla_res" class="espaciadoT">
                         <div id="f"><table id="tablaf" class="cell-border nowrap" style="width:100%"></table></div>
                         <table id="tabla1" class="cell-border display nowrap invisible" style="width:100%">
-                            <thead class="" id="thead1">
+                            <thead class="thead" id="thead1">
                                 <tr><th></th></tr>
                             </thead>
                             <tbody id="tbody1">

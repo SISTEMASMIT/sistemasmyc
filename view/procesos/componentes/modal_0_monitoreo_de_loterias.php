@@ -7,12 +7,12 @@
             </div>
             <div class="modal-body">
                 <table id="tabla2" class="cell-border display nowrap invisible" style="width:100%">
-                    <thead class="thead" id="thead1">
+                    <thead class="thead" id="thead2">
                         <tr>
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody id="tbody1">
+                    <tbody id="tbody2">
                         <tr>
                             <td></td>
                         </tr>
@@ -20,8 +20,8 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary"></button>
             </div>
         </div>
     </div>

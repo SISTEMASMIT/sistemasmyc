@@ -53,7 +53,7 @@ $(document).on('click', '#detener', async function() {
 
 
 
-$(document).on('click', '#aceptar', async function() {
+$(document).on('click', '#monitoreo_de_loterias', async function() {
     $('#tabla1').removeClass('invisible');
     // $('#aceptar').prop('disabled', true);
     montar_tabla();
@@ -77,7 +77,7 @@ async function montar_tabla(){
     let cifras = $('#cifras').selectpicker('val');
     let signo = $('#signo').selectpicker('val');
 
-    data = {"receptor":receptores,"signo":signo,"seleccion":loterias,"cifras":cifras,"monto":"0","limite":"1000","accion":"aceptar"};
+    data = {"receptor":receptores,"signo":signo,"seleccion":loterias,"cifras":cifras,"monto":"0","limite":"1000","accion":"monitoreo_de_loterias"};
 
 
     var info =  await ajax_peticion("/query/monitoreo", {'data': JSON.stringify(data)}, "POST");
@@ -149,25 +149,34 @@ async function montar_tabla(){
 //     }
 // });
 
-
+function getCurrentDate(){
+    const date = new Date();
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+    let f = `${day}/${month}/${year}`;
+    return f;
+}
 $('#tabla1 tbody').on('dblclick', 'tr', function () {
     if(isdclick){
         for (let i = 0; i < etiquetas.length; i++) {
             if(Number.isInteger(parseInt(etiquetas[i]))){
                 console.log($(this).find("td").eq(parseInt(etiquetas[i])).text());
             }else{
-                if(etiquetas[i]=="f1" || etiquetas[i] == "f2"){
-                    if($("#"+etiquetas[i]).daterangepicker()==null){
-                        const date = new Date();
-                        let day = date.getDate();
-                        let month = date.getMonth() + 1;
-                        let year = date.getFullYear();
-                        let f1 = `${day}-${month}-${year}`;
-                        console.log(console.log(etiquetas[i]+ ": "+f1));
+                if(etiquetas[i]=="f1"){
+                    if($("#"+etiquetas[i]).length < 1){
+                        let f = getCurrentDate();
+                        console.log(console.log(etiquetas[i]+ ": "+f));
+                    }else{
+                        console.log(etiquetas[i]+ ": "+$("#"+etiquetas[i]).daterangepicker());
+                    }       
+                }else if(etiquetas[i]=="f2"){
+                    if($("#"+etiquetas[i]).length < 1 ){
+                        let f = getCurrentDate();
+                        console.log(console.log(etiquetas[i]+ ": "+f));
                     }else{
                         console.log(etiquetas[i]+ ": "+$("#"+etiquetas[i]).daterangepicker());
                     }
-                    
                 }else{
                     console.log(etiquetas[i]+ ": "+$("#"+etiquetas[i]).selectpicker('val'));
                 } 

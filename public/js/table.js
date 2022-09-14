@@ -45,7 +45,8 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels){
             scrollX: true,
             processing: true,
             destroy: true,
-            columnDefs:  [{ targets: inv, visible: false }],
+            // ordering: false,
+            columnDefs:  [{ targets: inv, visible: false}],
             language: {
                 "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"
             },
@@ -56,96 +57,96 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels){
                 extend: 'colvis',
                 columns: vis,
             },
-            {
-                extend: 'pdf',
-                filename: "reporte ",
-                messageBottom: "",
-                exportOptions: {
-                    columns: vis,
-                    modifier: {
-                        page: 'current'
-                    }
-                },
-                //Titulo del pdf
-                title: "Sistemas MYC PDF",
-                footer: true,
-                customize: function (doc) { 
+            // {
+            //     extend: 'pdf',
+            //     filename: "reporte ",
+            //     messageBottom: "",
+            //     exportOptions: {
+            //         columns: vis,
+            //         modifier: {
+            //             page: 'current'
+            //         }
+            //     },
+            //     //Titulo del pdf
+            //     title: "Sistemas MYC PDF",
+            //     footer: true,
+            //     customize: function (doc) { 
 
-                    var colCount = new Array();
-                    $(tb).find('tbody tr:first-child td').each(function(){
-                        if($(this).attr('colspan')){
-                            for(var i=1;i<=$(this).attr('colspan');$i++){
-                                colCount.push('*');
-                            }
-                        }else{ colCount.push('*'); }
-                    });
+            //         var colCount = new Array();
+            //         $(tb).find('tbody tr:first-child td').each(function(){
+            //             if($(this).attr('colspan')){
+            //                 for(var i=1;i<=$(this).attr('colspan');$i++){
+            //                     colCount.push('*');
+            //                 }
+            //             }else{ colCount.push('*'); }
+            //         });
 
-                    doc.content[1].table.widths = colCount;
-                    let hoy = new Date();
-                    let fecha = hoy.getDate() + '-' + ( hoy.getMonth() + 1 ) + '-' + hoy.getFullYear();
-                    let hora = hoy.getHours() + ':' + hoy.getMinutes() + ':' + hoy.getSeconds();
-                    // doc.content.splice(0,1);
-                    doc.pageMargins = [20,60,20,30];
-                    doc.defaultStyle.fontSize = 8;
-                    doc.styles.tableHeader.fontSize = 8;
-                    for (var label in labels) {
-                        doc.content.splice( 1, 0, {
-                            margin: [ 0, 0, 0, 12 ],
-                            alignment: 'left',
-                            text: label+ ` : `+labels[label],
-                            fontSize: 14
+            //         doc.content[1].table.widths = colCount;
+            //         let hoy = new Date();
+            //         let fecha = hoy.getDate() + '-' + ( hoy.getMonth() + 1 ) + '-' + hoy.getFullYear();
+            //         let hora = hoy.getHours() + ':' + hoy.getMinutes() + ':' + hoy.getSeconds();
+            //         // doc.content.splice(0,1);
+            //         doc.pageMargins = [20,60,20,30];
+            //         doc.defaultStyle.fontSize = 8;
+            //         doc.styles.tableHeader.fontSize = 8;
+            //         for (var label in labels) {
+            //             doc.content.splice( 1, 0, {
+            //                 margin: [ 0, 0, 0, 12 ],
+            //                 alignment: 'left',
+            //                 text: label+ ` : `+labels[label],
+            //                 fontSize: 14
                            
-                        } );
-                    }
+            //             } );
+            //         }
 
                     
-                              doc['header']=(function() {          
-                                  return {
-                                      columns: [
-                                          {
-                                              alignment: 'right',
-                                              italics: true,
-                                              text: 'Reporte Generado :'+fecha+ ` / `+hora,
-                                              fontSize: 12,
-                                              margin: [10,0]
-                                          },
-                                      ],
-                                      margin: 20,
-                                  }
-                              });
+            //                   doc['header']=(function() {          
+            //                       return {
+            //                           columns: [
+            //                               {
+            //                                   alignment: 'right',
+            //                                   italics: true,
+            //                                   text: 'Reporte Generado :'+fecha+ ` / `+hora,
+            //                                   fontSize: 12,
+            //                                   margin: [10,0]
+            //                               },
+            //                           ],
+            //                           margin: 20,
+            //                       }
+            //                   });
                               
                          
 
-                              doc['footer']=(function(page, pages) {
-                                  return {
-                                      columns: [
-                                          {
-                                              alignment: 'left',
-                                              text: ['Creado: ', { text: fecha.toString() }]
-                                          },
-                                          {
-                                              alignment: 'right',
-                                              text: ['Página ', { text: page.toString() },  ' de ', { text: pages.toString() }]
-                                          }
-                                      ],
-                                      margin: 20
-                                  }
-                              });
-                              var objLayout = {};
-                              objLayout['hLineWidth'] = function(i) { return 2; };
-                              objLayout['vLineWidth'] = function(i) { return 2; };
-                              objLayout['hLineColor'] = function(i) { return '#aaa'; };
-                              objLayout['vLineColor'] = function(i) { return '#aaa'; };
-                              objLayout['paddingLeft'] = function(i) { return 4; };
-                              objLayout['paddingRight'] = function(i) { return 4; };
-                              doc.content[0].layout = objLayout;
+            //                   doc['footer']=(function(page, pages) {
+            //                       return {
+            //                           columns: [
+            //                               {
+            //                                   alignment: 'left',
+            //                                   text: ['Creado: ', { text: fecha.toString() }]
+            //                               },
+            //                               {
+            //                                   alignment: 'right',
+            //                                   text: ['Página ', { text: page.toString() },  ' de ', { text: pages.toString() }]
+            //                               }
+            //                           ],
+            //                           margin: 20
+            //                       }
+            //                   });
+            //                   var objLayout = {};
+            //                   objLayout['hLineWidth'] = function(i) { return 2; };
+            //                   objLayout['vLineWidth'] = function(i) { return 2; };
+            //                   objLayout['hLineColor'] = function(i) { return '#aaa'; };
+            //                   objLayout['vLineColor'] = function(i) { return '#aaa'; };
+            //                   objLayout['paddingLeft'] = function(i) { return 4; };
+            //                   objLayout['paddingRight'] = function(i) { return 4; };
+            //                   doc.content[0].layout = objLayout;
                              
                    
-                    }, 
-                titleAttr: 'SISTEMAS MYC PDF', 
-                className: 'btn-outline-danger btn-sm ', 
+            //         }, 
+            //     titleAttr: 'SISTEMAS MYC PDF', 
+            //     className: 'btn-outline-danger btn-sm ', 
                      
-            },
+            // },
             {
                 extend: 'print',
                 text: 'Imprimir',
@@ -199,8 +200,7 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels){
             "pageLength": 10,
             "lengthMenu": [ [10, 50, 100, -1], [10, 50, 100, "Todos"] ],
             "responsive": false,
-            "ordering": false,
-            // "select": true,
+            "select": true,
             
             "footerCallback": function (row, data, start, end, display) {
                 if(isNaN(sum)){
