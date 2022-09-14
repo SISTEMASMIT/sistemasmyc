@@ -24,7 +24,7 @@ require_once($path.'/view/header.php');
 <!-- JAVASCRIPT -->
 
 
-<script type="module" src="<? $path;?>/public/js/monitoreo_linea.js" ></script>
+
 </body>
 
 </html>

@@ -29,11 +29,14 @@ class QueryModel{
     function monitoreo(){
         $usuario = json_decode($_SESSION["usuario"]);
         $data = json_decode($_POST["data"], true);
+        
         $data['usuario'] = $usuario->user;
         $data['banca'] = $usuario->banca;
         $data['token'] = $usuario->token;
-        $data['comando'] = json_decode($_SESSION["aceptar"])->comando;
+        $comando=$data["accion"];
+        $data['comando'] = json_decode($_SESSION[$comando])->comando;
         $consulta_monitoreo = json_encode($data);
+
         $sql = "CALL bl_banca(:consulta_monitoreo)";
         $this->conexion=conexion::getConexion();
         $statemant=$this->conexion->prepare($sql);
@@ -56,9 +59,8 @@ class QueryModel{
         }
 
         //Sacando los 2dos resultado
-
         $segunda_respuesta=Array(
-            "comando"=>json_decode($_SESSION["aceptar"])->comando.",NO",
+            "comando"=>json_decode($_SESSION[$comando])->comando.",NO",
             "usuario"=>$usuario->user,
             "token"=>$usuario->token
         );
