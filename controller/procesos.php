@@ -23,7 +23,8 @@ class Procesos extends Controller
         if(isset($_SESSION["usuario"])){
             if($this->loadModel($url[0]."Model")){
                 $url2=str_replace("-","_",$url[1]);
-                if(method_exists($this->model,$url2)){
+                if(method_exists($this,$url2)){
+                    $this->view->url=$url;
                     $this->{$url2}();
                     $this->loadModel("homeModel");
                     $this->view->data["menu"]=$this->model->niveles();
@@ -45,10 +46,8 @@ class Procesos extends Controller
      }
 
     function monitoreo_de_loterias(){
-        $this->loadModel("loteriaModel");
-        $this->view->data["loterias"]=$this->model->loterias();
-        $this->loadModel("receptoresModel");
-        $this->view->data["receptores"]=$this->model->receptores();
+    }
+    function agencias_en_linea(){
     }
 
     

@@ -15,7 +15,13 @@
 .card.login {
     background: linear-gradient(to top, #efb162, white) !important;
 }
-
+.divFiltro{
+    background: white;
+    border: 1px solid white;
+    border-radius: 6px;
+    margin-left: 0px;
+}
+.filtros{padding: 8px;}
 .navbar-header {
     display: -webkit-box;
     display: -ms-flexbox;
