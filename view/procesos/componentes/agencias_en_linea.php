@@ -2,26 +2,6 @@
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
-        <button type="button" class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#modalForm">Registrar</button>
-            <?php
-                    
-                    $pathlocal=$path.'/view/'.$this->url[0]."/componentes"."/";
-                   // Abrimos la carpeta que nos pasan como parámetro
-                    $dir = opendir($pathlocal);
-                    // Leo todos los ficheros de la carpeta
-                    while ($elemento = readdir($dir)){
-                        // Tratamos los elementos . y .. que tienen todas las carpetas
-                        if( $elemento != "." && $elemento != ".."){
-                            // Si es una carpeta
-                            if(!is_dir($pathlocal.$elemento) ){
-                                if(strpos($elemento, str_replace("-","_",$this->url[1]))!=false){
-                                    $modal=file_get_contents($pathlocal.$elemento);
-                                    echo $modal;
-                                }  
-                            } 
-                        }
-                    }
-            ?>
             <div class="row">
                 <div class="row divFiltro">
                     <!-- Aqui debemos agregar un modal emergente para cuando estemos con loterias seleccionar -->

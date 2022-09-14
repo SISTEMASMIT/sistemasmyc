@@ -19,7 +19,7 @@ class ProcesosModel{
         $statemant->bindParam(":consulta_monitoreo",$consulta_monitoreo);
         $statemant->execute();
         $data=$statemant->fetchAll(PDO::FETCH_ASSOC);
-        $head = $statemant->getColumnMeta();
+        // $head = $statemant->getColumnMeta();
         var_dump($data);
 
     }
