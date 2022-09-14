@@ -29,6 +29,7 @@ class QueryModel{
     function monitoreo(){
         $usuario = json_decode($_SESSION["usuario"]);
         $data = json_decode($_POST["data"], true);
+        
         $data['usuario'] = $usuario->user;
         $data['banca'] = $usuario->banca;
         $data['token'] = $usuario->token;

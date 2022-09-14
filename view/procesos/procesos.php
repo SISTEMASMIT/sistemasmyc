@@ -24,8 +24,6 @@ require_once($path.'/view/header.php');
 <!-- JAVASCRIPT -->
 
 
-<script type="module" src="<? $path;?>/public/js/monitoreo_de_loterias.js" ></script>
-<script type="module" src="<? $path;?>/public/js/agencias_en_linea.js" ></script>
 </body>
 
 </html>
