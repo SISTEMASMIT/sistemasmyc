@@ -49,6 +49,8 @@ class Procesos extends Controller
     }
     function agencias_en_linea(){
     }
+    function lista_general(){
+    }
 
     
 
