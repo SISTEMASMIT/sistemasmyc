@@ -77,7 +77,7 @@ async function montar_tabla(){
     let grupos = $('#grupos').selectpicker('val');
 
     data = {"receptor":receptores,"grupo_agencias":grupos,"accion":"agencias_en_linea"};
-
+    
     var info =  await ajax_peticion("/query/agencias_en_linea", {'data': JSON.stringify(data)}, "POST");
     let set = Object.values(JSON.parse(info.settings.jsr));
     let invisibles = [];
@@ -175,6 +175,9 @@ function getCurrentDate(){
 
 $('#tabla1 tbody').on('dblclick', 'td', async function () {
     let data = [];
+    let key;
+    let value;
+    let cosas = [];
     let iscorrect = false;
     var column = $(this).parent().children().index(this);
     if(isdclick){  
@@ -186,8 +189,12 @@ $('#tabla1 tbody').on('dblclick', 'td', async function () {
 
                     for (let i = 0; i < parametros.length; i++) {
                         if(Number.isInteger(parseInt(parametros[i]))){
-                            data[`c`+parametros[i]]=$(this).parent().find("td").eq(parseInt(parametros[i])).text();
-                            data[`comando`] = column ;
+                            key = `c`+parametros[i];
+                            value = $(this).parent().find("td").eq(parseInt(parametros[i])).text();
+                            data = {key:value,"comando":dclick[0][a].datos["id"]}
+                            cosas.push(data);
+                            // data[`c`+parametros[i]]=$(this).parent().find("td").eq(parseInt(parametros[i])).text();
+                            // data[`comando`] = dclick[0][a].datos["id"];
                             console.log($(this).parent().find("td").eq(parseInt(parametros[i])).text());
                         }
                     }
@@ -221,7 +228,9 @@ $('#tabla1 tbody').on('dblclick', 'td', async function () {
             }
         }
         if(iscorrect){
-            var info =  await ajax_peticion("/query/equipos", {'data': JSON.stringify(data)}, "POST");
+            console.log(cosas);
+            console.log(JSON.stringify(cosas));
+            var info =  await ajax_peticion("/query/equipos", {'data': JSON.stringify(cosas)}, "POST");
         }
    
         // data = {"receptor":receptores,"grupo_agencias":grupos,"accion":"agencias_en_linea"};
