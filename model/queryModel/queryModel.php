@@ -3,8 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-class QueryModel{
-    
+class QueryModel{    
     function getFiltros($url){
         $usuario=json_decode($_SESSION["usuario"]);
         $filtros_consulta=Array(
@@ -136,7 +135,16 @@ class QueryModel{
         }else{
             $settings = "0";
         }
-        
+        $segunda_r=json_decode($settings["jsr"]);
+        foreach ( $segunda_r->filtros as $r){
+            if($r->tipo=="dclick"){
+                $_SESSION[$r->datos->id]=$r;
+            }else if($r->tipo=="rclick"){
+                foreach($r->datos->items as $key => $item){
+                    $_SESSION[$item->id]=$r->datos->items[$key];
+                }
+            }
+        }
         $info = array(
             "data"=> $data,
             "settings" => $settings
