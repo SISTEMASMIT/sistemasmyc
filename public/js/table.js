@@ -54,7 +54,9 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels){
             language: {
                 "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"
             },
-            "dom": 'Bftip',
+            
+            // dom: 'lifrtip',
+            "dom": '<"top"B>iftl<"bottom"p><"clear">',
             "buttons": [
 
             'pageLength', {

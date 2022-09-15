@@ -173,21 +173,27 @@ function getCurrentDate(){
 //     alert($(this).text());
 // });
 
-$('#tabla1 tbody').on('dblclick', 'td', function () {
+$('#tabla1 tbody').on('dblclick', 'td', async function () {
+    let data = [];
+    let iscorrect = false;
     var column = $(this).parent().children().index(this);
     if(isdclick){  
         for (let a = 0; a < dclick[0].length; a++) {
             if(dclick[0][a].label!='98'){
                 if (column==dclick[0][a].label){
+                    iscorrect=true;
                     parametros = dclick[0][a].datos["parametros"].split(",")
 
                     for (let i = 0; i < parametros.length; i++) {
                         if(Number.isInteger(parseInt(parametros[i]))){
+                            data[`c`+parametros[i]]=$(this).parent().find("td").eq(parseInt(parametros[i])).text();
+                            data[`comando`] = column ;
                             console.log($(this).parent().find("td").eq(parseInt(parametros[i])).text());
                         }
                     }
                 }
             }else{
+                iscorrect=true;
                 parametros = dclick[0][0].datos["parametros"].split(",")
                 for (let i = 0; i < parametros.length; i++) {
                     if(Number.isInteger(parseInt(parametros[i]))){
@@ -214,7 +220,13 @@ $('#tabla1 tbody').on('dblclick', 'td', function () {
                 }
             }
         }
-        
+        if(iscorrect){
+            var info =  await ajax_peticion("/query/equipos", {'data': JSON.stringify(data)}, "POST");
+        }
+   
+        // data = {"receptor":receptores,"grupo_agencias":grupos,"accion":"agencias_en_linea"};
+
+        // var info =  await ajax_peticion("/query/agencias_en_linea", {'data': JSON.stringify(data)}, "POST");
        
     }
     
