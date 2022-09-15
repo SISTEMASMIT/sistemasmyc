@@ -5,7 +5,7 @@
         <button type="button" class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#modalForm">Registrar</button>
             <?php
                     
-                    $pathlocal=$path.'/view/'.$this->url[0]."/componentes"."/";
+                    $pathlocal=$path.'/view'."/".$this->url[0]."/componentes"."/"."modals/";
                    // Abrimos la carpeta que nos pasan como parámetro
                     $dir = opendir($pathlocal);
                     // Leo todos los ficheros de la carpeta
