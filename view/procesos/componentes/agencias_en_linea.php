@@ -2,6 +2,10 @@
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
+<<<<<<< HEAD
+=======
+
+>>>>>>> ec341eed695b6a07cfa671420dbb1a6e8a095396
             <?php
                     
                     $pathlocal=$path.'/view'."/".$this->url[0]."/componentes"."/"."modals/";

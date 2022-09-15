@@ -108,7 +108,7 @@ class Importer
     {
     try {
             $html = "<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>" . $label . "</label>";
-            $html .="<input type='text' class='form-control form-control-lg' id='".strtolower(str_replace(" ","_",$label))."' >";
+            $html .="<input type='text' class='form-control form-control-lg' id='".strtolower(str_replace(" ","_",$json->id))."' >";
             $html .= "</div>";
             return $html;
         } catch (Exception $e) {

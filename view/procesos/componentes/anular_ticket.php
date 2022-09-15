@@ -2,7 +2,7 @@
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
-    
+        
             <?php
                     $pathlocal=$path.'/view'."/".$this->url[0]."/componentes"."/"."modals/";
                    // Abrimos la carpeta que nos pasan como parámetro
@@ -61,3 +61,4 @@
     </div>  <!--- page-content --->
 </div><!-- FIN CONTENIDO WEB -->
 <script type="module" src="<? $path;?>/public/js/<?php echo str_replace("-","_",$this->url[1])?>.js" ></script> 
+

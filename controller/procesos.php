@@ -53,6 +53,8 @@ class Procesos extends Controller
     }
     function buscar_numero(){
     }
+    function anular_ticket(){
+    }
 
     
 
