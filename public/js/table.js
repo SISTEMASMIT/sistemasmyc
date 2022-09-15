@@ -237,7 +237,7 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels){
                             .reduce(function (a, b) {
                                 return intVal(a) + intVal(b);
                             }, 0);
-                    $(api.column(colNo).footer()).html('TOTAL '+ total2+' ');
+                    $(api.column(colNo).footer()).html('<h5 class="total">TOTAL '+ total2+' </h5>');
                 }
             },
             
@@ -271,7 +271,12 @@ function crear_body(data){
     for(var i in data){
         body+=`<tr>`
         for(var a in data[i]){
-             body+=`<td>`+data[i][a]+`</td>`;
+            if(Number.isInteger(parseInt(data[i][a]))){
+                body+=`<td class="num_aling">`+data[i][a]+`</td>`;
+            }else{
+                body+=`<td>`+data[i][a]+`</td>`;
+            }
+             
         }
         body+=`</tr>`
     }

@@ -183,7 +183,7 @@ $('#tabla1 tbody').on('dblclick', 'td', function () {
 
                     for (let i = 0; i < parametros.length; i++) {
                         if(Number.isInteger(parseInt(parametros[i]))){
-                            console.log($(this).parent().find("td").eq(parseInt(parametros)).text());
+                            console.log($(this).parent().find("td").eq(parseInt(parametros[i])).text());
                         }
                     }
                 }
