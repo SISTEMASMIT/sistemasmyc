@@ -60,6 +60,6 @@ $path=$_SERVER['DOCUMENT_ROOT'];
     <!-- Custom Css-->
     <link href="<? $path;?>/public/css/custom.css" rel="stylesheet" type="text/css" />
   
-
-
+    <!-- data range picker -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 </head>

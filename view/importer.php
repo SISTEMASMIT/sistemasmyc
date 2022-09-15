@@ -93,12 +93,22 @@ class Importer
     }
 
     function input_int($label, $json)
-    {   if(!isset($_SESSION[strtolower(str_replace(" ","_",$label))])){
-        $_SESSION[strtolower(str_replace(" ","_",$label))]=json_encode($json);
-    }
+    {
     try {
-            $html = "<div class='col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 filtros'>";
+            $html = "<div class='col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 filtros'><label class='form-label'>" . $label . "</label>";
             $html .="<input class='form-control form-control-lg' id='".strtolower(str_replace(" ","_",$label))."'type='numeric' placeholder='Numero ".$label."'>";
+            $html .= "</div>";
+            return $html;
+        } catch (Exception $e) {
+            echo $e;
+        }
+    }
+    
+    function date($label, $json)
+    {
+    try {
+            $html = "<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>" . $label . "</label>";
+            $html .="<input type='text' class='form-control form-control-lg' id='".strtolower(str_replace(" ","_",$label))."' >";
             $html .= "</div>";
             return $html;
         } catch (Exception $e) {

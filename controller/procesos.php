@@ -51,6 +51,8 @@ class Procesos extends Controller
     }
     function lista_general(){
     }
+    function buscar_numero(){
+    }
 
     
 
