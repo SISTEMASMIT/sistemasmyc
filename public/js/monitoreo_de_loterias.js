@@ -6,6 +6,7 @@ var id='';
 var isdclick = false;
 var isrclick = false;
 var dclick = [];
+var dclickN = [];
 var rclick = [];
 var emergente = '';
 var parametros = [];
@@ -83,24 +84,30 @@ async function montar_tabla(){
     var info =  await ajax_peticion("/query/monitoreo", {'data': JSON.stringify(data)}, "POST");
     let set = Object.values(JSON.parse(info.settings.jsr));
 
-    console.log(set);
-
-
     let invisibles = [];
     let sumatorias = [];
     if(set.length > 0){
-        invisibles = set[0].find(function(x){    
+
+       invisibles = set[0].find(function(x){    
             return x.label == '96';
         });
 
         sumatorias = set[0].find(function(x){    
             return x.label == '97';
         });
-
         
-        dclick = set[0].find(function(x){    
-            return x.label == '98';
+        dclickN = set[0].find(function(x){    
+            return x.label != '98';
         });
+
+        dclick.push(set[0].filter(function(x){ 
+            if(x.label!='98' && x.label!='99' && x.label!='97' && x.label != '96'){
+                return x;
+            }else if(x.label=='98'){
+                return x;
+            }
+            
+        }));
 
         rclick = set[0].find(function(x){    
             return x.label == '99';
@@ -108,18 +115,17 @@ async function montar_tabla(){
 
         if(dclick!=undefined){
             isdclick=true;
-            comando = dclick.datos["comando"];
-            orden = dclick.datos["orden"];
-            etiquetas = dclick.datos["etiquetas"].split(",");
-            parametros = dclick.datos["parametros"];
-            emergente = dclick.datos["emergente"];
-            dclick = dclick.label;
+            // comando = dclick.datos["comando"];
+            // orden = dclick.datos["orden"];
+            // etiquetas = dclick.datos["etiquetas"].split(",");
+            // parametros = dclick.datos["parametros"].split(",");
+            // emergente = dclick.datos["emergente"];
+            // dclick = dclick.label;
         }
-        
+
         if(rclick!=undefined){
             isrclick=true;
         }
-        
 
         invisibles=invisibles.datos.c_invisible.split(",");
         invisibles = invisibles.map(function(x){    
@@ -131,10 +137,14 @@ async function montar_tabla(){
         sumatorias = sumatorias.map(function(x){    
             return parseInt(x);
         });  
+    }else{
+        isdclick=false;
+        isrclick=false;
     }
 
     let labels = {"Receptores":receptores,"Loterias":loterias,"Signo":signo,"Cifras":cifras};
     crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels);
+
 }
 
 
@@ -158,33 +168,159 @@ function getCurrentDate(){
     let f = `${day}/${month}/${year}`;
     return f;
 }
-$('#tabla1 tbody').on('dblclick', 'tr', function () {
-    if(isdclick){
-        for (let i = 0; i < etiquetas.length; i++) {
-            if(Number.isInteger(parseInt(etiquetas[i]))){
-                console.log($(this).find("td").eq(parseInt(etiquetas[i])).text());
-            }else{
-                if(etiquetas[i]=="f1"){
-                    if($("#"+etiquetas[i]).length < 1){
-                        let f = getCurrentDate();
-                        console.log(console.log(etiquetas[i]+ ": "+f));
-                    }else{
-                        console.log(etiquetas[i]+ ": "+$("#"+etiquetas[i]).daterangepicker());
-                    }       
-                }else if(etiquetas[i]=="f2"){
-                    if($("#"+etiquetas[i]).length < 1 ){
-                        let f = getCurrentDate();
-                        console.log(console.log(etiquetas[i]+ ": "+f));
-                    }else{
-                        console.log(etiquetas[i]+ ": "+$("#"+etiquetas[i]).daterangepicker());
+
+$('#tabla1 tbody').on('dblclick', 'td', async function () {
+    let data = [];
+    let key;
+    let value;
+    let cosas = [];
+    let iscorrect = false;
+    var column = $(this).parent().children().index(this);
+    if(isdclick){  
+        for (let a = 0; a < dclick[0].length; a++) {
+            if(dclick[0][a].label!='98'){
+                if (column==dclick[0][a].label){
+                    iscorrect=true;
+                    parametros = dclick[0][a].datos["parametros"].split(",")
+                    emergente = dclick[0][a].datos["emergente"];
+                    for (let i = 0; i < parametros.length; i++) {
+                        if(Number.isInteger(parseInt(parametros[i]))){
+                            key = `c`+parametros[i];
+                            value = $(this).parent().find("td").eq(parseInt(parametros[i])).text();
+                            data = {[key]:value};
+                            cosas.push(data);
+                            // data = {[key]:value,"comando":dclick[0][a].datos["id"]}
+                            // data[`c`+parametros[i]]=$(this).parent().find("td").eq(parseInt(parametros[i])).text();
+                            // data[`comando`] = dclick[0][a].datos["id"];
+                            console.log($(this).parent().find("td").eq(parseInt(parametros[i])).text());
+                        }
                     }
-                }else{
-                    console.log(etiquetas[i]+ ": "+$("#"+etiquetas[i]).selectpicker('val'));
-                } 
+                }
+            }else{
+                iscorrect=true;
+                parametros = dclick[0][0].datos["parametros"].split(",")
+                Object.assign(data,{"comando":dclick[0][a].datos["id"]});
+                for (let i = 0; i < parametros.length; i++) {
+                    if(Number.isInteger(parseInt(parametros[i]))){
+                        key = `c`+parametros[i];
+                        value = $(this).parent().find("td").eq(parseInt(parametros[i])).text();
+                        Object.assign(data,{[key]:value});
+                    }else{
+                        if(dclick[0][a].parametros[i]=="f1"){
+                            if($("#"+parametros[i]).length < 1){
+                                let f = getCurrentDate();
+                                console.log(console.log(parametros[i]+ ": "+f));
+                            }else{
+                                console.log(parametros[i]+ ": "+$("#"+parametros[i]).daterangepicker());
+                            }       
+                        }else if(parametros[i]=="f2"){
+                            if($("#"+parametros[i]).length < 1 ){
+                                let f = getCurrentDate();
+                                console.log(console.log(parametros[i]+ ": "+f));
+                            }else{
+                                console.log(parametros[i]+ ": "+$("#"+parametros[i]).daterangepicker());
+                            }
+                        }else{
+                            console.log(parametros[i]+ ": "+$('#'+parametros[i]).selectpicker('val'));
+                        } 
+                    }
+                }
             }
         }
+        if(iscorrect){
+            let algo=[];
+            algo[0]=data;
+            let keys = Object.getOwnPropertyNames(data).filter((x)=>{
+                return x!="length"?x:"";
+            });
+            let valores= Object.values(data);
+            let string="{";
+            keys.forEach((key,index)=>{
+                string+=`"${key}":"${valores[index]}",`;
+            })
+            string = string.slice(0, string.length - 1);
+            string+="}";
+            console.log(JSON.stringify(string));
+            var info =  await ajax_peticion("/query/monitorear_nro", {'data': string}, "POST");
+            let set = Object.values(JSON.parse(info.settings.jsr));
+            let invisibles = [];
+            let sumatorias = [];
+
+            if(set.length > 1){
+                console.log(set);
+
+
+
+                invisibles = set[0].find(function(x){    
+                    return x.label == '96';
+                });
+
+                sumatorias = set[0].find(function(x){    
+                    return x.label == '97';
+                });
+                
+                dclickN = set[0].find(function(x){    
+                    return x.label != '98';
+                });
+
+                dclick.push(set[0].filter(function(x){ 
+                    if(x.label!='98' && x.label!='99' && x.label!='97' && x.label != '96'){
+                        return x;
+                    }else if(x.label=='98'){
+                        return x;
+                    }
+                    
+                }));
+
+                rclick = set[0].find(function(x){    
+                    return x.label == '99';
+                });
+
+                if(dclick!=undefined){
+                    isdclick=true;
+                    
+                    console.log(dclick);
+                    // comando = dclick.datos["comando"];
+                    // orden = dclick.datos["orden"];
+                    // etiquetas = dclick.datos["etiquetas"].split(",");
+                    // parametros = dclick.datos["parametros"].split(",");
+                    // emergente = dclick.datos["emergente"];
+                    // dclick = dclick.label;
+                }
+
+                if(rclick!=undefined){
+                    isrclick=true;
+                }
+
+                invisibles=invisibles.datos.c_invisible.split(",");
+                invisibles = invisibles.map(function(x){    
+                    return parseInt(x);
+                });   
+
+                
+                sumatorias=sumatorias.datos.c_sumatoria.split(",");
+                sumatorias = sumatorias.map(function(x){    
+                    return parseInt(x);
+                });  
+
+            }else{
+                isdclick=false;
+                isrclick=false;
+            }
+
+            if(emergente=="tabla"){
+                let labels = {"Receptores":"0001","Agencias":"Busus"};
+                $('#tabla2').removeClass('invisible');
+                crear_tabla(info.data,"#tabla2","#thead2","#tbody2",isdclick,dclick,isrclick,invisibles,sumatorias,labels,"#monitorear_nro");
+               
+            }
+
+
+        }
+   
+
+       
     }
     
 }
 );
-

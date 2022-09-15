@@ -1,5 +1,5 @@
 var totalTime = 50;
-export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels){
+export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,modal){
    
     let html=``;
     let head =``;
@@ -247,6 +247,7 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels){
                 $("#load").removeClass("spinner");
                 $("#carga").removeClass("carga");
                 $("#carga").removeAttr( 'style' );
+                $(modal).modal('show');
                 totalTime = 50;
                 // updateClock();
                 

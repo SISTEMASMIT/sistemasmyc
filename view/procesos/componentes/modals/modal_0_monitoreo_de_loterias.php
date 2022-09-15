@@ -1,4 +1,4 @@
-<div class="modal fade" id="modalForm" tabindex="-1" aria-labelledby="exampleModalLabel" style="display: none;" aria-hidden="true">
+<div class="modal fade" id="monitorear_nro" tabindex="-1" aria-labelledby="exampleModalLabel" style="display: none;" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen" style="max-width: 100%;">
         <div class="modal-content">
             <div class="modal-header">

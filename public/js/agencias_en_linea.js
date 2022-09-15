@@ -115,8 +115,6 @@ async function montar_tabla(){
 
         if(dclick!=undefined){
             isdclick=true;
-            
-            console.log(dclick);
             // comando = dclick.datos["comando"];
             // orden = dclick.datos["orden"];
             // etiquetas = dclick.datos["etiquetas"].split(",");
@@ -186,13 +184,12 @@ $('#tabla1 tbody').on('dblclick', 'td', async function () {
                 if (column==dclick[0][a].label){
                     iscorrect=true;
                     parametros = dclick[0][a].datos["parametros"].split(",")
-
+                    emergente = dclick[0][a].datos["emergente"];
                     for (let i = 0; i < parametros.length; i++) {
                         if(Number.isInteger(parseInt(parametros[i]))){
                             key = `c`+parametros[i];
                             value = $(this).parent().find("td").eq(parseInt(parametros[i])).text();
-                            data = {key:value,"comando":dclick[0][a].datos["id"]}
-                            cosas.push(data);
+                            data = {[key]:value,"comando":dclick[0][a].datos["id"]}
                             // data[`c`+parametros[i]]=$(this).parent().find("td").eq(parseInt(parametros[i])).text();
                             // data[`comando`] = dclick[0][a].datos["id"];
                             console.log($(this).parent().find("td").eq(parseInt(parametros[i])).text());
@@ -228,14 +225,86 @@ $('#tabla1 tbody').on('dblclick', 'td', async function () {
             }
         }
         if(iscorrect){
-            console.log(cosas);
-            console.log(JSON.stringify(cosas));
-            var info =  await ajax_peticion("/query/equipos", {'data': JSON.stringify(cosas)}, "POST");
+
+            var info =  await ajax_peticion("/query/equipos", {'data': JSON.stringify(data)}, "POST");
+            
+            let set = Object.values(JSON.parse(info.settings.jsr));
+            let invisibles = [];
+            let sumatorias = [];
+
+            if(set.length > 1){
+                console.log(set);
+
+
+
+                invisibles = set[0].find(function(x){    
+                    return x.label == '96';
+                });
+
+                sumatorias = set[0].find(function(x){    
+                    return x.label == '97';
+                });
+                
+                dclickN = set[0].find(function(x){    
+                    return x.label != '98';
+                });
+
+                dclick.push(set[0].filter(function(x){ 
+                    if(x.label!='98' && x.label!='99' && x.label!='97' && x.label != '96'){
+                        return x;
+                    }else if(x.label=='98'){
+                        return x;
+                    }
+                    
+                }));
+
+                rclick = set[0].find(function(x){    
+                    return x.label == '99';
+                });
+
+                if(dclick!=undefined){
+                    isdclick=true;
+                    
+                    console.log(dclick);
+                    // comando = dclick.datos["comando"];
+                    // orden = dclick.datos["orden"];
+                    // etiquetas = dclick.datos["etiquetas"].split(",");
+                    // parametros = dclick.datos["parametros"].split(",");
+                    // emergente = dclick.datos["emergente"];
+                    // dclick = dclick.label;
+                }
+
+                if(rclick!=undefined){
+                    isrclick=true;
+                }
+
+                invisibles=invisibles.datos.c_invisible.split(",");
+                invisibles = invisibles.map(function(x){    
+                    return parseInt(x);
+                });   
+
+                
+                sumatorias=sumatorias.datos.c_sumatoria.split(",");
+                sumatorias = sumatorias.map(function(x){    
+                    return parseInt(x);
+                });  
+
+            }else{
+                isdclick=false;
+                isrclick=false;
+            }
+
+            if(emergente=="tabla"){
+                let labels = {"Receptores":"0001","Agencias":"Busus"};
+                $('#tabla2').removeClass('invisible');
+                crear_tabla(info.data,"#tabla2","#thead2","#tbody2",isdclick,dclick,isrclick,invisibles,sumatorias,labels,"#dispositivos");
+               
+            }
+
+
         }
    
-        // data = {"receptor":receptores,"grupo_agencias":grupos,"accion":"agencias_en_linea"};
 
-        // var info =  await ajax_peticion("/query/agencias_en_linea", {'data': JSON.stringify(data)}, "POST");
        
     }
     
