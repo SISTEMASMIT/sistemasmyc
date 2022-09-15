@@ -14,6 +14,7 @@ var etiquetas = [];
 var comando = '';
 var orden = '';
 $(document).ready(function () {
+
     var columns = 6;
     var rows = 10;
     var head = crear_head(columns);

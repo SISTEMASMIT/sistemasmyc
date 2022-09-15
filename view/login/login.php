@@ -151,8 +151,8 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                                     <label class="switch">
                                         <input type="checkbox" id="recordar2">
                                         <div class="slider round">
-                                            <span class="on">Si</span>
-                                            <span class="off">No</span>
+                                            <span class="on_login">Si</span>
+                                            <span class="off_login">No</span>
                                         </div>
                                     </label>
                                 </div>
@@ -262,8 +262,8 @@ $path=$_SERVER['DOCUMENT_ROOT'];
                                     <label class="switch">
                                     <input type="checkbox" id="recordar">
                                     <div class="slider round">
-                                        <span class="on">Si</span>
-                                        <span class="off">No</span>
+                                        <span class="on_login">Si</span>
+                                        <span class="off_login">No</span>
                                     </div>
                                     </label>
                                     <br>

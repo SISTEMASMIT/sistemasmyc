@@ -2,9 +2,8 @@
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
-
+        
             <?php
-                    
                     $pathlocal=$path.'/view'."/".$this->url[0]."/componentes"."/"."modals/";
                    // Abrimos la carpeta que nos pasan como parámetro
                     $dir = opendir($pathlocal);
@@ -30,7 +29,6 @@
                     <?php
                         if($this->filtros!=-1){
                             $array=json_decode($this->filtros[0]["jsr"]);
-                            
                             foreach($array->filtros as $filtro){
                                 if(method_exists($importer,$filtro->tipo)){
                                     echo $importer->{$filtro->tipo}($filtro->label,$filtro->datos);
@@ -45,7 +43,7 @@
                 
                 <div class="row">
                     <div id="carga"><div id="load"></div></div>
-                
+                    <div id="countdown"></div>
                     <div id="tabla_res" class="espaciadoT">
                         <div id="f"><table id="tablaf" class="cell-border nowrap" style="width:100%"></table></div>
                         <table id="tabla1" class="cell-border display nowrap invisible" style="width:100%">
@@ -62,4 +60,5 @@
         </div> <!-- container-fluid -->
     </div>  <!--- page-content --->
 </div><!-- FIN CONTENIDO WEB -->
-<script type="module" src="<? $path;?>/public/js/<?php echo str_replace("-","_",$this->url[1])?>.js" ></script>
+<script type="module" src="<? $path;?>/public/js/<?php echo str_replace("-","_",$this->url[1])?>.js" ></script> 
+

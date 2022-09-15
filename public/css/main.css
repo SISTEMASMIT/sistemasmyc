@@ -255,12 +255,12 @@ input:checked+.slider:before {
     transform: translateX(68px);
 }
 
-.on {
+.on_login {
     display: none;
 }
 
-.on,
-.off {
+.on_login,
+.off_login {
     color: white;
     position: absolute;
     transform: translate(-50%, -50%);
@@ -270,11 +270,11 @@ input:checked+.slider:before {
     font-family: Verdana, sans-serif;
 }
 
-input:checked+.slider .on {
+input:checked+.slider .on_login {
     display: block;
 }
 
-input:checked+.slider .off {
+input:checked+.slider .off_login {
     display: none;
 }
 
