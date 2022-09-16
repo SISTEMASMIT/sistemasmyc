@@ -3,8 +3,12 @@ import {crear_tabla} from "./table.js";
 var intervalo;
 
 var id='';
+var base="#base";
+var base_html="";
 var isdclick = false;
 var isrclick = false;
+var isdclick2 = false;
+var isrclick2 = false;
 var dclick = [];
 var dclickN = [];
 var rclick = [];
@@ -13,6 +17,9 @@ var parametros = [];
 var etiquetas = [];
 var comando = '';
 var orden = '';
+var vtn = [];
+var modal_id=1;
+
 $(document).ready(function () {
     var columns = 6;
     var rows = 10;
@@ -52,7 +59,16 @@ $(document).on('click', '#detener', async function() {
     clearInterval(intervalo);
 });
 
-
+$(document).on('click', '#close_modal',  function() {
+    $("modal"+modal_id).modal('hide');
+    modal_id--;
+    $(base).children().last().remove();
+    if($(base).children().length>1){
+        $(base).children().last().addClass("show");
+    }
+    $('.modal-backdrop').remove();
+    vtn.pop();
+});
 
 $(document).on('click', '#monitoreo_de_loterias', async function() {
     $('#tabla1').removeClass('invisible');
@@ -81,12 +97,12 @@ async function montar_tabla(){
     data = {"receptor":receptores,"signo":signo,"seleccion":loterias,"cifras":cifras,"monto":"0","limite":"1000","comando":"monitoreo_de_loterias"};
 
 
-    var info =  await ajax_peticion("/query/standar_query", {'data': JSON.stringify(data)}, "POST");
+    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
     let set = Object.values(JSON.parse(info.settings.jsr));
-
+    vtn.push(set);
     let invisibles = [];
     let sumatorias = [];
-    if(set.length > 0){
+    if(set[0].length > 1){
 
        invisibles = set[0].find(function(x){    
             return x.label == '96';
@@ -169,7 +185,8 @@ function getCurrentDate(){
     return f;
 }
 
-$('#tabla1 tbody').on('dblclick', 'td', async function () {
+$(document).on('dblclick', 'td', async function () {
+    let dclick = vtn[vtn.length -1 ];
     let data = [];
     let key;
     let value;
@@ -183,22 +200,23 @@ $('#tabla1 tbody').on('dblclick', 'td', async function () {
                     iscorrect=true;
                     parametros = dclick[0][a].datos["parametros"].split(",")
                     emergente = dclick[0][a].datos["emergente"];
+                    Object.assign(data,{"comando":dclick[0][a].datos["id"]});
                     for (let i = 0; i < parametros.length; i++) {
                         if(Number.isInteger(parseInt(parametros[i]))){
                             key = `c`+parametros[i];
                             value = $(this).parent().find("td").eq(parseInt(parametros[i])).text();
-                            data = {[key]:value};
-                            cosas.push(data);
+                            // data = {[key]:value};
+                            Object.assign(data,{[key]:value});
                             // data = {[key]:value,"comando":dclick[0][a].datos["id"]}
                             // data[`c`+parametros[i]]=$(this).parent().find("td").eq(parseInt(parametros[i])).text();
                             // data[`comando`] = dclick[0][a].datos["id"];
-                            console.log($(this).parent().find("td").eq(parseInt(parametros[i])).text());
                         }
                     }
                 }
             }else{
                 iscorrect=true;
-                parametros = dclick[0][0].datos["parametros"].split(",")
+                parametros = dclick[0][a].datos["parametros"].split(",")
+                emergente = dclick[0][a].datos["emergente"];
                 Object.assign(data,{"comando":dclick[0][a].datos["id"]});
                 for (let i = 0; i < parametros.length; i++) {
                     if(Number.isInteger(parseInt(parametros[i]))){
@@ -240,13 +258,12 @@ $('#tabla1 tbody').on('dblclick', 'td', async function () {
             })
             string = string.slice(0, string.length - 1);
             string+="}";
-            console.log(JSON.stringify(string));
-            var info =  await ajax_peticion("/query/standar_query", {'data': string}, "POST");
+            var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST");
             let set = Object.values(JSON.parse(info.settings.jsr));
             let invisibles = [];
             let sumatorias = [];
-
-            if(set.length > 1){
+            vtn.push(set);
+            if(set[0].length > 1){
                 console.log(set);
 
 
@@ -262,7 +279,7 @@ $('#tabla1 tbody').on('dblclick', 'td', async function () {
                 dclickN = set[0].find(function(x){    
                     return x.label != '98';
                 });
-
+                dclick =[];
                 dclick.push(set[0].filter(function(x){ 
                     if(x.label!='98' && x.label!='99' && x.label!='97' && x.label != '96'){
                         return x;
@@ -277,7 +294,7 @@ $('#tabla1 tbody').on('dblclick', 'td', async function () {
                 });
 
                 if(dclick!=undefined){
-                    isdclick=true;
+                    isdclick2=true;
                     
                     console.log(dclick);
                     // comando = dclick.datos["comando"];
@@ -289,7 +306,7 @@ $('#tabla1 tbody').on('dblclick', 'td', async function () {
                 }
 
                 if(rclick!=undefined){
-                    isrclick=true;
+                    isrclick2=true;
                 }
 
                 invisibles=invisibles.datos.c_invisible.split(",");
@@ -304,15 +321,21 @@ $('#tabla1 tbody').on('dblclick', 'td', async function () {
                 });  
 
             }else{
-                isdclick=false;
-                isrclick=false;
+                isdclick2=false;
+                isrclick2=false;
             }
 
             if(emergente=="tabla"){
+                if($(base).children().length>1){
+                    $(base).children().last().removeClass("show");
+                }
+                modal_id++;
+                let modal = $(base).children().first().html().replaceAll("{}",modal_id);
+                $(base).append(modal);
                 let labels = {"Receptores":"0001","Agencias":"Busus"};
-                $('#tabla2').removeClass('invisible');
-                crear_tabla(info.data,"#tabla2","#thead2","#tbody2",isdclick,dclick,isrclick,invisibles,sumatorias,labels,"#monitorear_nro");
-               
+                $('#tabla'+modal_id).removeClass('invisible');
+                crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,isdclick2,dclick,isrclick2,invisibles,sumatorias,labels,"#modal"+modal_id);
+                
             }
 
 

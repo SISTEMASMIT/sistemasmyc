@@ -5,6 +5,8 @@ var intervalo;
 var id='';
 var isdclick = false;
 var isrclick = false;
+var isdclick2 = false;
+var isrclick2 = false;
 var dclick = [];
 var dclickN = [];
 var rclick = [];
@@ -13,6 +15,7 @@ var parametros = [];
 var etiquetas = [];
 var comando = '';
 var orden = '';
+var vtn = [];
 $(document).ready(function () {
 
     var columns = 6;
@@ -53,7 +56,10 @@ $(document).on('click', '#detener', async function() {
     clearInterval(intervalo);
 });
 
-
+$(document).on('click', '#close_modal',  function() {
+    
+    vtn.pop();
+});
 
 $(document).on('click', '#agencias_en_linea', async function() {
     $('#tabla1').removeClass('invisible');
@@ -79,12 +85,12 @@ async function montar_tabla(){
     let grupos = $('#grupos').selectpicker('val');
 
     data = {"comando":"agencias_en_linea","receptor":receptores,"grupo_agencias":grupos,"ordenado":"cod"};
-    var info =  await ajax_peticion("/query/standar_query", {'data': JSON.stringify(data)}, "POST");
+    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
     let set = Object.values(JSON.parse(info.settings.jsr));
     let invisibles = [];
     let sumatorias = [];
-
-    if(set.length > 0){
+    vtn.push(set);
+    if(set[0].length > 1){
         console.log(set);
 
 
@@ -139,7 +145,11 @@ async function montar_tabla(){
             return parseInt(x);
         });  
 
+    }else{
+        isdclick=false;
+        isrclick=false;
     }
+
 
     
     let labels = {"Receptores":receptores,"Grupos":grupos};
@@ -172,7 +182,8 @@ function getCurrentDate(){
 //     alert($(this).text());
 // });
 
-$('#tabla1 tbody').on('dblclick', 'td', async function () {
+$('#tbody').on('dblclick', 'td', async function () {
+    let dclick = vtn[vtn.length -1 ];
     let data = [];
     let key;
     let value;
@@ -186,23 +197,29 @@ $('#tabla1 tbody').on('dblclick', 'td', async function () {
                     iscorrect=true;
                     parametros = dclick[0][a].datos["parametros"].split(",")
                     emergente = dclick[0][a].datos["emergente"];
+                    Object.assign(data,{"comando":dclick[0][a].datos["id"]});
                     for (let i = 0; i < parametros.length; i++) {
                         if(Number.isInteger(parseInt(parametros[i]))){
                             key = `c`+parametros[i];
                             value = $(this).parent().find("td").eq(parseInt(parametros[i])).text();
-                            data = {[key]:value,"comando":dclick[0][a].datos["id"]}
+                            // data = {[key]:value};
+                            Object.assign(data,{[key]:value});
+                            // data = {[key]:value,"comando":dclick[0][a].datos["id"]}
                             // data[`c`+parametros[i]]=$(this).parent().find("td").eq(parseInt(parametros[i])).text();
                             // data[`comando`] = dclick[0][a].datos["id"];
-                            console.log($(this).parent().find("td").eq(parseInt(parametros[i])).text());
                         }
                     }
                 }
             }else{
                 iscorrect=true;
-                parametros = dclick[0][0].datos["parametros"].split(",")
+                parametros = dclick[0][a].datos["parametros"].split(",")
+                emergente = dclick[0][a].datos["emergente"];
+                Object.assign(data,{"comando":dclick[0][a].datos["id"]});
                 for (let i = 0; i < parametros.length; i++) {
                     if(Number.isInteger(parseInt(parametros[i]))){
-                        console.log($(this).parent().find("td").eq(parseInt(parametros[i])).text());
+                        key = `c`+parametros[i];
+                        value = $(this).parent().find("td").eq(parseInt(parametros[i])).text();
+                        Object.assign(data,{[key]:value});
                     }else{
                         if(dclick[0][a].parametros[i]=="f1"){
                             if($("#"+parametros[i]).length < 1){
@@ -226,14 +243,26 @@ $('#tabla1 tbody').on('dblclick', 'td', async function () {
             }
         }
         if(iscorrect){
-
-            var info =  await ajax_peticion("/query/standar_query", {'data': JSON.stringify(data)}, "POST");
+            let algo=[];
+            algo[0]=data;
+            let keys = Object.getOwnPropertyNames(data).filter((x)=>{
+                return x!="length"?x:"";
+            });
+            let valores= Object.values(data);
+            let string="{";
+            keys.forEach((key,index)=>{
+                string+=`"${key}":"${valores[index]}",`;
+            })
+            string = string.slice(0, string.length - 1);
+            string+="}";
+            var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST");
             
             let set = Object.values(JSON.parse(info.settings.jsr));
+            vtn.push(set);
             let invisibles = [];
             let sumatorias = [];
 
-            if(set.length > 1){
+            if(set[0].length > 1){
                 console.log(set);
 
 
@@ -249,7 +278,7 @@ $('#tabla1 tbody').on('dblclick', 'td', async function () {
                 dclickN = set[0].find(function(x){    
                     return x.label != '98';
                 });
-
+                dclick =[];
                 dclick.push(set[0].filter(function(x){ 
                     if(x.label!='98' && x.label!='99' && x.label!='97' && x.label != '96'){
                         return x;
@@ -264,7 +293,7 @@ $('#tabla1 tbody').on('dblclick', 'td', async function () {
                 });
 
                 if(dclick!=undefined){
-                    isdclick=true;
+                    isdclick2=true;
                     
                     console.log(dclick);
                     // comando = dclick.datos["comando"];
@@ -276,7 +305,7 @@ $('#tabla1 tbody').on('dblclick', 'td', async function () {
                 }
 
                 if(rclick!=undefined){
-                    isrclick=true;
+                    isrclick2=true;
                 }
 
                 invisibles=invisibles.datos.c_invisible.split(",");
@@ -291,15 +320,15 @@ $('#tabla1 tbody').on('dblclick', 'td', async function () {
                 });  
 
             }else{
-                isdclick=false;
-                isrclick=false;
+                isdclick2=false;
+                isrclick2=false;
             }
 
             if(emergente=="tabla"){
                 let labels = {"Receptores":"0001","Agencias":"Busus"};
                 $('#tabla2').removeClass('invisible');
-                crear_tabla(info.data,"#tabla2","#thead2","#tbody2",isdclick,dclick,isrclick,invisibles,sumatorias,labels,"#dispositivos");
-               
+                crear_tabla(info.data,"#tabla2","#thead2","#tbody2",isdclick2,dclick,isrclick2,invisibles,sumatorias,labels,"#dispositivos");
+                
             }
 
 
