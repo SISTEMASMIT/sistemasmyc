@@ -24,7 +24,7 @@ class QueryModel{
         }
     }
 
-    function standar_query(){
+    function standard_query(){
         $usuario = json_decode($_SESSION["usuario"]);
         $data = json_decode($_POST["data"]);
         $comando =$data->comando;

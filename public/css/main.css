@@ -39,6 +39,10 @@
 .tamano{
     font-size: 30px;
 }
+
+.mb2{
+    text-align: left !important;
+}
 .modal-body{
     text-align: center;
 }

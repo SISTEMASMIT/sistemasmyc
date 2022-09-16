@@ -27,7 +27,7 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,m
     $(tb).append(
         $('<tfoot/>').append( $(tb+" thead tr").clone() )
     );
-        $(tb).DataTable({   
+    var table = $(tb).DataTable({   
 
             //configurar el hover del dclick
             rowCallback: function(row, data, index){
@@ -155,9 +155,9 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,m
             // },
             {
                 extend: 'print',
-                text: 'Imprimir',
+                text: '<i class="fa-solid fa-print"></i> Imprimir',
                 footer: true,
-                className: 'btn-outline-secondary btn-sm ', 
+                className: 'btn-info btn-sm ', 
                 autoPrint: true,
                 customize: function ( win ) {
                     var hoy = new Date();
@@ -201,10 +201,11 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,m
             },
             {
                 extend: 'excelHtml5',
+                text: '<i class="fa-solid fa-file-excel"></i> Excel',
                 stripHtml: false,
                 footer: true,
                 messageTop: msj,
-                className: 'btn-outline-success btn-sm ', 
+                className: 'btn-success btn-sm ', 
                 exportOptions: {
                     columns: vis,
                     modifier: {
@@ -217,7 +218,6 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,m
             "lengthMenu": [ [10, 50, 100, -1], [10, 50, 100, "Todos"] ],
             "responsive": false,
             // "select": true,
-            
             "footerCallback": function (row, data, start, end, display) {
                 if(isNaN(sum)){
                     sum=[];
@@ -254,6 +254,12 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,m
                 
             }
          });
+         
+
+            
+        //  table.columns.adjust().draw();
+
+
 
     
 
