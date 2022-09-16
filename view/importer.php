@@ -80,7 +80,7 @@ class Importer
             $json->id=$label;
         }
         if(!isset($_SESSION[strtolower(str_replace(" ","_",$json->id))])){
-            $_SESSION[strtolower(str_replace(" ","_",$json->id))]=json_encode($json);
+            $_SESSION[strtolower(str_replace(" ","_",$json->id))]=$json;
         }
         try {
             $html = "<div class='col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 filtros'>";

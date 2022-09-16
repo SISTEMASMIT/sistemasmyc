@@ -74,12 +74,12 @@ async function montar_tabla(){
     $("#carga").height( h );
     $("#load").addClass('spinner');
     let data = [];
+    let data2 = [];
     let receptores = $('#receptores').selectpicker('val');
     let grupos = $('#grupos').selectpicker('val');
 
-    data = {"receptor":receptores,"grupo_agencias":grupos,"accion":"agencias_en_linea"};
-    
-    var info =  await ajax_peticion("/query/agencias_en_linea", {'data': JSON.stringify(data)}, "POST");
+    data = {"comando":"agencias_en_linea","receptor":receptores,"grupo_agencias":grupos,"ordenado":"cod"};
+    var info =  await ajax_peticion("/query/standar_query", {'data': JSON.stringify(data)}, "POST");
     let set = Object.values(JSON.parse(info.settings.jsr));
     let invisibles = [];
     let sumatorias = [];
@@ -227,7 +227,7 @@ $('#tabla1 tbody').on('dblclick', 'td', async function () {
         }
         if(iscorrect){
 
-            var info =  await ajax_peticion("/query/equipos", {'data': JSON.stringify(data)}, "POST");
+            var info =  await ajax_peticion("/query/standar_query", {'data': JSON.stringify(data)}, "POST");
             
             let set = Object.values(JSON.parse(info.settings.jsr));
             let invisibles = [];

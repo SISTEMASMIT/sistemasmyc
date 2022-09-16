@@ -78,10 +78,10 @@ async function montar_tabla(){
     let cifras = $('#cifras').selectpicker('val');
     let signo = $('#signo').selectpicker('val');
 
-    data = {"receptor":receptores,"signo":signo,"seleccion":loterias,"cifras":cifras,"monto":"0","limite":"1000","accion":"monitoreo_de_loterias"};
+    data = {"receptor":receptores,"signo":signo,"seleccion":loterias,"cifras":cifras,"monto":"0","limite":"1000","comando":"monitoreo_de_loterias"};
 
 
-    var info =  await ajax_peticion("/query/monitoreo", {'data': JSON.stringify(data)}, "POST");
+    var info =  await ajax_peticion("/query/standar_query", {'data': JSON.stringify(data)}, "POST");
     let set = Object.values(JSON.parse(info.settings.jsr));
 
     let invisibles = [];
@@ -241,7 +241,7 @@ $('#tabla1 tbody').on('dblclick', 'td', async function () {
             string = string.slice(0, string.length - 1);
             string+="}";
             console.log(JSON.stringify(string));
-            var info =  await ajax_peticion("/query/monitorear_nro", {'data': string}, "POST");
+            var info =  await ajax_peticion("/query/standar_query", {'data': string}, "POST");
             let set = Object.values(JSON.parse(info.settings.jsr));
             let invisibles = [];
             let sumatorias = [];
