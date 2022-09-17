@@ -29,7 +29,7 @@ class Mensajeria extends Controller
                     $this->loadModel("homeModel");
                     $this->view->data["menu"]=$this->model->niveles();
                     $this->loadModel("queryModel");
-                    $this->view->filtros=$this->model->getFiltros($url[1]);
+                    $this->view->filtros=$this->model->getFiltros($url[0]."/".$url[1]);
                     $this->view->data["nombreComponente"] = "view/".$url[0]."/componentes"."/".$url2.".php";
                     $this->view->title = strtoupper(str_replace("_"," ",$url2));
                     $this->view->render($url[0]."/".$url[0]);
