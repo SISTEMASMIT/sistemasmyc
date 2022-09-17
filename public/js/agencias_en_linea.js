@@ -332,9 +332,15 @@ $(document).on('dblclick', 'td', async function () {
             }
 
             if(emergente=="tabla"){
+                if($(base).children().length>1){
+                    $(base).children().last().removeClass("show");
+                }
+                modal_id++;
+                let modal = $(base).children().first().html().replaceAll("{}",modal_id);
+                $(base).append(modal);
                 let labels = {"Receptores":"0001","Agencias":"Busus"};
-                $('#tabla2').removeClass('invisible');
-                crear_tabla(info.data,"#tabla2","#thead2","#tbody2",isdclick2,dclick,isrclick2,invisibles,sumatorias,labels,"#dispositivos");
+                $('#tabla'+modal_id).removeClass('invisible');
+                crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,isdclick2,dclick,isrclick2,invisibles,sumatorias,labels,"#modal"+modal_id);
                 
             }
 

@@ -5,13 +5,14 @@ error_reporting(E_ALL);
 
 class QueryModel{    
     function getFiltros($url){
+        $url=trim($url,"");
         $usuario=json_decode($_SESSION["usuario"]);
         $filtros_consulta=Array(
             "comando"=>$url,
             "usuario"=>$usuario->user,
             "token"=>$usuario->token
         );
-        $consulta_filtros = json_encode($filtros_consulta);
+        $consulta_filtros = json_encode($filtros_consulta,JSON_UNESCAPED_SLASHES);
         $sql = "CALL bl_parametros(:consulta_filtros)";
         $this->conexion=conexion::getConexion();
         $statemant=$this->conexion->prepare($sql);
