@@ -4,7 +4,7 @@
     <div class="modal-dialog modal-fullscreen" style="max-width: 100%;">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel"></h5>
+                <div id="titulo"><h5 class="modal-title" id="">#</h5></div>
                 <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body mb2">

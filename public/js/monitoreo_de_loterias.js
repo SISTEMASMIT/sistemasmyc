@@ -4,6 +4,7 @@ var intervalo;
 
 var id='';
 var base="#base";
+var titulo ="#titulo";
 var base_html="";
 var isdclick = false;
 var isrclick = false;
@@ -18,6 +19,7 @@ var etiquetas = [];
 var comando = '';
 var orden = '';
 var vtn = [];
+var etq = [];
 var modal_id=1;
 
 $(document).ready(function () {
@@ -69,6 +71,7 @@ $(document).on('hidden.bs.modal', '#base', function() {
     }
     // $('.modal-backdrop').removeClass('show');
     vtn.pop();
+    etq.pop();
 });
 
 // $('#base').on('hidden.bs.modal', function () {
@@ -115,6 +118,7 @@ async function montar_tabla(){
 
     var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
     let set = Object.values(JSON.parse(info.settings.jsr));
+    etq.push(info.data.head);
     vtn.push(set);
     let invisibles = [];
     let sumatorias = [];
@@ -243,7 +247,7 @@ $(document).on('dblclick', 'td', async function () {
                         value = $(this).parent().find("td").eq(parseInt(parametros[i])).text();
                         Object.assign(data,{[key]:value});
                     }else{
-                        if(dclick[0][a].parametros[i]=="f1"){
+                        if(parametros[i]=="f1"){
                             if($("#"+parametros[i]).length < 1){
                                 let f = getCurrentDate();
                                 Object.assign(data,{[parametros[i]]:f});
@@ -270,30 +274,32 @@ $(document).on('dblclick', 'td', async function () {
                 //Saco las etiquetas
                 for (let i = 0; i < etiquetas.length; i++) {
                     if(Number.isInteger(parseInt(etiquetas[i]))){
-                        key = `c`+etiquetas[i];
+                        // key = `c`+etiquetas[i];
+                        key = etq[0][etiquetas[i]];
                         value = $(this).parent().find("td").eq(parseInt(etiquetas[i])).text();
                         Object.assign(etiq,{[key]:value});
                     }else{
-                        if(dclick[0][a].etiquetas[i]=="f1"){
+                        if(etiquetas[i]=="f1"){
                             if($("#"+etiquetas[i]).length < 1){
                                 let f = getCurrentDate();
-                                Object.assign(etiq,{[etiquetas[i]]:f});
+                                Object.assign(etiq,{Fecha :f});
                                 console.log(console.log(etiquetas[i]+ ": "+f));
                             }else{
-                                Object.assign(etiq,{[etiquetas[i]]:$('#'+etiquetas[i]).daterangepicker()});
+                                Object.assign(etiq,{Fecha :$('#'+etiquetas[i]).daterangepicker()});
                                 console.log(etiquetas[i]+ ": "+$("#"+etiquetas[i]).daterangepicker());
                             }       
                         }else if(etiquetas[i]=="f2"){
                             if($("#"+etiquetas[i]).length < 1 ){
                                 let f = getCurrentDate();
-                                Object.assign(etiq,{[etiquetas[i]]:f});
+                                Object.assign(etiq,{Fecha2 :f});
                                 console.log(console.log(etiquetas[i]+ ": "+f));
                             }else{
-                                Object.assign(etiq,{[etiquetas[i]]:$("#"+etiquetas[i]).daterangepicker()});
+                                Object.assign(etiq,{Fecha2 :$("#"+etiquetas[i]).daterangepicker()});
                                 console.log(etiquetas[i]+ ": "+$("#"+etiquetas[i]).daterangepicker());
                             }
                         }else{
-                            Object.assign(etiq,{[etiquetas[i]]:$('#'+etiquetas[i]).selectpicker('val')});
+                            let str = etiquetas[i];
+                            Object.assign(etiq,{[str.charAt(0).toUpperCase()+str.slice(1)]:$('#'+etiquetas[i]).selectpicker('val')});
                             console.log(etiquetas[i]+ ": "+$('#'+etiquetas[i]).selectpicker('val'));
                         } 
                     }
@@ -301,6 +307,7 @@ $(document).on('dblclick', 'td', async function () {
             }
         }
         if(iscorrect){
+            //Convierto para que se envien los parametros
             let algo=[];
             algo[0]=data;
             let keys = Object.getOwnPropertyNames(data).filter((x)=>{
@@ -317,6 +324,7 @@ $(document).on('dblclick', 'td', async function () {
             let set = Object.values(JSON.parse(info.settings.jsr));
             let invisibles = [];
             let sumatorias = [];
+            etq.push(info.data.head);
             vtn.push(set);
             if(set[0].length > 1){
                 console.log(set);
@@ -381,13 +389,34 @@ $(document).on('dblclick', 'td', async function () {
             }
 
             if(emergente=="tabla"){
+                console.log(etiq);
+                //Convierto para que se envien las etiquetas
+                let algo=[];
+                algo[0]=etiq;
+                let keys = Object.getOwnPropertyNames(etiq).filter((x)=>{
+                    return x!="length"?x:"";
+                });
+                let valores= Object.values(etiq);
+                let string="{";
+                keys.forEach((key,index)=>{
+                    string+=`"${key}":"${valores[index]}",`;
+                })
+                string = string.slice(0, string.length - 1);
+                string+="}";
+
+                let labels = JSON.parse(string);
+                console.log(labels.length);
                 if($(base).children().length>1){
                     $(base).children().last().removeClass("show");
                 }
                 modal_id++;
+                let encabezado = `<label>`+labels["Receptores"]+`</label>`;
                 let modal = $(base).children().first().html().replaceAll("{}",modal_id);
+                // let encabezado = $(modal).children().first().html().replaceAll("#",labels["Receptor"]);
+
                 $(base).append(modal);
-                let labels = {"Receptores":"0001","Agencias":"Busus"};
+                $(titulo).append(encabezado);
+                // let labels = {"Receptores":"0001","Agencias":"Busus"};
                 $('#tabla'+modal_id).removeClass('invisible');
                 crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,isdclick2,dclick,isrclick2,invisibles,sumatorias,labels,"#modal"+modal_id);
                 
