@@ -59,16 +59,32 @@ $(document).on('click', '#detener', async function() {
     clearInterval(intervalo);
 });
 
-$(document).on('click', '#close_modal',  function() {
-    $("modal"+modal_id).modal('hide');
+$(document).on('hidden.bs.modal', '#base', function() {
     modal_id--;
     $(base).children().last().remove();
     if($(base).children().length>1){
+        $('.modal-backdrop').addClass('show');
+        $(base).children().last().addClass("fade");
         $(base).children().last().addClass("show");
     }
-    $('.modal-backdrop').remove();
+    // $('.modal-backdrop').removeClass('show');
     vtn.pop();
 });
+
+// $('#base').on('hidden.bs.modal', function () {
+//     // do something…
+//   })
+
+// $(document).on('click', '#close_modal',  function() {
+//     $("modal"+modal_id).modal('hide');
+//     modal_id--;
+//     $(base).children().last().remove();
+//     if($(base).children().length>1){
+//         $(base).children().last().addClass("show");
+//     }
+//     $('.modal-backdrop').remove();
+//     vtn.pop();
+// });
 
 $(document).on('click', '#monitoreo_de_loterias', async function() {
     $('#tabla1').removeClass('invisible');
