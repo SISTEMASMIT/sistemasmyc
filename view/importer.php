@@ -17,9 +17,9 @@ class Importer
                 }
                 if ($key == 0) {
                     $html .= "<option value='Todos' selected>Todos</option>";
-                    $html .= "<option value=" . $select->id . " data-subtext=" . $select->label . ">" . $select->id . "</option>";
+                    $html .= "<option value=" . $select->id . " data-subtext=" . $select->label . " title=" . $select->label . ">" . $select->id . "</option>";
                 } else {
-                    $html .= "<option value=" . $select->id . " data-subtext=" . $select->label . ">" . $select->id . "</option>";
+                    $html .= "<option value=" . $select->id . " data-subtext=" . $select->label . " title=" . $select->label . ">" . $select->id . "</option>";
                 }
             }
             $html .= "</select></div>";
@@ -33,7 +33,7 @@ class Importer
     {
         try {
             $html = "<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>" . $label . "</label>";
-            $html .= "<select class='selectpicker' id=".strtolower(str_replace(" ","_",$label))." data-live-search='true' multiple>";
+            $html .= "<select class='selectpicker' id=".strtolower(str_replace(" ","_",$label))." data-live-search='true' data-selected-text-format='count' multiple>";
             foreach ($json as $key => $select) {
                 if (!isset($select->id)) {
                     $select->id = $select->label;
