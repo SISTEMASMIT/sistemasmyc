@@ -56,8 +56,15 @@ $(document).on('click', '#detener', async function() {
     clearInterval(intervalo);
 });
 
-$(document).on('click', '#close_modal',  function() {
-    
+$(document).on('hidden.bs.modal', '#base', function() {
+    modal_id--;
+    $(base).children().last().remove();
+    if($(base).children().length>1){
+        $('.modal-backdrop').addClass('show');
+        $(base).children().last().addClass("fade");
+        $(base).children().last().addClass("show");
+    }
+    // $('.modal-backdrop').removeClass('show');
     vtn.pop();
 });
 
@@ -182,7 +189,7 @@ function getCurrentDate(){
 //     alert($(this).text());
 // });
 
-$('#tbody').on('dblclick', 'td', async function () {
+$(document).on('dblclick', 'td', async function () {
     let dclick = vtn[vtn.length -1 ];
     let data = [];
     let key;
