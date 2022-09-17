@@ -16,6 +16,8 @@ var etiquetas = [];
 var comando = '';
 var orden = '';
 var vtn = [];
+var modal_id=1;
+
 $(document).ready(function () {
 
     var columns = 6;

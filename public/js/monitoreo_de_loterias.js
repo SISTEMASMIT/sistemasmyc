@@ -204,6 +204,7 @@ function getCurrentDate(){
 $(document).on('dblclick', 'td', async function () {
     let dclick = vtn[vtn.length -1 ];
     let data = [];
+    let etiq = [];
     let key;
     let value;
     let cosas = [];
@@ -215,6 +216,7 @@ $(document).on('dblclick', 'td', async function () {
                 if (column==dclick[0][a].label){
                     iscorrect=true;
                     parametros = dclick[0][a].datos["parametros"].split(",")
+                    etiquetas = dclick[0][a].datos["etiquetas"].split(",")
                     emergente = dclick[0][a].datos["emergente"];
                     Object.assign(data,{"comando":dclick[0][a].datos["id"]});
                     for (let i = 0; i < parametros.length; i++) {
@@ -233,6 +235,7 @@ $(document).on('dblclick', 'td', async function () {
                 iscorrect=true;
                 parametros = dclick[0][a].datos["parametros"].split(",")
                 emergente = dclick[0][a].datos["emergente"];
+                etiquetas = dclick[0][a].datos["etiquetas"].split(",")
                 Object.assign(data,{"comando":dclick[0][a].datos["id"]});
                 for (let i = 0; i < parametros.length; i++) {
                     if(Number.isInteger(parseInt(parametros[i]))){
@@ -243,19 +246,55 @@ $(document).on('dblclick', 'td', async function () {
                         if(dclick[0][a].parametros[i]=="f1"){
                             if($("#"+parametros[i]).length < 1){
                                 let f = getCurrentDate();
+                                Object.assign(data,{[parametros[i]]:f});
                                 console.log(console.log(parametros[i]+ ": "+f));
                             }else{
+                                Object.assign(data,{[parametros[i]]:$('#'+parametros[i]).daterangepicker()});
                                 console.log(parametros[i]+ ": "+$("#"+parametros[i]).daterangepicker());
                             }       
                         }else if(parametros[i]=="f2"){
                             if($("#"+parametros[i]).length < 1 ){
                                 let f = getCurrentDate();
+                                Object.assign(data,{[parametros[i]]:f});
                                 console.log(console.log(parametros[i]+ ": "+f));
                             }else{
+                                Object.assign(data,{[parametros[i]]:$("#"+parametros[i]).daterangepicker()});
                                 console.log(parametros[i]+ ": "+$("#"+parametros[i]).daterangepicker());
                             }
                         }else{
+                            Object.assign(data,{[parametros[i]]:$('#'+parametros[i]).selectpicker('val')});
                             console.log(parametros[i]+ ": "+$('#'+parametros[i]).selectpicker('val'));
+                        } 
+                    }
+                }
+                //Saco las etiquetas
+                for (let i = 0; i < etiquetas.length; i++) {
+                    if(Number.isInteger(parseInt(etiquetas[i]))){
+                        key = `c`+etiquetas[i];
+                        value = $(this).parent().find("td").eq(parseInt(etiquetas[i])).text();
+                        Object.assign(etiq,{[key]:value});
+                    }else{
+                        if(dclick[0][a].etiquetas[i]=="f1"){
+                            if($("#"+etiquetas[i]).length < 1){
+                                let f = getCurrentDate();
+                                Object.assign(etiq,{[etiquetas[i]]:f});
+                                console.log(console.log(etiquetas[i]+ ": "+f));
+                            }else{
+                                Object.assign(etiq,{[etiquetas[i]]:$('#'+etiquetas[i]).daterangepicker()});
+                                console.log(etiquetas[i]+ ": "+$("#"+etiquetas[i]).daterangepicker());
+                            }       
+                        }else if(etiquetas[i]=="f2"){
+                            if($("#"+etiquetas[i]).length < 1 ){
+                                let f = getCurrentDate();
+                                Object.assign(etiq,{[etiquetas[i]]:f});
+                                console.log(console.log(etiquetas[i]+ ": "+f));
+                            }else{
+                                Object.assign(etiq,{[etiquetas[i]]:$("#"+etiquetas[i]).daterangepicker()});
+                                console.log(etiquetas[i]+ ": "+$("#"+etiquetas[i]).daterangepicker());
+                            }
+                        }else{
+                            Object.assign(etiq,{[etiquetas[i]]:$('#'+etiquetas[i]).selectpicker('val')});
+                            console.log(etiquetas[i]+ ": "+$('#'+etiquetas[i]).selectpicker('val'));
                         } 
                     }
                 }
