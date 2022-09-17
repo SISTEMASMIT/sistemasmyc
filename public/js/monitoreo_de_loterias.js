@@ -222,6 +222,7 @@ $(document).on('dblclick', 'td', async function () {
                     parametros = dclick[0][a].datos["parametros"].split(",")
                     etiquetas = dclick[0][a].datos["etiquetas"].split(",")
                     emergente = dclick[0][a].datos["emergente"];
+                    comando = dclick[0][a].datos["id"];
                     Object.assign(data,{"comando":dclick[0][a].datos["id"]});
                     for (let i = 0; i < parametros.length; i++) {
                         if(Number.isInteger(parseInt(parametros[i]))){
@@ -240,6 +241,7 @@ $(document).on('dblclick', 'td', async function () {
                 parametros = dclick[0][a].datos["parametros"].split(",")
                 emergente = dclick[0][a].datos["emergente"];
                 etiquetas = dclick[0][a].datos["etiquetas"].split(",")
+                comando = dclick[0][a].datos["id"];
                 Object.assign(data,{"comando":dclick[0][a].datos["id"]});
                 for (let i = 0; i < parametros.length; i++) {
                     if(Number.isInteger(parseInt(parametros[i]))){
@@ -389,7 +391,7 @@ $(document).on('dblclick', 'td', async function () {
             }
 
             if(emergente=="tabla"){
-                console.log(etiq);
+
                 //Convierto para que se envien las etiquetas
                 let algo=[];
                 algo[0]=etiq;
@@ -404,21 +406,26 @@ $(document).on('dblclick', 'td', async function () {
                 string = string.slice(0, string.length - 1);
                 string+="}";
 
-                let labels = JSON.parse(string);
-                console.log(labels.length);
+                
                 if($(base).children().length>1){
                     $(base).children().last().removeClass("show");
                 }
                 modal_id++;
-                let encabezado = `<label>`+labels["Receptores"]+`</label>`;
+                // let encabezado = `<label>`+labels["Receptores"]+`</label>`;
                 let modal = $(base).children().first().html().replaceAll("{}",modal_id);
-                // let encabezado = $(modal).children().first().html().replaceAll("#",labels["Receptor"]);
-
+                let modalsplit=modal.split("*");
+                let string_divs="";
+                keys.forEach((key,index)=>{
+                    string_divs+=`<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><p><label>${key}</label>:<label>${valores[index]}</label></p></div>`;
+                })
+                modalsplit[1]=string_divs;
+                modal=modalsplit.join("");
+                modal=modal.replaceAll("#",comando.charAt(0).toUpperCase()+comando.slice(1).replaceAll("_"," "));
                 $(base).append(modal);
-                $(titulo).append(encabezado);
-                // let labels = {"Receptores":"0001","Agencias":"Busus"};
+                // $(titulo).append(encabezado);
+                let labels = {"Receptores":"0001","Agencias":"Busus"};
                 $('#tabla'+modal_id).removeClass('invisible');
-                crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,isdclick2,dclick,isrclick2,invisibles,sumatorias,labels,"#modal"+modal_id);
+                crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,isdclick2,dclick,isrclick2,invisibles,sumatorias,string,"#modal"+modal_id);
                 
             }
 
