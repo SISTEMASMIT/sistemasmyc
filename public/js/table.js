@@ -8,7 +8,7 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,m
     body = crear_body(parametro.data);
     await $(tb).DataTable().clear();    
     await $(tb).DataTable().destroy();
-    $("tfoot").remove();    
+    $(tb +"tfoot").remove();    
     html += head+body;
     $(hd).html(head);
     $(bd).html(body);
@@ -244,12 +244,20 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,m
             },
             
             initComplete: function () {
+                $(modal).modal('show');
                 $("#load").removeClass("spinner");
                 $("#carga").removeClass("carga");
                 $("#carga").removeAttr( 'style' );
-                $(modal).modal('show');
+                
                 totalTime = 50;
+                // table.columns.adjust().draw();
                 // updateClock();
+                if(tb!="#tabla1"){
+                    setTimeout(function() { 
+                        $(tb).DataTable().columns.adjust();
+                    }, 200);
+                }
+                
                 
                 
             }

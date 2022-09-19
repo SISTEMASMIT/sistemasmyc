@@ -61,6 +61,13 @@ $(document).on('click', '#detener', async function() {
     clearInterval(intervalo);
 });
 
+
+$(document).on('show.bs.modal', function() {
+    
+});
+
+
+
 $(document).on('hidden.bs.modal', '#base', function() {
     modal_id--;
     $(base).children().last().remove();
