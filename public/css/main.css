@@ -23,6 +23,10 @@
     background-color: rgb(168, 203, 207);
 }
 
+.rclick:hover{
+    color: rgb(255, 0, 0);
+}
+
 
 .card{
     background-color: #ffffff !important;

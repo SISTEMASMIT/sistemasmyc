@@ -1,5 +1,5 @@
 var totalTime = 50;
-export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,modal){
+export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,rc,inv,sum,labels,modal){
    
     let html=``;
     let head =``;
@@ -41,6 +41,9 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,m
                     }         
                 }
                 
+            }
+            if(isr){
+                $(row).addClass('rclick');
             }
             //   if(data[2].toUpperCase() == 'EE'){
             //       $(row).find('td:eq(2)').css('color', 'blue');

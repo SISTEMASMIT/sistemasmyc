@@ -12,7 +12,6 @@ var isrclick = false;
 var isdclick2 = false;
 var isrclick2 = false;
 var dclick = [];
-var dclickN = [];
 var rclick = [];
 var emergente = '';
 var parametros = [];
@@ -76,7 +75,11 @@ $(document).on('hidden.bs.modal', '#base', function() {
 
 $(document).on('click', '#buscar_numero', async function() {
    $('#tabla1').removeClass('invisible');
-   montar_tabla();
+   if($('#numero').val()!=''){
+        montar_tabla();
+   }else{
+    $('#numero').attr("placeholder", "Ingrese un Número").placeholder();
+   }
 });
 
 async function montar_tabla(){
@@ -113,9 +116,6 @@ async function montar_tabla(){
            return x.label == '97';
       });
        
-      dclickN = set[0].find(function(x){    
-           return x.label != '98';
-      });
 
        dclick.push(set[0].filter(function(x){ 
            if(x.label!='98' && x.label!='99' && x.label!='97' && x.label != '96'){
@@ -123,21 +123,15 @@ async function montar_tabla(){
            }else if(x.label=='98'){
                return x;
            }
-           
        }));
 
-       rclick = set[0].find(function(x){    
-           return x.label == '99';
-       });
+        rclick = set[0].find(function(x){    
+            return x.label == '99';
+        });
+    
 
-       if(dclick!=undefined){
+       if(dclick[0]!=undefined){
            isdclick=true;
-           // comando = dclick.datos["comando"];
-           // orden = dclick.datos["orden"];
-           // etiquetas = dclick.datos["etiquetas"].split(",");
-           // parametros = dclick.datos["parametros"].split(",");
-           // emergente = dclick.datos["emergente"];
-           // dclick = dclick.label;
        }
 
        if(rclick!=undefined){
@@ -166,9 +160,12 @@ async function montar_tabla(){
        isdclick=false;
        isrclick=false;
    }
-
+   rclick={label:99};
+   isrclick=true;
+   console.log(dclick);
+   console.log(rclick);
    let labels = {"Receptores":receptores,"Loterias_Mix":loterias,"Fecha":f1,"Número":numero};
-   crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels);
+   crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,rclick,invisibles,sumatorias,labels);
 
 }
 
@@ -314,9 +311,6 @@ $(document).on('dblclick', 'td', async function () {
                    return x.label == '97';
                });
                
-               dclickN = set[0].find(function(x){    
-                   return x.label != '98';
-               });
                dclick =[];
                dclick.push(set[0].filter(function(x){ 
                    if(x.label!='98' && x.label!='99' && x.label!='97' && x.label != '96'){
@@ -419,3 +413,63 @@ $(document).on('dblclick', 'td', async function () {
    
 }
 );
+
+
+//Click Derecho
+
+
+$(document).on('contextmenu', 'td', function (e) {
+    if(isrclick){
+        var elementos=[];
+        elementos  =  {"item":"abrir enlace,/home","item2":"abrir reporte,/inactividad"};
+        let html = abrirMenu(elementos);
+        console.log(html);
+        $("#menuTabla").html(html);
+        const bd = document.body.classList.contains(
+            'sidebar-enable'
+        );
+
+        $('td').css('box-shadow', 'none');
+        if(!bd){
+            var top = e.pageY;
+            var left = e.pageX;
+        }else{
+            var top = e.pageY - 200;
+            var left = e.pageX-50;
+        }
+
+        $(this).css('box-shadow', 'inset 1px 1px 0px 0px red, inset -1px -1px 0px 0px red');
+        $("#menuTabla").css({
+            display: "block",
+            top: top,
+            left: left
+        });
+
+   
+    
+    }
+
+    return false; 
+  
+});
+
+function abrirMenu (elementos){
+    let html = ``;
+    for(var i in elementos){
+        var elemento = elementos[i].split(","); 
+        html+=`<a class="dropdown-item" href="`+elemento[1]+`">`+elemento[0]+`</a>`;
+    }
+    return html;
+    
+}
+
+$("table").on("click", function() {
+	if ( $("#menuTabla").css('display') == 'block' ){
+  	    $("#menuTabla").hide();
+    }
+    $('td').css('box-shadow', 'none');
+});
+
+$("#menuTabla a").on("click", function() {
+  $(this).parent().hide();
+});

@@ -158,9 +158,9 @@ $("th").on('contextmenu', function(e) {
   $("#menuTabla").html(html);
 
 
-    const bd = document.body.classList.contains(
-        'sidebar-enable'
-       );
+const bd = document.body.classList.contains(
+    'sidebar-enable'
+);
 
 
  $('th').css('box-shadow', 'none');
