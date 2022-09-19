@@ -26,22 +26,23 @@ class QueryModel{
     }
 
     function standard_query(){
+        $datos_extra=[];
         $usuario = json_decode($_SESSION["usuario"]);
-        $data = json_decode($_POST["data"]);
-        $comando =$data->comando;
-        $data->usuario = $usuario->user;
-        $data->banca= $usuario->banca;
-        $data->token = $usuario->token;
+        $data_inicial = json_decode($_POST["data"]);
+        $comando =$data_inicial->comando;
+        $data_inicial->usuario = $usuario->user;
+        $data_inicial->banca= $usuario->banca;
+        $data_inicial->token = $usuario->token;
         if(isset($_SESSION[$comando]->comando)){
-            $data->comando = $_SESSION[$comando]->comando;
+            $data_inicial->comando = $_SESSION[$comando]->comando;
             $orden=$_SESSION[$comando]->orden;
             $comando=$_SESSION[$comando]->comando;
         }else{
-            $data->comando = $_SESSION[$comando]->datos->comando;
+            $data_inicial->comando = $_SESSION[$comando]->datos->comando;
             $orden=$_SESSION[$comando]->datos->orden;
             $comando=$_SESSION[$comando]->datos->comando;
         }
-        $consulta = json_encode($data);
+        $consulta = json_encode($data_inicial);
         $sql = "CALL bl_banca(:consulta)";
         $this->conexion=conexion::getConexion();
         $statemant=$this->conexion->prepare($sql);
@@ -62,6 +63,7 @@ class QueryModel{
                 "mensaje" => "Error en la consulta"
             );
         }
+        $statemant->closeCursor();
         //Sacando los 2dos resultado
         $segunda_respuesta=Array(
             "comando"=>$comando.",".$orden,
@@ -81,7 +83,7 @@ class QueryModel{
         }else{
             $settings = "0";
         }
-        
+        $statemant->closeCursor();
         //Aqui subimos los botones o las acciones a la sesion
         $segunda_r=json_decode($settings["jsr"]);
         foreach ( $segunda_r->filtros as $r){
@@ -97,11 +99,23 @@ class QueryModel{
                     }
                     $_SESSION[$item->id]=$r->datos->items[$key];
                 }
+            }else if($r->tipo=="execute"){
+                $data_inicial->comando=$r->datos->comando;
+                $data_inicial->orden=$r->datos->orden;
+                $consulta_datos_extra= json_encode($data_inicial);
+                $sql_extra = "CALL bl_banca(:consulta)";
+                $statemant_extra=$this->conexion->prepare($sql_extra);
+                $statemant_extra->bindParam(":consulta",$consulta_datos_extra);
+                if($statemant_extra->execute()){
+                    $datos_extra=$statemant_extra->fetchAll(PDO::FETCH_ASSOC);
+                }
+                
             }
         }
         $info = array(
             "data"=> $data,
-            "settings" => $settings
+            "settings" => $settings,
+            "datos_extra"=>$datos_extra,
         );
 
         echo json_encode($info);
