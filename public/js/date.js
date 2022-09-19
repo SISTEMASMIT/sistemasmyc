@@ -1,32 +1,104 @@
+var date = new Date();
+var min_date =date.getFullYear()-1;
+var current_date = date.getDate()+"/"+(date.getMonth()+1)+"/"+date.getFullYear();
+var max_date =  "31/12/"+ (date.getFullYear()+1);
+
 export function oneDate(id){
+  
     $(id).daterangepicker({
+      "locale": {
+        "format": "DD/MM/YYYY",
+        "separator": " / ",
+        "applyLabel": "Aceptar",
+        "cancelLabel": "Cancelar",
+        "fromLabel": "Desde",
+        "toLabel": "Hasta",
+        "customRangeLabel": "Personalizada",
+        "weekLabel": "S",
+        "daysOfWeek": [
+            "Dom",
+            "Lun",
+            "Mar",
+            "Mie",
+            "Jue",
+            "Vie",
+            "Sab"
+        ],
+        "monthNames": [
+            "Enero",
+            "Febrero",
+            "Marzo",
+            "Abril",
+            "Mayo",
+            "Junio",
+            "Julio",
+            "Agosto",
+            "Septiembre",
+            "Octubre",
+            "Noviembre",
+            "Diciembre"
+        ],
+        "firstDay": 1
+    },
+        "minYear": min_date,
         "singleDatePicker": true,
-        "showDropdowns": true,
         "showCustomRangeLabel": false,
-        "startDate": "09/09/2022",
-        "endDate": "09/15/2022",
-        "opens": "center",
-        "drops": "auto"
-      }, function(start, end, label) {
-        var years = moment().diff(start, 'years');
-        alert("You are " + years + " years old!");
+        "startDate": current_date,
+        "autoApply": true,
+        "endDate": max_date,
       });
 }
 
 export function rangeDate(id){
+  
   $(id).daterangepicker({
     ranges: {
-        'Today': [moment(), moment()],
-        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-        'This Month': [moment().startOf('month'), moment().endOf('month')],
-        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        'Últimos 3 días': [moment().subtract(2, 'days'), moment()],
+        'Últimos 7 días': [moment().subtract(6, 'days'), moment()],
+        'Últimos 30 Dás': [moment().subtract(29, 'days'), moment()],
+        'Mes Actual': [moment().startOf('month'), moment().endOf('month')],
+        'Último Mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
     },
-    "alwaysShowCalendars": true,
-    "startDate": "09/11/2022",
-    "endDate": "09/17/2022"
-}, function(start, end, label) {
-  console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+    "locale": {
+      "format": "DD/MM/YYYY",
+      "separator": " / ",
+      "applyLabel": "Aceptar",
+      "cancelLabel": "Cancelar",
+      "fromLabel": "Desde",
+      "toLabel": "Hasta",
+      "customRangeLabel": "Personalizada",
+      "weekLabel": "S",
+      "daysOfWeek": [
+          "Dom",
+          "Lun",
+          "Mar",
+          "Mie",
+          "Jue",
+          "Vie",
+          "Sab"
+      ],
+      "monthNames": [
+          "Enero",
+          "Febrero",
+          "Marzo",
+          "Abril",
+          "Mayo",
+          "Junio",
+          "Julio",
+          "Agosto",
+          "Septiembre",
+          "Octubre",
+          "Noviembre",
+          "Diciembre"
+      ],
+      "firstDay": 1
+  },
+      "alwaysShowCalendars": true,
+      "minYear": min_date,
+      "startDate": current_date,
+      "autoApply": false,
+      "endDate": current_date,
+    
 });
+
 }

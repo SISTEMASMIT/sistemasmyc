@@ -44,12 +44,12 @@ class QueryModel{
         }
         $consulta = json_encode($data_inicial);
         $sql = "CALL bl_banca(:consulta)";
+        var_dump($consulta);
         $this->conexion=conexion::getConexion();
         $statemant=$this->conexion->prepare($sql);
         $statemant->bindParam(":consulta",$consulta);
         if($statemant->execute()){
             $response=$statemant->fetchAll(PDO::FETCH_ASSOC);
-            for ($i = 0; $i < $statemant->columnCount(); $i++) {
                 $col = $statemant->getColumnMeta($i);
                 $head[] = $col['name'];
             }

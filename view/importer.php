@@ -84,7 +84,7 @@ class Importer
         }
         try {
             $html = "<div class='col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 filtros'>";
-            $html .= "<button type='button'id='".strtolower(str_replace(" ","_",$json->id))."' class='".$this->colores[$label]." btn-lg btn-block'>".$label."</button>";
+            $html .= "<button type='button' id='".strtolower(str_replace(" ","_",$json->id))."' class='".$this->colores[$label]." btn-lg btn-block'>".$label."</button>";
             $html .= "</div>";
             return $html;
         } catch (Exception $e) {
@@ -96,7 +96,7 @@ class Importer
     {
     try {
             $html = "<div class='col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 filtros'><label class='form-label'>" . $label . "</label>";
-            $html .="<input class='form-control form-control-lg' id='".strtolower(str_replace(" ","_",$label))."'type='numeric' placeholder='Numero ".$label."'>";
+            $html .="<input class='form-control form-control-lg' id='".strtolower(str_replace(" ","_",$label))."' type='numeric' placeholder='".$label."' required>";
             $html .= "</div>";
             return $html;
         } catch (Exception $e) {
