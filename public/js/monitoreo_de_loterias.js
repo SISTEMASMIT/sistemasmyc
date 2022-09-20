@@ -1,19 +1,19 @@
+import {oneDate} from "./date.js";
 import {ajax_peticion} from "./Ajax-peticiones.js";
 import {crear_tabla} from "./table.js";
+
 var intervalo;
 
 var id='';
 var base="#base";
-var titulo ="#titulo";
+var titulo ="";
 var base_html="";
 var isdclick = false;
 var isrclick = false;
 var isdclick2 = false;
 var isrclick2 = false;
 var dclick = [];
-var dclickN = [];
 var rclick = [];
-var rclick2 = [];
 var emergente = '';
 var parametros = [];
 var etiquetas = [];
@@ -21,7 +21,9 @@ var comando = '';
 var orden = '';
 var vtn = [];
 var etq = [];
+var extra = [];
 var modal_id=1;
+var row;
 
 $(document).ready(function () {
     var columns = 6;
@@ -63,12 +65,8 @@ $(document).on('click', '#detener', async function() {
 });
 
 
-$(document).on('show.bs.modal', function() {
-    
-});
 
-
-
+//Ocultar El modal
 $(document).on('hidden.bs.modal', '#base', function() {
     modal_id--;
     $(base).children().last().remove();
@@ -77,25 +75,11 @@ $(document).on('hidden.bs.modal', '#base', function() {
         $(base).children().last().addClass("fade");
         $(base).children().last().addClass("show");
     }
-    // $('.modal-backdrop').removeClass('show');
     vtn.pop();
     etq.pop();
-});
+    extra.pop();
+ });
 
-// $('#base').on('hidden.bs.modal', function () {
-//     // do something…
-//   })
-
-// $(document).on('click', '#close_modal',  function() {
-//     $("modal"+modal_id).modal('hide');
-//     modal_id--;
-//     $(base).children().last().remove();
-//     if($(base).children().length>1){
-//         $(base).children().last().addClass("show");
-//     }
-//     $('.modal-backdrop').remove();
-//     vtn.pop();
-// });
 
 $(document).on('click', '#monitoreo_de_loterias', async function() {
     $('#tabla1').removeClass('invisible');
@@ -128,9 +112,10 @@ async function montar_tabla(){
     let set = Object.values(JSON.parse(info.settings.jsr));
     etq.push(info.data.head);
     vtn.push(set);
+    extra.push(info.datos_extra);
     let invisibles = [];
     let sumatorias = [];
-    if(set[0].length > 1){
+    if(set[0].length > 0){
 
        invisibles = set[0].find(function(x){    
             return x.label == '96';
@@ -140,9 +125,6 @@ async function montar_tabla(){
             return x.label == '97';
         });
         
-        dclickN = set[0].find(function(x){    
-            return x.label != '98';
-        });
 
         dclick.push(set[0].filter(function(x){ 
             if(x.label!='98' && x.label!='99' && x.label!='97' && x.label != '96'){
@@ -194,277 +176,259 @@ async function montar_tabla(){
 }
 
 
-
-// $('#tabla1 tbody').on('click', 'tr', function () {
-//     var table = $('#tabla1').DataTable();
-
-//     if ($(this).hasClass('selected')) {
-//         $(this).removeClass('selected');
-//     } else {
-//         table.$('tr.selected').removeClass('selected');
-//         $(this).addClass('selected');
-//     }
-// });
-
 function getCurrentDate(formato){
     const date = new Date();
-    let day = date.getDate();
-    let month = date.getMonth() + 1;
+    let day = `${date.getDate()}`.padStart(2, "0")
+    let month = `${date.getMonth() + 1}`.padStart(2, "0")
     let year = date.getFullYear();
     if(formato==1){
-        let f = `${year}${month}${day}`;
+        let fe = [year, month, day].join("")
+        return fe;
     }else{
-        let f = `${day}/${month}/${year}`;
+        let fe = [day, month, year].join("/");
+        return fe;
     }   
-    return f;
+  
 }
 
 
 
+//Detectamos el Doble Click
 $(document).on('dblclick', 'td', async function () {
+
     $("#load").addClass('spinner');
     let dclick = vtn[vtn.length -1 ];
-    let data = [];
-    let etiq = [];
-    let key;
-    let value;
-    let cosas = [];
-    let iscorrect = false;
-    var column = $(this).parent().children().index(this);
-    if(isdclick){  
-        for (let a = 0; a < dclick[0].length; a++) {
-            if(dclick[0][a].label!='98'){
-                if (column==dclick[0][a].label){
-                    iscorrect=true;
-                    parametros = dclick[0][a].datos["parametros"].split(",")
-                    etiquetas = dclick[0][a].datos["etiquetas"].split(",")
-                    emergente = dclick[0][a].datos["emergente"];
-                    comando = dclick[0][a].datos["id"];
-                    Object.assign(data,{"comando":dclick[0][a].datos["id"]});
-                    for (let i = 0; i < parametros.length; i++) {
-                        if(Number.isInteger(parseInt(parametros[i]))){
-                            key = `c`+parametros[i];
-                            value = $(this).parent().find("td").eq(parseInt(parametros[i])).text();
-                            // data = {[key]:value};
-                            Object.assign(data,{[key]:value});
-                            // data = {[key]:value,"comando":dclick[0][a].datos["id"]}
-                            // data[`c`+parametros[i]]=$(this).parent().find("td").eq(parseInt(parametros[i])).text();
-                            // data[`comando`] = dclick[0][a].datos["id"];
-                        }
-                    }
-                }
-            }else{
-                iscorrect=true;
-                parametros = dclick[0][a].datos["parametros"].split(",")
-                emergente = dclick[0][a].datos["emergente"];
-                etiquetas = dclick[0][a].datos["etiquetas"].split(",")
-                comando = dclick[0][a].datos["id"];
-                Object.assign(data,{"comando":dclick[0][a].datos["id"]});
-                for (let i = 0; i < parametros.length; i++) {
-                    if(Number.isInteger(parseInt(parametros[i]))){
-                        key = `c`+parametros[i];
-                        value = $(this).parent().find("td").eq(parseInt(parametros[i])).text();
-                        Object.assign(data,{[key]:value});
-                    }else{
-                        if(parametros[i]=="f1"){
-                            if($("#"+parametros[i]).length < 1){
-                                let f = getCurrentDate();
-                                Object.assign(data,{[parametros[i]]:f});
-                                console.log(console.log(parametros[i]+ ": "+f));
-                            }else{
-                                Object.assign(data,{[parametros[i]]:$('#'+parametros[i]).daterangepicker()});
-                                console.log(parametros[i]+ ": "+$("#"+parametros[i]).daterangepicker());
-                            }       
-                        }else if(parametros[i]=="f2"){
-                            if($("#"+parametros[i]).length < 1 ){
-                                let f = getCurrentDate();
-                                Object.assign(data,{[parametros[i]]:f});
-                                console.log(console.log(parametros[i]+ ": "+f));
-                            }else{
-                                Object.assign(data,{[parametros[i]]:$("#"+parametros[i]).daterangepicker()});
-                                console.log(parametros[i]+ ": "+$("#"+parametros[i]).daterangepicker());
-                            }
-                        }else{
-                            Object.assign(data,{[parametros[i]]:$('#'+parametros[i]).selectpicker('val')});
-                            console.log(parametros[i]+ ": "+$('#'+parametros[i]).selectpicker('val'));
-                        } 
-                    }
-                }
-                //Saco las etiquetas
-                for (let i = 0; i < etiquetas.length; i++) {
-                    if(Number.isInteger(parseInt(etiquetas[i]))){
-                        // key = `c`+etiquetas[i];
-                        key = etq[0][etiquetas[i]];
-                        value = $(this).parent().find("td").eq(parseInt(etiquetas[i])).text();
-                        Object.assign(etiq,{[key]:value});
-                    }else{
-                        if(etiquetas[i]=="f1"){
-                            if($("#"+etiquetas[i]).length < 1){
-                                let f = getCurrentDate();
-                                Object.assign(etiq,{Fecha :f});
-                                console.log(console.log(etiquetas[i]+ ": "+f));
-                            }else{
-                                Object.assign(etiq,{Fecha :$('#'+etiquetas[i]).daterangepicker()});
-                                console.log(etiquetas[i]+ ": "+$("#"+etiquetas[i]).daterangepicker());
-                            }       
-                        }else if(etiquetas[i]=="f2"){
-                            if($("#"+etiquetas[i]).length < 1 ){
-                                let f = getCurrentDate();
-                                Object.assign(etiq,{Fecha2 :f});
-                                console.log(console.log(etiquetas[i]+ ": "+f));
-                            }else{
-                                Object.assign(etiq,{Fecha2 :$("#"+etiquetas[i]).daterangepicker()});
-                                console.log(etiquetas[i]+ ": "+$("#"+etiquetas[i]).daterangepicker());
-                            }
-                        }else{
-                            let str = etiquetas[i];
-                            Object.assign(etiq,{[str.charAt(0).toUpperCase()+str.slice(1)]:$('#'+etiquetas[i]).selectpicker('val')});
-                            console.log(etiquetas[i]+ ": "+$('#'+etiquetas[i]).selectpicker('val'));
-                        } 
-                    }
-                }
-            }
-        }
-        if(iscorrect){
-            //Convierto para que se envien los parametros
-            let algo=[];
-            algo[0]=data;
-            let keys = Object.getOwnPropertyNames(data).filter((x)=>{
-                return x!="length"?x:"";
-            });
-            let valores= Object.values(data);
-            let string="{";
-            keys.forEach((key,index)=>{
-                string+=`"${key}":"${valores[index]}",`;
-            })
-            string = string.slice(0, string.length - 1);
-            string+="}";
-            var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST");
-            let set = Object.values(JSON.parse(info.settings.jsr));
-            let invisibles = [];
-            let sumatorias = [];
-            etq.push(info.data.head);
-            vtn.push(set);
-            if(set[0].length > 1){
-                console.log(set);
-
-
-
-                invisibles = set[0].find(function(x){    
-                    return x.label == '96';
-                });
-
-                sumatorias = set[0].find(function(x){    
-                    return x.label == '97';
-                });
-                
-                dclickN = set[0].find(function(x){    
-                    return x.label != '98';
-                });
-                dclick =[];
-                dclick.push(set[0].filter(function(x){ 
-                    if(x.label!='98' && x.label!='99' && x.label!='97' && x.label != '96'){
-                        return x;
-                    }else if(x.label=='98'){
-                        return x;
-                    }
-                    
-                }));
-                rclick = [];
-                rclick.push(set[0].find(function(x){    
-                    return x.label == '99';
-                }));
-
-                if(dclick[0]!=undefined){
-                    isdclick2=true;
-                    
-                    console.log(dclick);
-                }
-
-                if(rclick[0]!=undefined){
-                    isrclick2=true;
-                }
-
-                if(invisibles !=undefined){
-                    invisibles=invisibles.datos.c_invisible.split(",");
-                    invisibles = invisibles.map(function(x){    
-                      return parseInt(x);
-                    });   
-                 }else{
-                    invisibles = [];
-                 }
-                  
-           
-                 if(sumatorias != undefined){
-                    sumatorias=sumatorias.datos.c_sumatoria.split(",");
-                    sumatorias = sumatorias.map(function(x){    
-                      return parseInt(x);
-                    });
-                 }else{
-                    sumatorias = [];
-                 }
-
-            }else{
-                isdclick2=false;
-                isrclick2=false;
-            }
-
-            if(emergente=="tabla"){
-            
-                //Convierto para que se envien las etiquetas
-                let algo=[];
-                algo[0]=etiq;
-                let keys = Object.getOwnPropertyNames(etiq).filter((x)=>{
-                    return x!="length"?x:"";
-                });
-                let valores= Object.values(etiq);
-                let string="{";
-                keys.forEach((key,index)=>{
-                    string+=`"${key}":"${valores[index]}",`;
-                })
-                string = string.slice(0, string.length - 1);
-                string+="}";
-
-                let labels_modal = JSON.parse(string);
-                if($(base).children().length>1){
-                    $(base).children().last().removeClass("show");
-                }
-                modal_id++;
-                // let encabezado = `<label>`+labels["Receptores"]+`</label>`;
-                let modal = $(base).children().first().html().replaceAll("{}",modal_id);
-                let modalsplit=modal.split("*");
-                let string_divs="";
-                keys.forEach((key,index)=>{
-                    string_divs+=`<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><p><label>${key}</label>:<label>${valores[index]}</label></p></div>`;
-                })
-                modalsplit[1]=string_divs;
-                modal=modalsplit.join("");
-                modal=modal.replaceAll("#",comando.charAt(0).toUpperCase()+comando.slice(1).replaceAll("_"," "));
-                $(base).append(modal);
-                // $(titulo).append(encabezado);
-                
-                $('#tabla'+modal_id).removeClass('invisible');
-                crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,isdclick2,dclick,isrclick2,invisibles,sumatorias,labels_modal,"#modal"+modal_id);
-                
-            }
-
-
-        }
-   
-
-       
-    }
     
+   let data = [];
+   let etiq = [];
+   let key;
+   let value;
+   let cosas = [];
+   let iscorrect = false;
+   var column = $(this).parent().children().index(this);
+   if(isdclick){  
+       for (let a = 0; a < dclick[0].length; a++) {
+           if(dclick[0][a].label!='98'){
+               if (column==dclick[0][a].label){
+                   iscorrect=true;
+                   parametros = dclick[0][a].datos["parametros"].split(",")
+                   etiquetas = dclick[0][a].datos["etiquetas"].split(",")
+                   emergente = dclick[0][a].datos["emergente"];
+                   comando = dclick[0][a].datos["id"];
+                   titulo = dclick[0][a].datos["titulo_emergente"];
+                   Object.assign(data,{"comando":dclick[0][a].datos["id"]});
+                   for (let i = 0; i < parametros.length; i++) {
+                       if(Number.isInteger(parseInt(parametros[i]))){
+                           key = `c`+parametros[i];
+                           value = $(this).parent().find("td").eq(parseInt(parametros[i])).text();
+                           Object.assign(data,{[key]:value});
+                       }
+                   }
+               }
+           }else{
+               iscorrect=true;
+               parametros = dclick[0][a].datos["parametros"].split(",")
+               emergente = dclick[0][a].datos["emergente"];
+               etiquetas = dclick[0][a].datos["etiquetas"].split(",")
+               comando = dclick[0][a].datos["id"];
+               titulo = dclick[0][a].datos["titulo_emergente"];
+               Object.assign(data,{"comando":dclick[0][a].datos["id"]});
+               for (let i = 0; i < parametros.length; i++) {
+                   if(Number.isInteger(parseInt(parametros[i]))){
+                       key = `c`+parametros[i];
+                       value = $(this).parent().find("td").eq(parseInt(parametros[i])).text();
+                       Object.assign(data,{[key]:value});
+                   }else{
+                       if(parametros[i]=="f1"){
+                           if($("#"+parametros[i]).length < 1){
+                               let f = getCurrentDate(1);
+                               Object.assign(data,{[parametros[i]]:f});
+                           }else{
+                               Object.assign(data,{[parametros[i]]:$('#'+parametros[i]).data('daterangepicker').startDate.format('YYYYMMDD')});
+                           }       
+                       }else if(parametros[i]=="f1f2"){
+                           if($("#"+parametros[i]).length < 1 ){
+                               let f = getCurrentDate(1);
+                               Object.assign(data,{[parametros[i]]:f});
+
+                           }else{
+                              Object.assign(data,{f1:$("#"+parametros[i]).data('daterangepicker').startDate.format('YYYYMMDD')});
+                              Object.assign(data,{f2:$("#"+parametros[i]).data('daterangepicker').endtDate.format('YYYYMMDD')});
+                           }
+                       }else{
+                           Object.assign(data,{[parametros[i]]:$('#'+parametros[i]).selectpicker('val')});
+                       } 
+                   }
+               }
+               //Saco las etiquetas
+               for (let i = 0; i < etiquetas.length; i++) {
+                   if(Number.isInteger(parseInt(etiquetas[i]))){
+                       // key = `c`+etiquetas[i];
+                       key = etq[0][etiquetas[i]];
+                       value = $(this).parent().find("td").eq(parseInt(etiquetas[i])).text();
+                       Object.assign(etiq,{[key]:value});
+                   }else{
+                       if(etiquetas[i]=="f1"){
+                           if($("#"+etiquetas[i]).length < 1){
+                               let f = getCurrentDate(0);
+                               Object.assign(etiq,{Fecha :f});
+                           }else{
+                              Object.assign(etiq,{Fecha:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
+                           }       
+                       }else if(etiquetas[i]=="f1f2"){
+                           if($("#"+etiquetas[i]).length < 1 ){
+                               let f = getCurrentDate(0);
+                               Object.assign(etiq,{Fecha2 :f});
+                           }else{
+                              Object.assign(etiq,{Desde:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
+                              Object.assign(etiq,{Hasta:$("#"+etiquetas[i]).data('daterangepicker').endtDate.format('DD/MM/YYYY')});
+                           }
+                       }else{
+                           let str = etiquetas[i];
+                           Object.assign(etiq,{[str.charAt(0).toUpperCase()+str.slice(1)]:$('#'+etiquetas[i]).selectpicker('val')});
+                       } 
+                   }
+               }
+           }
+       }
+       if(iscorrect){
+           //Convierto para que se envien los parametros
+           let algo=[];
+           algo[0]=data;
+           let keys = Object.getOwnPropertyNames(data).filter((x)=>{
+               return x!="length"?x:"";
+           });
+           let valores= Object.values(data);
+           let string="{";
+           keys.forEach((key,index)=>{
+               string+=`"${key}":"${valores[index]}",`;
+           })
+           string = string.slice(0, string.length - 1);
+           string+="}";
+           var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST");
+           let set = Object.values(JSON.parse(info.settings.jsr));
+           let invisibles = [];
+           let sumatorias = [];
+           etq.push(info.data.head);
+           vtn.push(set);
+           extra.push(info.datos_extra);
+           if(set[0].length > 0){
+               console.log(set);
+
+               invisibles = set[0].find(function(x){    
+                   return x.label == '96';
+               });
+
+               sumatorias = set[0].find(function(x){    
+                   return x.label == '97';
+               });
+               
+               dclick =[];
+               dclick.push(set[0].filter(function(x){ 
+                   if(x.label!='98' && x.label!='99' && x.label!='97' && x.label != '96'){
+                       return x;
+                   }else if(x.label=='98'){
+                       return x;
+                   }
+                   
+               }));
+               rclick=[];
+               rclick.push([0].find(function(x){    
+                   return x.label == '99';
+               }));
+
+               if(dclick[0]!=undefined){
+                   isdclick2=true;
+               }
+
+               if(rclick[0]!=undefined){
+                   isrclick2=true;
+               }
+
+               if(invisibles !=undefined){
+                  invisibles=invisibles.datos.c_invisible.split(",");
+                  invisibles = invisibles.map(function(x){    
+                    return parseInt(x);
+                  });   
+               }else{
+                  invisibles = [];
+               }
+                
+         
+               if(sumatorias != undefined){
+                  sumatorias=sumatorias.datos.c_sumatoria.split(",");
+                  sumatorias = sumatorias.map(function(x){    
+                    return parseInt(x);
+                  });
+               }else{
+                  sumatorias = [];
+               }
+
+           }else{
+               isdclick2=false;
+               isrclick2=false;
+           }
+
+           if(emergente=="tabla"){
+                
+                
+             let labels_extra = extra[extra.length -1 ];
+               //Convierto para que se envien las etiquetas
+               let algo=[];
+               algo[0]=etiq;
+               let keys = Object.getOwnPropertyNames(etiq).filter((x)=>{
+                   return x!="length"?x:"";
+               });
+               let valores= Object.values(etiq);
+               let string="{";
+               keys.forEach((key,index)=>{
+                   string+=`"${key}":"${valores[index]}",`;
+               })
+               string = string.slice(0, string.length - 1);
+               string+="}";
+               let labels_modal = JSON.parse(string);
+               if($(base).children().length>1){
+                   $(base).children().last().removeClass("show");
+               }
+               modal_id++;
+               let modal = $(base).children().first().html().replaceAll("{}",modal_id);
+               let modalsplit=modal.split("*");
+               let string_divs="";
+               keys.forEach((key,index)=>{
+                   string_divs+=`<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><p><label>${key}</label>:<label>${valores[index]}</label></p></div>`;
+               })
+               if(labels_extra.length > 0){
+                console.log(labels_extra[0]);
+            }else{
+                
+            }
+
+               modalsplit[1]=string_divs;
+               modal=modalsplit.join("");
+               modal=modal.replaceAll("#",titulo.charAt(0).toUpperCase()+titulo.slice(1).replaceAll("_"," "));
+               $(base).append(modal);
+
+               $('#tabla'+modal_id).removeClass('invisible');
+               crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,isdclick2,dclick,isrclick2,invisibles,sumatorias,labels_modal,"#modal"+modal_id);
+               
+           }
+
+
+       }
+  
+
+      
+   }
+   
 }
 );
-
 
 
 //Click Derecho
 
 $(document).on('contextmenu', 'td', function (e) {
     let rclick = vtn[vtn.length -1 ];
-    console.log($(this).rowIndex);
+    row = $(this).closest("tr"); 
     if(isrclick){
         for (let a = 0; a < rclick[0].length; a++) {
             if(rclick[0][a].label=='99'){
@@ -477,7 +441,6 @@ $(document).on('contextmenu', 'td', function (e) {
            html+=abrirMenu(elementos[i]);
             
         }
-        console.log(html);
         $("#menuTabla").html(html);
         const bd = document.body.classList.contains(
             'sidebar-enable'
@@ -548,12 +511,12 @@ $(document).on('click', '#rclick', async function () {
             for (let i = 0; i < parametros.length; i++) {
                 if(Number.isInteger(parseInt(parametros[i]))){
                     key = `c`+parametros[i];
-                    value = $(this).parent().find("td").eq(parseInt(parametros[i])).text();
+                    value = row.find("td").eq(parseInt(parametros[i])).text();
                     Object.assign(data,{[key]:value});
                 }else{
                     if(parametros[i]=="f1"){
                         if($("#"+parametros[i]).length < 1){
-                            let f = getCurrentDateP(1);
+                            let f = getCurrentDate(1);
                             Object.assign(data,{[parametros[i]]:f});
                         }else{
                             Object.assign(data,{[parametros[i]]:$('#'+parametros[i]).data('daterangepicker').startDate.format('YYYYMMDD')});

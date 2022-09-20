@@ -16,13 +16,13 @@ var rclick = [];
 var emergente = '';
 var parametros = [];
 var etiquetas = [];
-var data_extra = [];
 var comando = '';
 var orden = '';
 var vtn = [];
 var etq = [];
+var extra= [];
 var modal_id=1;
-
+var row;
 
 $(document).ready(function(){
    oneDate("#f1");
@@ -102,6 +102,7 @@ async function montar_tabla(){
    let set = Object.values(JSON.parse(info.settings.jsr));
    etq.push(info.data.head);
    vtn.push(set);
+   extra.push(info.datos_extra);
    let invisibles = [];
    let sumatorias = [];
 
@@ -160,10 +161,7 @@ async function montar_tabla(){
        isdclick=false;
        isrclick=false;
    }
-   rclick={label:99};
-   isrclick=true;
-   console.log(dclick);
-   console.log(rclick);
+
    let labels = {"Receptores":receptores,"Loterias_Mix":loterias,"Fecha":f1,"Número":numero};
    crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels);
 
@@ -173,16 +171,19 @@ async function montar_tabla(){
 
 function getCurrentDate(formato){
     const date = new Date();
-    let day = date.getDate();
-    let month = date.getMonth() + 1;
+    let day = `${date.getDate()}`.padStart(2, "0")
+    let month = `${date.getMonth() + 1}`.padStart(2, "0")
     let year = date.getFullYear();
     if(formato==1){
-        let f = `${year}${month}${day}`;
+        let fe = [year, month, day].join("")
+        return fe;
     }else{
-        let f = `${day}/${month}/${year}`;
+        let fe = [day, month, year].join("/");
+        return fe;
     }   
-    return f;
+  
 }
+
 
 
 
@@ -191,6 +192,7 @@ $(document).on('dblclick', 'td', async function () {
 
     $("#load").addClass('spinner');
     let dclick = vtn[vtn.length -1 ];
+    let dextra = extra[extra.length - 1];
    let data = [];
    let etiq = [];
    let key;
@@ -303,6 +305,7 @@ $(document).on('dblclick', 'td', async function () {
            let sumatorias = [];
            etq.push(info.data.head);
            vtn.push(set);
+           extra.push(info.datos_extra);
            if(set[0].length > 0){
                console.log(set);
 
@@ -381,13 +384,21 @@ $(document).on('dblclick', 'td', async function () {
                if($(base).children().length>1){
                    $(base).children().last().removeClass("show");
                }
-               modal_id++;ss
+               modal_id++;
                let modal = $(base).children().first().html().replaceAll("{}",modal_id);
                let modalsplit=modal.split("*");
                let string_divs="";
                keys.forEach((key,index)=>{
                    string_divs+=`<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><p><label>${key}</label>:<label>${valores[index]}</label></p></div>`;
                })
+
+                if(dextra.length > 0){
+                    console.log(dextra[0]);
+                }else{
+                    
+                }
+
+
                modalsplit[1]=string_divs;
                modal=modalsplit.join("");
                modal=modal.replaceAll("#",titulo.charAt(0).toUpperCase()+titulo.slice(1).replaceAll("_"," "));
@@ -411,10 +422,9 @@ $(document).on('dblclick', 'td', async function () {
 
 //Click Derecho
 
-
 $(document).on('contextmenu', 'td', function (e) {
-    console.log();
     let rclick = vtn[vtn.length -1 ];
+    row = $(this).closest("tr"); 
     if(isrclick){
         for (let a = 0; a < rclick[0].length; a++) {
             if(rclick[0][a].label=='99'){
@@ -427,7 +437,6 @@ $(document).on('contextmenu', 'td', function (e) {
            html+=abrirMenu(elementos[i]);
             
         }
-        console.log(html);
         $("#menuTabla").html(html);
         const bd = document.body.classList.contains(
             'sidebar-enable'
@@ -498,12 +507,12 @@ $(document).on('click', '#rclick', async function () {
             for (let i = 0; i < parametros.length; i++) {
                 if(Number.isInteger(parseInt(parametros[i]))){
                     key = `c`+parametros[i];
-                    value = $(this).parent().find("td").eq(parseInt(parametros[i])).text();
+                    value = row.find("td").eq(parseInt(parametros[i])).text();
                     Object.assign(data,{[key]:value});
                 }else{
                     if(parametros[i]=="f1"){
                         if($("#"+parametros[i]).length < 1){
-                            let f = getCurrentDateP(1);
+                            let f = getCurrentDate(1);
                             Object.assign(data,{[parametros[i]]:f});
                         }else{
                             Object.assign(data,{[parametros[i]]:$('#'+parametros[i]).data('daterangepicker').startDate.format('YYYYMMDD')});
