@@ -120,7 +120,7 @@ class QueryModel{
                 
             }else if($r->tipo=="button_emergente"){
                 $condicion=explode(",",$r->datos->condicion,);
-                foreach($condicion as &$c){
+                foreach($condicion as $c){
                     if(isset($r->datos->{$c})){
                         if(isset($this->{$c})){
                             if($c=="fecha"){
