@@ -165,16 +165,24 @@ async function montar_tabla(){
             isrclick=true;
         }
 
-        invisibles=invisibles.datos.c_invisible.split(",");
-        invisibles = invisibles.map(function(x){    
-            return parseInt(x);
-        });   
-
-        
-        sumatorias=sumatorias.datos.c_sumatoria.split(",");
-        sumatorias = sumatorias.map(function(x){    
-            return parseInt(x);
-        });  
+        if(invisibles !=undefined){
+            invisibles=invisibles.datos.c_invisible.split(",");
+            invisibles = invisibles.map(function(x){    
+              return parseInt(x);
+            });   
+         }else{
+            invisibles = [];
+         }
+          
+   
+         if(sumatorias != undefined){
+            sumatorias=sumatorias.datos.c_sumatoria.split(",");
+            sumatorias = sumatorias.map(function(x){    
+              return parseInt(x);
+            });
+         }else{
+            sumatorias = [];
+         }
     }else{
         isdclick=false;
         isrclick=false;
@@ -377,16 +385,24 @@ $(document).on('dblclick', 'td', async function () {
                     isrclick2=true;
                 }
 
-                invisibles=invisibles.datos.c_invisible.split(",");
-                invisibles = invisibles.map(function(x){    
-                    return parseInt(x);
-                });   
-
-                
-                sumatorias=sumatorias.datos.c_sumatoria.split(",");
-                sumatorias = sumatorias.map(function(x){    
-                    return parseInt(x);
-                });  
+                if(invisibles !=undefined){
+                    invisibles=invisibles.datos.c_invisible.split(",");
+                    invisibles = invisibles.map(function(x){    
+                      return parseInt(x);
+                    });   
+                 }else{
+                    invisibles = [];
+                 }
+                  
+           
+                 if(sumatorias != undefined){
+                    sumatorias=sumatorias.datos.c_sumatoria.split(",");
+                    sumatorias = sumatorias.map(function(x){    
+                      return parseInt(x);
+                    });
+                 }else{
+                    sumatorias = [];
+                 }
 
             }else{
                 isdclick2=false;
