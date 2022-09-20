@@ -3,7 +3,13 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-class QueryModel{    
+class QueryModel{   
+    
+    public $fecha=Array(
+        "current_day"=>"y-m-d"
+        );
+
+
     function getFiltros($url){
         $url=trim($url,"");
         $usuario=json_decode($_SESSION["usuario"]);
@@ -33,6 +39,7 @@ class QueryModel{
         $data_inicial->usuario = $usuario->user;
         $data_inicial->banca= $usuario->banca;
         $data_inicial->token = $usuario->token;
+        // var_dump($usuario);
         if(isset($_SESSION[$comando]->comando)){
             $data_inicial->comando = $_SESSION[$comando]->comando;
             $orden=$_SESSION[$comando]->orden;
@@ -87,7 +94,7 @@ class QueryModel{
         $statemant->closeCursor();
         //Aqui subimos los botones o las acciones a la sesion
         $segunda_r=json_decode($settings["jsr"]);
-        foreach ( $segunda_r->filtros as $r){
+        foreach ( $segunda_r->filtros as $key => &$r){
             if(!isset($r->datos->id)){
                 $r->datos->id=$r->label;
             }
@@ -111,11 +118,34 @@ class QueryModel{
                     $datos_extra=$statemant_extra->fetchAll(PDO::FETCH_ASSOC);
                 }
                 
+            }else if($r->tipo=="button_emergente"){
+                $condicion=explode(",",$r->datos->condicion,);
+                foreach($condicion as &$c){
+                    if(isset($r->datos->{$c})){
+                        if(isset($this->{$c})){
+                            if($c=="fecha"){
+                                $r->datos->{$c}=date($this->{$c}[$r->datos->$c]);
+                            }
+                        }
+                    }
+                }
+                
+                $valor_condicion="1";
+                foreach($condicion as $c){
+                    if(!$r->datos->{$c}==$datos_extra[0][$c]){
+                        $valor_condicion="0";
+                        break;
+                    }
+                }
+                $r->datos->condicion=$valor_condicion;
             }
         }
+        $settings=json_decode($settings["jsr"]);
+        $settings->filtros=$segunda_r;
+        $settings_finales["jsr"]=json_encode($settings->filtros);
         $info = array(
             "data"=> $data,
-            "settings" => $settings,
+            "settings" => $settings_finales,
             "datos_extra"=>$datos_extra,
         );
 
