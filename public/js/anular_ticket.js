@@ -2,8 +2,6 @@ import {oneDate} from "./date.js";
 import {ajax_peticion} from "./Ajax-peticiones.js";
 import {crear_tabla} from "./table.js";
 
-
-
 var id='';
 var base="#base";
 var titulo ="";
@@ -28,45 +26,43 @@ var et;
 var modal_id=1;
 var row;
 
-$(document).ready(function () {
 
-    var columns = 6;
+$(document).ready(function(){
+   oneDate("#f1");
+   var columns = 6;
     var rows = 10;
     var head = crear_head(columns);
     var body = crear_body(columns,rows);
     var html=head+body;
     $('#tablaf').html(html);
     $('#tablaf').DataTable();
-});
+})
+
 
 function crear_head(data){
-    let head = `<thead><tr>`;
-    for(var i=0; i<data;i++){
-        head+=`<th>-</th>`;
-    }
-    head+=`</tr></thead>`;
-    return head;
+   let head = `<thead><tr>`;
+   for(var i=0; i<data;i++){
+       head+=`<th>-</th>`;
+   }
+   head+=`</tr></thead>`;
+   return head;
 }
 
 function crear_body(columns, rows){
-    let body = `<tbody>`;
-    for(var a =0; a< rows; a++){
-        body+=`<tr>`;
-        for(var i=0; i<columns;i++){
-            body+=`<td>-</td>`;
-        }
-        body+=`</tr>`
-    }
-    
-    
-    body+=`</tbody>`;
-    return body;
+   let body = `<tbody>`;
+   for(var a =0; a< rows; a++){
+       body+=`<tr>`;
+       for(var i=0; i<columns;i++){
+           body+=`<td>-</td>`;
+       }
+       body+=`</tr>`
+   }
+   
+   
+   body+=`</tbody>`;
+   return body;
 }
 
-
-$(document).on('click', '#detener', async function() {
-    clearInterval(intervalo);
-});
 
 //Ocultar El modal
 $(document).on('hidden.bs.modal', '#base', function() {
@@ -86,33 +82,36 @@ $(document).on('hidden.bs.modal', '#base', function() {
     }
  });
 
-
-$(document).on('click', '#agencias_en_linea', async function() {
-    $('#tabla1').removeClass('invisible');
-    // $('#aceptar').prop('disabled', true);
-    montar_tabla();
-    // intervalo = setInterval(montar_tabla, 50000);
-    
+$(document).on('click', '#anular_ticket', async function() {
+   $('#tabla1').removeClass('invisible');
+   if($('#numero_ticket').val()!=''){
+        montar_tabla();
+   }else{
+    $('#numero_ticket').attr("placeholder", "Ingrese un Número").placeholder();
+   }
 });
 
-
 async function montar_tabla(){
-    var w = document.getElementById("tabla_res").clientWidth;
-    var h = document.getElementById("tabla_res").clientHeight;
-    h = h+500;
-    $('#f').html('');
-    $("#carga").addClass('carga');
-    $("#carga").width( w );
-    $("#carga").height( h );
-    $("#load").addClass('spinner');
-    let data = [];
-    let receptores = $('#receptores').selectpicker('val');
-    let grupos = $('#grupos').selectpicker('val');
+   var w = document.getElementById("tabla_res").clientWidth;
+   var h = document.getElementById("tabla_res").clientHeight;
+   h = h+500;
+   $('#f').html('');
+   $("#carga").addClass('carga');
+   $("#carga").width( w );
+   $("#carga").height( h );
+   $("#load").addClass('spinner');
+   let data = [];
+   let numero_ticket =$.trim($('#numero_ticket').val());
+   let agencias = $('#agencias').selectpicker('val');
+   data = {"c2":numero_ticket,"c1":agencias,"comando":"anular_ticket"};
+   var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
+   let set = Object.values(JSON.parse(info.settings.jsr));
 
-    data = {"comando":"agencias_en_linea","receptor":receptores,"grupo_agencias":grupos,"ordenado":"cod"};
-    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
-
-    let set = Object.values(JSON.parse(info.settings.jsr));
+   if(info.data.data<1){
+        alert("¡Error! Ticket o Agencia erróneos");
+        $("#carga").removeClass('carga');
+        $("#load").removeClass('spinner');
+   }else{
     etq.push(info.data.head);
     vtn.push(set);
     extra.push(info.datos_extra);
@@ -125,7 +124,7 @@ async function montar_tabla(){
             return x.label == 'Anular';
         }));
 
-       invisibles = set[0].find(function(x){    
+        invisibles = set[0].find(function(x){    
             return x.label == '96';
         });
 
@@ -157,31 +156,32 @@ async function montar_tabla(){
         if(invisibles !=undefined){
             invisibles=invisibles.datos.c_invisible.split(",");
             invisibles = invisibles.map(function(x){    
-              return parseInt(x);
+                return parseInt(x);
             });   
-         }else{
+            }else{
             invisibles = [];
-         }
-          
-   
-         if(sumatorias != undefined){
+            }
+            
+    
+            if(sumatorias != undefined){
             sumatorias=sumatorias.datos.c_sumatoria.split(",");
             sumatorias = sumatorias.map(function(x){    
-              return parseInt(x);
+                return parseInt(x);
             });
-         }else{
+            }else{
             sumatorias = [];
-         }
+            }
     }else{
         have_set.push(false);
         isdclick=false;
         isrclick=false;
     }
-    
-    let labels = {"Receptores":receptores,"Grupos":grupos};
-    crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels);
-}
 
+    let labels = {"Numero Ticket":numero_ticket,"Agencias":agencias};
+    crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels);
+   }
+
+}
 
 
 function getCurrentDate(formato){
@@ -232,35 +232,6 @@ $(document).on('dblclick', 'td', async function () {
                            Object.assign(data,{[key]:value});
                        }
                    }
-                   //Saco las etiquetas
-                    for (let i = 0; i < etiquetas.length; i++) {
-                        if(Number.isInteger(parseInt(etiquetas[i]))){
-                            // key = `c`+etiquetas[i];
-                            key = etq[0][etiquetas[i]];
-                            value = $(this).parent().find("td").eq(parseInt(etiquetas[i])).text();
-                            Object.assign(etiq,{[key]:value});
-                        }else{
-                            if(etiquetas[i]=="f1"){
-                                if($("#"+etiquetas[i]).length < 1){
-                                    let f = getCurrentDate(0);
-                                    Object.assign(etiq,{Fecha :f});
-                                }else{
-                                Object.assign(etiq,{Fecha:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
-                                }       
-                            }else if(etiquetas[i]=="f1f2"){
-                                if($("#"+etiquetas[i]).length < 1 ){
-                                    let f = getCurrentDate(0);
-                                    Object.assign(etiq,{Fecha2 :f});
-                                }else{
-                                Object.assign(etiq,{Desde:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
-                                Object.assign(etiq,{Hasta:$("#"+etiquetas[i]).data('daterangepicker').endtDate.format('DD/MM/YYYY')});
-                                }
-                            }else{
-                                let str = etiquetas[i];
-                                Object.assign(etiq,{[str.charAt(0).toUpperCase()+str.slice(1)]:$('#'+etiquetas[i]).selectpicker('val')});
-                            } 
-                        }
-                    }
                }
            }else{
                iscorrect=true;
@@ -350,6 +321,7 @@ $(document).on('dblclick', 'td', async function () {
            vtn.push(set);
            extra.push(info.datos_extra);
            if(set[0].length > 0){
+               
                 have_set.push(true);
 
                 btns.push(set[0].filter(function(x){

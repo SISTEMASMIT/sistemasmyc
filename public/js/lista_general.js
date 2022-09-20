@@ -2,7 +2,6 @@ import {oneDate} from "./date.js";
 import {ajax_peticion} from "./Ajax-peticiones.js";
 import {crear_tabla} from "./table.js";
 
-
 var id='';
 var base="#base";
 var titulo ="";
@@ -16,13 +15,17 @@ var rclick = [];
 var emergente = '';
 var parametros = [];
 var etiquetas = [];
-var data_extra = [];
 var comando = '';
 var orden = '';
 var vtn = [];
 var etq = [];
+var extra = [];
+var btns = [];
+var have_set = [];
+var et;
 var modal_id=1;
 var row;
+
 
 $(document).ready(function(){
    oneDate("#f1");
@@ -60,18 +63,24 @@ function crear_body(columns, rows){
    return body;
 }
 
+
 //Ocultar El modal
 $(document).on('hidden.bs.modal', '#base', function() {
-   modal_id--;
-   $(base).children().last().remove();
-   if($(base).children().length>1){
-       $('.modal-backdrop').addClass('show');
-       $(base).children().last().addClass("fade");
-       $(base).children().last().addClass("show");
-   }
-   vtn.pop();
-   etq.pop();
-});
+    modal_id--;
+    $(base).children().last().remove();
+    if($(base).children().length>1){
+        $('.modal-backdrop').addClass('show');
+        $(base).children().last().addClass("fade");
+        $(base).children().last().addClass("show");
+    }
+    vtn.pop();
+    etq.pop();
+    extra.pop();
+    let ss=have_set[have_set.length-1];
+    if(ss){
+        btns.pop();
+    }
+ });
 
 $(document).on('click', '#listado_general', async function() {
    $('#tabla1').removeClass('invisible');
@@ -95,27 +104,30 @@ async function montar_tabla(){
    let receptores = $('#receptores').selectpicker('val');
    let loterias = $('#loterias').selectpicker('val');
    let f1 = $('#f1').data('daterangepicker').startDate.format('YYYYMMDD');
+   let f1V = $('#f1').data('daterangepicker').startDate.format('DD/MM/YYYY');
    let cifras = $('#cifras').selectpicker('val');
    data = {"receptor":receptores,"loteria":loterias,"f1":f1,"cifras":cifras,"comando":"listado_general"};
    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
-   console.log(info);
    let set = Object.values(JSON.parse(info.settings.jsr));
    etq.push(info.data.head);
    vtn.push(set);
+   extra.push(info.datos_extra);
    let invisibles = [];
    let sumatorias = [];
-
    if(set[0].length > 0){
-      console.log(set[0]);
+       have_set.push(true);
+
+       btns.push(set[0].filter(function(x){
+           return x.label == 'Anular';
+       }));
 
       invisibles = set[0].find(function(x){    
            return x.label == '96';
-      });
+       });
 
-      sumatorias = set[0].find(function(x){    
+       sumatorias = set[0].find(function(x){    
            return x.label == '97';
-      });
-       
+       });
 
        dclick.push(set[0].filter(function(x){ 
            if(x.label!='98' && x.label!='99' && x.label!='97' && x.label != '96'){
@@ -123,12 +135,12 @@ async function montar_tabla(){
            }else if(x.label=='98'){
                return x;
            }
+           
        }));
 
-        rclick.push([0].find(function(x){    
-            return x.label == '99';
-        }));
-    
+       rclick.push(set[0].find(function(x){    
+           return x.label == '99';
+       }));
 
        if(dclick[0]!=undefined){
            isdclick=true;
@@ -137,38 +149,35 @@ async function montar_tabla(){
        if(rclick[0]!=undefined){
            isrclick=true;
        }
-       if(invisibles !=undefined){
-         invisibles=invisibles.datos.c_invisible.split(",");
-         invisibles = invisibles.map(function(x){    
-           return parseInt(x);
-         });   
-      }else{
-         invisibles = [];
-      }
-       
 
-      if(sumatorias != undefined){
-         sumatorias=sumatorias.datos.c_sumatoria.split(",");
-         sumatorias = sumatorias.map(function(x){    
-           return parseInt(x);
-         });
-      }else{
-         sumatorias = [];
-      }
+       if(invisibles !=undefined){
+           invisibles=invisibles.datos.c_invisible.split(",");
+           invisibles = invisibles.map(function(x){    
+             return parseInt(x);
+           });   
+        }else{
+           invisibles = [];
+        }
          
+  
+        if(sumatorias != undefined){
+           sumatorias=sumatorias.datos.c_sumatoria.split(",");
+           sumatorias = sumatorias.map(function(x){    
+             return parseInt(x);
+           });
+        }else{
+           sumatorias = [];
+        }
    }else{
+       have_set.push(false);
        isdclick=false;
        isrclick=false;
    }
-   rclick={label:99};
-   isrclick=true;
-   console.log(dclick);
-   console.log(rclick);
-   let labels = {"Receptores":receptores,"Loterias_Mix":loterias,"Fecha":f1,"Cifras":cifras};
+
+   let labels = {"Receptores":receptores,"Loterias_Mix":loterias,"Fecha":f1V,"Cifras":cifras};
    crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels);
 
 }
-
 
 
 function getCurrentDate(formato){
@@ -188,12 +197,12 @@ function getCurrentDate(formato){
 
 
 
-
 //Detectamos el Doble Click
 $(document).on('dblclick', 'td', async function () {
 
     $("#load").addClass('spinner');
     let dclick = vtn[vtn.length -1 ];
+    
    let data = [];
    let etiq = [];
    let key;
@@ -306,8 +315,14 @@ $(document).on('dblclick', 'td', async function () {
            let sumatorias = [];
            etq.push(info.data.head);
            vtn.push(set);
+           extra.push(info.datos_extra);
            if(set[0].length > 0){
-               console.log(set);
+               
+                have_set.push(true);
+
+                btns.push(set[0].filter(function(x){
+                    return x.label == 'Anular';
+                }));
 
                invisibles = set[0].find(function(x){    
                    return x.label == '96';
@@ -359,17 +374,19 @@ $(document).on('dblclick', 'td', async function () {
                }
 
            }else{
+                have_set.push(false);
                isdclick2=false;
                isrclick2=false;
            }
 
            if(emergente=="tabla"){
+            let btn = btns[btns.length -1][0];
                 
-                
-                
+             let labels_extra = extra[extra.length -1 ];
                //Convierto para que se envien las etiquetas
                let algo=[];
                algo[0]=etiq;
+               et = etiq;
                let keys = Object.getOwnPropertyNames(etiq).filter((x)=>{
                    return x!="length"?x:"";
                });
@@ -384,13 +401,31 @@ $(document).on('dblclick', 'td', async function () {
                if($(base).children().length>1){
                    $(base).children().last().removeClass("show");
                }
-               modal_id++;ss
+               modal_id++;
                let modal = $(base).children().first().html().replaceAll("{}",modal_id);
                let modalsplit=modal.split("*");
                let string_divs="";
                keys.forEach((key,index)=>{
                    string_divs+=`<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><p><label>${key}</label>:<label>${valores[index]}</label></p></div>`;
-               })
+               });
+               let button = ``;
+               if(btn!=undefined){
+                    if(btn.datos.condicion=="1"){
+                        button += `<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><button type="button" class="btn btn-lg btn-danger" id="`+btn.datos.id+`">`+btn.label+`</button></div>`;
+                    }
+               }
+               if(labels_extra.length > 0){
+                    let d=[];
+                    d[0]=labels_extra[0];
+                    let keys_extra = Object.getOwnPropertyNames(labels_extra[0]).filter((x)=>{
+                        return x!="length"?x:"";
+                    });
+                    let valores_extra= Object.values(labels_extra[0]);
+                    keys_extra.forEach((key,index)=>{
+                        string_divs+=`<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><p><label>${key}</label>:<label>${valores_extra[index]}</label></p></div>`;
+                    })
+                }
+               string_divs+=button;
                modalsplit[1]=string_divs;
                modal=modalsplit.join("");
                modal=modal.replaceAll("#",titulo.charAt(0).toUpperCase()+titulo.slice(1).replaceAll("_"," "));
@@ -411,6 +446,29 @@ $(document).on('dblclick', 'td', async function () {
 }
 );
 
+$(document).on('click', '.btn-danger', async function () { 
+    let btn = btns[btns.length -1 ];
+    let data = [];
+    let parametros = btn[0].datos.parametros.split(",");
+    for (let i = 0; i < parametros.length; i++) {
+        Object.assign(data,{[parametros[i]]:et[parametros[i]]});
+    }
+
+    let keys = Object.getOwnPropertyNames(data).filter((x)=>{
+        return x!="length"?x:"";
+    });
+    let valores= Object.values(data);
+    let string="{";
+    keys.forEach((key,index)=>{
+        string+=`"${key}":"${valores[index]}",`;
+    })
+    string = string.slice(0, string.length - 1);
+    string+="}";
+    var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST");
+    
+
+
+});
 
 //Click Derecho
 
@@ -460,7 +518,7 @@ $(document).on('contextmenu', 'td', function (e) {
 
 function abrirMenu (elemento){
     let html = ``;
-    html+=`<a class="dropdown-item" id="rclick" data-id="`+elemento.id+`">`+elemento.titulo+`</a>`;
+    html+=`<a class="dropdown-item ritem" id="rclick" data-id="`+elemento.id+`">`+elemento.titulo+`</a>`;
     return html;
     
 }

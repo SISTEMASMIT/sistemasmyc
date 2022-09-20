@@ -9,7 +9,6 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,m
     await $(tb).DataTable().clear();    
     await $(tb).DataTable().destroy();
     let tf = tb + " tfoot";
-    console.log(tf);
     $(tf).remove();    
     html += head+body;
     $(hd).html(head);

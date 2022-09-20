@@ -340,7 +340,7 @@ input:checked+.slider .off_login {
     min-width: 60em;
     max-width: 69em; */
     position: absolute;
-    z-index: 10;
+    z-index: 100;
   }
   .spinner {
     margin-top: 10% !important;

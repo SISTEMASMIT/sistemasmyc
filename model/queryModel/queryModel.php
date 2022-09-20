@@ -119,7 +119,8 @@ class QueryModel{
                 }
                 
             }else if($r->tipo=="button_emergente"){
-                $_SESSION[$r->datos->id]=$r;
+                if(!empty($datos_extra)){
+                    $_SESSION[$r->datos->id]=$r;
                 $condicion=explode(",",$r->datos->condicion,);
                 foreach($condicion as $c){
                     if(isset($r->datos->{$c})){
@@ -139,6 +140,8 @@ class QueryModel{
                     }
                 }
                 $r->datos->condicion=$valor_condicion;
+                }
+                
             }
         }
         $settings=json_decode($settings["jsr"]);

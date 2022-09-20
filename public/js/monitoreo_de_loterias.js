@@ -22,6 +22,9 @@ var orden = '';
 var vtn = [];
 var etq = [];
 var extra = [];
+var btns = [];
+var have_set = [];
+var et;
 var modal_id=1;
 var row;
 
@@ -78,6 +81,10 @@ $(document).on('hidden.bs.modal', '#base', function() {
     vtn.pop();
     etq.pop();
     extra.pop();
+    let ss=have_set[have_set.length-1];
+    if(ss){
+        btns.pop();
+    }
  });
 
 
@@ -116,6 +123,11 @@ async function montar_tabla(){
     let invisibles = [];
     let sumatorias = [];
     if(set[0].length > 0){
+        have_set.push(true);
+
+        btns.push(set[0].filter(function(x){
+            return x.label == 'Anular';
+        }));
 
        invisibles = set[0].find(function(x){    
             return x.label == '96';
@@ -124,7 +136,6 @@ async function montar_tabla(){
         sumatorias = set[0].find(function(x){    
             return x.label == '97';
         });
-        
 
         dclick.push(set[0].filter(function(x){ 
             if(x.label!='98' && x.label!='99' && x.label!='97' && x.label != '96'){
@@ -166,6 +177,7 @@ async function montar_tabla(){
             sumatorias = [];
          }
     }else{
+        have_set.push(false);
         isdclick=false;
         isrclick=false;
     }
@@ -313,7 +325,12 @@ $(document).on('dblclick', 'td', async function () {
            vtn.push(set);
            extra.push(info.datos_extra);
            if(set[0].length > 0){
-               console.log(set);
+               
+                have_set.push(true);
+
+                btns.push(set[0].filter(function(x){
+                    return x.label == 'Anular';
+                }));
 
                invisibles = set[0].find(function(x){    
                    return x.label == '96';
@@ -365,17 +382,19 @@ $(document).on('dblclick', 'td', async function () {
                }
 
            }else{
+                have_set.push(false);
                isdclick2=false;
                isrclick2=false;
            }
 
            if(emergente=="tabla"){
-                
+            let btn = btns[btns.length -1][0];
                 
              let labels_extra = extra[extra.length -1 ];
                //Convierto para que se envien las etiquetas
                let algo=[];
                algo[0]=etiq;
+               et = etiq;
                let keys = Object.getOwnPropertyNames(etiq).filter((x)=>{
                    return x!="length"?x:"";
                });
@@ -396,7 +415,13 @@ $(document).on('dblclick', 'td', async function () {
                let string_divs="";
                keys.forEach((key,index)=>{
                    string_divs+=`<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><p><label>${key}</label>:<label>${valores[index]}</label></p></div>`;
-               })
+               });
+               let button = ``;
+               if(btn!=undefined){
+                    if(btn.datos.condicion=="1"){
+                        button += `<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><button type="button" class="btn btn-lg btn-danger" id="`+btn.datos.id+`">`+btn.label+`</button></div>`;
+                    }
+               }
                if(labels_extra.length > 0){
                     let d=[];
                     d[0]=labels_extra[0];
@@ -408,7 +433,7 @@ $(document).on('dblclick', 'td', async function () {
                         string_divs+=`<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><p><label>${key}</label>:<label>${valores_extra[index]}</label></p></div>`;
                     })
                 }
-
+               string_divs+=button;
                modalsplit[1]=string_divs;
                modal=modalsplit.join("");
                modal=modal.replaceAll("#",titulo.charAt(0).toUpperCase()+titulo.slice(1).replaceAll("_"," "));
@@ -429,6 +454,30 @@ $(document).on('dblclick', 'td', async function () {
 }
 );
 
+$(document).on('click', '.btn-danger', async function () { 
+    let btn = btns[btns.length -1 ];
+    let data = [];
+    let parametros = btn[0].datos.parametros.split(",");
+    for (let i = 0; i < parametros.length; i++) {
+        Object.assign(data,{[parametros[i]]:et[parametros[i]]});
+    }
+
+    let keys = Object.getOwnPropertyNames(data).filter((x)=>{
+        return x!="length"?x:"";
+    });
+    let valores= Object.values(data);
+    let string="{";
+    keys.forEach((key,index)=>{
+        string+=`"${key}":"${valores[index]}",`;
+    })
+    string = string.slice(0, string.length - 1);
+    string+="}";
+    var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST");
+
+    
+
+
+});
 
 //Click Derecho
 
