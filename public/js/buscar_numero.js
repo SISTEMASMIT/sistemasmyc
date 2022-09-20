@@ -192,7 +192,7 @@ $(document).on('dblclick', 'td', async function () {
 
     $("#load").addClass('spinner');
     let dclick = vtn[vtn.length -1 ];
-    let dextra = extra[extra.length - 1];
+    
    let data = [];
    let etiq = [];
    let key;
@@ -366,7 +366,7 @@ $(document).on('dblclick', 'td', async function () {
            if(emergente=="tabla"){
                 
                 
-                
+             let labels_extra = extra[extra.length -1 ];
                //Convierto para que se envien las etiquetas
                let algo=[];
                algo[0]=etiq;
@@ -391,13 +391,17 @@ $(document).on('dblclick', 'td', async function () {
                keys.forEach((key,index)=>{
                    string_divs+=`<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><p><label>${key}</label>:<label>${valores[index]}</label></p></div>`;
                })
-
-                if(dextra.length > 0){
-                    console.log(dextra[0]);
-                }else{
-                    
+               if(labels_extra.length > 0){
+                    let d=[];
+                    d[0]=labels_extra[0];
+                    let keys_extra = Object.getOwnPropertyNames(labels_extra[0]).filter((x)=>{
+                        return x!="length"?x:"";
+                    });
+                    let valores_extra= Object.values(labels_extra[0]);
+                    keys_extra.forEach((key,index)=>{
+                        string_divs+=`<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><p><label>${key}</label>:<label>${valores_extra[index]}</label></p></div>`;
+                    })
                 }
-
 
                modalsplit[1]=string_divs;
                modal=modalsplit.join("");

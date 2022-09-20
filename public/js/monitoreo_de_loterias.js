@@ -398,10 +398,16 @@ $(document).on('dblclick', 'td', async function () {
                    string_divs+=`<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><p><label>${key}</label>:<label>${valores[index]}</label></p></div>`;
                })
                if(labels_extra.length > 0){
-                console.log(labels_extra[0]);
-            }else{
-                
-            }
+                    let d=[];
+                    d[0]=labels_extra[0];
+                    let keys_extra = Object.getOwnPropertyNames(labels_extra[0]).filter((x)=>{
+                        return x!="length"?x:"";
+                    });
+                    let valores_extra= Object.values(labels_extra[0]);
+                    keys_extra.forEach((key,index)=>{
+                        string_divs+=`<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><p><label>${key}</label>:<label>${valores_extra[index]}</label></p></div>`;
+                    })
+                }
 
                modalsplit[1]=string_divs;
                modal=modalsplit.join("");
@@ -472,7 +478,7 @@ $(document).on('contextmenu', 'td', function (e) {
 
 function abrirMenu (elemento){
     let html = ``;
-    html+=`<a class="dropdown-item" id="rclick" data-id="`+elemento.id+`">`+elemento.titulo+`</a>`;
+    html+=`<a class="dropdown-item ritem" id="rclick" data-id="`+elemento.id+`">`+elemento.titulo+`</a>`;
     return html;
     
 }

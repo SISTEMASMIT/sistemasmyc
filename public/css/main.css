@@ -331,6 +331,9 @@ input:checked+.slider .off_login {
     }
   }
   
+  .ritem{
+    cursor: pointer;
+  }
   .carga{
     background-color: #fff;
     /* min-height: 43em;
