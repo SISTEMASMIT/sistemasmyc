@@ -125,16 +125,16 @@ async function montar_tabla(){
            }
        }));
 
-        rclick = set[0].find(function(x){    
+        rclick.push([0].find(function(x){    
             return x.label == '99';
-        });
+        }));
     
 
        if(dclick[0]!=undefined){
            isdclick=true;
        }
 
-       if(rclick!=undefined){
+       if(rclick[0]!=undefined){
            isrclick=true;
        }
        if(invisibles !=undefined){
@@ -165,25 +165,32 @@ async function montar_tabla(){
    console.log(dclick);
    console.log(rclick);
    let labels = {"Receptores":receptores,"Loterias_Mix":loterias,"Fecha":f1,"Número":numero};
-   crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,rclick,invisibles,sumatorias,labels);
+   crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels);
 
 }
 
 
 
-function getCurrentDate(){
-   const date = new Date();
-   let day = date.getDate();
-   let month = date.getMonth() + 1;
-   let year = date.getFullYear();
-   let f = `${day}/${month}/${year}`;
-   return f;
+function getCurrentDate(formato){
+    const date = new Date();
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+    if(formato==1){
+        let f = `${year}${month}${day}`;
+    }else{
+        let f = `${day}/${month}/${year}`;
+    }   
+    return f;
 }
+
 
 
 //Detectamos el Doble Click
 $(document).on('dblclick', 'td', async function () {
-   let dclick = vtn[vtn.length -1 ];
+
+    $("#load").addClass('spinner');
+    let dclick = vtn[vtn.length -1 ];
    let data = [];
    let etiq = [];
    let key;
@@ -206,11 +213,7 @@ $(document).on('dblclick', 'td', async function () {
                        if(Number.isInteger(parseInt(parametros[i]))){
                            key = `c`+parametros[i];
                            value = $(this).parent().find("td").eq(parseInt(parametros[i])).text();
-                           // data = {[key]:value};
                            Object.assign(data,{[key]:value});
-                           // data = {[key]:value,"comando":dclick[0][a].datos["id"]}
-                           // data[`c`+parametros[i]]=$(this).parent().find("td").eq(parseInt(parametros[i])).text();
-                           // data[`comando`] = dclick[0][a].datos["id"];
                        }
                    }
                }
@@ -230,14 +233,14 @@ $(document).on('dblclick', 'td', async function () {
                    }else{
                        if(parametros[i]=="f1"){
                            if($("#"+parametros[i]).length < 1){
-                               let f = getCurrentDate();
+                               let f = getCurrentDate(1);
                                Object.assign(data,{[parametros[i]]:f});
                            }else{
                                Object.assign(data,{[parametros[i]]:$('#'+parametros[i]).data('daterangepicker').startDate.format('YYYYMMDD')});
                            }       
                        }else if(parametros[i]=="f1f2"){
                            if($("#"+parametros[i]).length < 1 ){
-                               let f = getCurrentDate();
+                               let f = getCurrentDate(1);
                                Object.assign(data,{[parametros[i]]:f});
 
                            }else{
@@ -259,14 +262,14 @@ $(document).on('dblclick', 'td', async function () {
                    }else{
                        if(etiquetas[i]=="f1"){
                            if($("#"+etiquetas[i]).length < 1){
-                               let f = getCurrentDate();
+                               let f = getCurrentDate(0);
                                Object.assign(etiq,{Fecha :f});
                            }else{
                               Object.assign(etiq,{Fecha:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
                            }       
                        }else if(etiquetas[i]=="f1f2"){
                            if($("#"+etiquetas[i]).length < 1 ){
-                               let f = getCurrentDate();
+                               let f = getCurrentDate(0);
                                Object.assign(etiq,{Fecha2 :f});
                            }else{
                               Object.assign(etiq,{Desde:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
@@ -320,24 +323,16 @@ $(document).on('dblclick', 'td', async function () {
                    }
                    
                }));
-
-               rclick = set[0].find(function(x){    
+               rclick=[];
+               rclick.push([0].find(function(x){    
                    return x.label == '99';
-               });
+               }));
 
-               if(dclick!=undefined){
+               if(dclick[0]!=undefined){
                    isdclick2=true;
-                   
-                   console.log(dclick);
-                   // comando = dclick.datos["comando"];
-                   // orden = dclick.datos["orden"];
-                   // etiquetas = dclick.datos["etiquetas"].split(",");
-                   // parametros = dclick.datos["parametros"].split(",");
-                   // emergente = dclick.datos["emergente"];
-                   // dclick = dclick.label;
                }
 
-               if(rclick!=undefined){
+               if(rclick[0]!=undefined){
                    isrclick2=true;
                }
 
@@ -366,7 +361,9 @@ $(document).on('dblclick', 'td', async function () {
            }
 
            if(emergente=="tabla"){
-
+                
+                
+                
                //Convierto para que se envien las etiquetas
                let algo=[];
                algo[0]=etiq;
@@ -380,13 +377,11 @@ $(document).on('dblclick', 'td', async function () {
                })
                string = string.slice(0, string.length - 1);
                string+="}";
-
-               
+               let labels_modal = JSON.parse(string);
                if($(base).children().length>1){
                    $(base).children().last().removeClass("show");
                }
-               modal_id++;
-               // let encabezado = `<label>`+labels["Receptores"]+`</label>`;
+               modal_id++;ss
                let modal = $(base).children().first().html().replaceAll("{}",modal_id);
                let modalsplit=modal.split("*");
                let string_divs="";
@@ -397,10 +392,9 @@ $(document).on('dblclick', 'td', async function () {
                modal=modalsplit.join("");
                modal=modal.replaceAll("#",titulo.charAt(0).toUpperCase()+titulo.slice(1).replaceAll("_"," "));
                $(base).append(modal);
-               // $(titulo).append(encabezado);
-               let labels = {"Receptores":"0001","Agencias":"Busus"};
+
                $('#tabla'+modal_id).removeClass('invisible');
-               crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,isdclick2,dclick,isrclick2,invisibles,sumatorias,string,"#modal"+modal_id);
+               crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,isdclick2,dclick,isrclick2,invisibles,sumatorias,labels_modal,"#modal"+modal_id);
                
            }
 
@@ -419,10 +413,20 @@ $(document).on('dblclick', 'td', async function () {
 
 
 $(document).on('contextmenu', 'td', function (e) {
+    console.log();
+    let rclick = vtn[vtn.length -1 ];
     if(isrclick){
-        var elementos=[];
-        elementos  =  {"item":"abrir enlace,/home","item2":"abrir reporte,/inactividad"};
-        let html = abrirMenu(elementos);
+        for (let a = 0; a < rclick[0].length; a++) {
+            if(rclick[0][a].label=='99'){
+                var elementos=rclick[0][a].datos.items;
+            }
+        }
+        let html = ``;
+
+        for (let i = 0; i < elementos.length; i++) {
+           html+=abrirMenu(elementos[i]);
+            
+        }
         console.log(html);
         $("#menuTabla").html(html);
         const bd = document.body.classList.contains(
@@ -453,12 +457,9 @@ $(document).on('contextmenu', 'td', function (e) {
   
 });
 
-function abrirMenu (elementos){
+function abrirMenu (elemento){
     let html = ``;
-    for(var i in elementos){
-        var elemento = elementos[i].split(","); 
-        html+=`<a class="dropdown-item" href="`+elemento[1]+`">`+elemento[0]+`</a>`;
-    }
+    html+=`<a class="dropdown-item" id="rclick" data-id="`+elemento.id+`">`+elemento.titulo+`</a>`;
     return html;
     
 }
@@ -472,4 +473,72 @@ $("table").on("click", function() {
 
 $("#menuTabla a").on("click", function() {
   $(this).parent().hide();
+});
+
+
+$(document).on('click', '#rclick', async function () { 
+    let rclick = vtn[vtn.length -1 ];
+    let data = [];
+    let etiq = [];
+    let key;
+    let value;
+    for (let a = 0; a < rclick[0].length; a++) {
+        if(rclick[0][a].label=='99'){
+            var elementos=rclick[0][a].datos.items;
+        }
+    }
+    let data_id = $("#rclick").attr( "data-id" )
+    for (let i = 0; i < elementos.length; i++) {
+        if(elementos[i].id==data_id){
+            let comando = elementos[i].comando;
+            let orden = elementos[i].orden;
+            let parametros = elementos[i].parametros.split(",");
+            let emergente = elementos[i].emergente;
+            Object.assign(data,{"comando":comando});
+            for (let i = 0; i < parametros.length; i++) {
+                if(Number.isInteger(parseInt(parametros[i]))){
+                    key = `c`+parametros[i];
+                    value = $(this).parent().find("td").eq(parseInt(parametros[i])).text();
+                    Object.assign(data,{[key]:value});
+                }else{
+                    if(parametros[i]=="f1"){
+                        if($("#"+parametros[i]).length < 1){
+                            let f = getCurrentDateP(1);
+                            Object.assign(data,{[parametros[i]]:f});
+                        }else{
+                            Object.assign(data,{[parametros[i]]:$('#'+parametros[i]).data('daterangepicker').startDate.format('YYYYMMDD')});
+                        }       
+                    }else if(parametros[i]=="f1f2"){
+                        if($("#"+parametros[i]).length < 1 ){
+                            let f = getCurrentDate(1);
+                            Object.assign(data,{[parametros[i]]:f});
+
+                        }else{
+                           Object.assign(data,{f1:$("#"+parametros[i]).data('daterangepicker').startDate.format('YYYYMMDD')});
+                           Object.assign(data,{f2:$("#"+parametros[i]).data('daterangepicker').endtDate.format('YYYYMMDD')});
+                        }
+                    }else{
+                        Object.assign(data,{[parametros[i]]:$('#'+parametros[i]).selectpicker('val')});
+                    } 
+                }
+            }
+            //Convierto para que se envien los parametros
+            let algo=[];
+            algo[0]=data;
+            let keys = Object.getOwnPropertyNames(data).filter((x)=>{
+                return x!="length"?x:"";
+            });
+            let valores= Object.values(data);
+            let string="{";
+            keys.forEach((key,index)=>{
+                string+=`"${key}":"${valores[index]}",`;
+            })
+            string = string.slice(0, string.length - 1);
+            string+="}";
+            var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST");
+            console.log(info);
+
+        }
+    }
+
 });

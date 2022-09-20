@@ -21,6 +21,7 @@
                         </tr>
                     </tbody>
                 </table>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="menuTabla{}"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" id="close_modal" data-dismiss="modal">Cerrar</button>

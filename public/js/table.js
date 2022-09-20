@@ -1,5 +1,5 @@
 var totalTime = 50;
-export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,rc,inv,sum,labels,modal){
+export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,modal){
    
     let html=``;
     let head =``;
@@ -8,7 +8,9 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,rc,inv,sum,label
     body = crear_body(parametro.data);
     await $(tb).DataTable().clear();    
     await $(tb).DataTable().destroy();
-    $(tb +"tfoot").remove();    
+    let tf = tb + " tfoot";
+    console.log(tf);
+    $(tf).remove();    
     html += head+body;
     $(hd).html(head);
     $(bd).html(body);
@@ -163,31 +165,26 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,rc,inv,sum,label
                 className: 'btn-info btn-sm ', 
                 autoPrint: true,
                 customize: function ( win ) {
+        
+
                     var hoy = new Date();
                     var fecha = hoy.getDate() + '-' + ( hoy.getMonth() + 1 ) + '-' + hoy.getFullYear();
                     var hora = hoy.getHours() + ':' + hoy.getMinutes() + ':' + hoy.getSeconds();
-                    $(win.document.body)
-                    .prepend(
-                        `</div>`
-                    );
+                    var html = `<div class="row" style="margin-left: 3%;">`;
                     let tam = Object.values(labels).length;
-                    console.log(tam);
                     for (var label in labels) {
-                            $(win.document.body)
-                            .css( 'font-size', '10pt' )
-                            .prepend(
-                                `<div class="col"><h4>`+label+`: `+labels[label]+`</h4></div>`
-                            );
-                            
-                        }
-                        $(win.document.body)
-                    .prepend(
-                        `<div class="row">`
-                    );
+                        html+=`<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><label>`+label+`</label>: <label>`+labels[label]+`</label></div>`;
+                    }
+                    html+=`</div>`;
                         $(win.document.body)
                         .css( 'font-size', '10pt' )
                         .prepend(
-                            `<h1>Reporte generado: `+fecha+` - `+hora+`</h1><br>`
+                            ``+html+``
+                        );
+                        $(win.document.body)
+                        .css( 'font-size', '10pt' )
+                        .prepend(
+                            `<div class="row" style="margin-left: 3%;"><h5>Reporte generado: `+fecha+` - `+hora+`</h5></div>`
                         );
 
                     $(win.document.body).find( 'table' )

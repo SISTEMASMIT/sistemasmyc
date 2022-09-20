@@ -13,6 +13,7 @@ var isrclick2 = false;
 var dclick = [];
 var dclickN = [];
 var rclick = [];
+var rclick2 = [];
 var emergente = '';
 var parametros = [];
 var etiquetas = [];
@@ -152,21 +153,15 @@ async function montar_tabla(){
             
         }));
 
-        rclick = set[0].find(function(x){    
+        rclick.push(set[0].find(function(x){    
             return x.label == '99';
-        });
+        }));
 
-        if(dclick!=undefined){
+        if(dclick[0]!=undefined){
             isdclick=true;
-            // comando = dclick.datos["comando"];
-            // orden = dclick.datos["orden"];
-            // etiquetas = dclick.datos["etiquetas"].split(",");
-            // parametros = dclick.datos["parametros"].split(",");
-            // emergente = dclick.datos["emergente"];
-            // dclick = dclick.label;
         }
 
-        if(rclick!=undefined){
+        if(rclick[0]!=undefined){
             isrclick=true;
         }
 
@@ -203,16 +198,23 @@ async function montar_tabla(){
 //     }
 // });
 
-function getCurrentDate(){
+function getCurrentDate(formato){
     const date = new Date();
     let day = date.getDate();
     let month = date.getMonth() + 1;
     let year = date.getFullYear();
-    let f = `${day}/${month}/${year}`;
+    if(formato==1){
+        let f = `${year}${month}${day}`;
+    }else{
+        let f = `${day}/${month}/${year}`;
+    }   
     return f;
 }
 
+
+
 $(document).on('dblclick', 'td', async function () {
+    $("#load").addClass('spinner');
     let dclick = vtn[vtn.length -1 ];
     let data = [];
     let etiq = [];
@@ -360,24 +362,18 @@ $(document).on('dblclick', 'td', async function () {
                     }
                     
                 }));
-
-                rclick = set[0].find(function(x){    
+                rclick = [];
+                rclick.push(set[0].find(function(x){    
                     return x.label == '99';
-                });
+                }));
 
-                if(dclick!=undefined){
+                if(dclick[0]!=undefined){
                     isdclick2=true;
                     
                     console.log(dclick);
-                    // comando = dclick.datos["comando"];
-                    // orden = dclick.datos["orden"];
-                    // etiquetas = dclick.datos["etiquetas"].split(",");
-                    // parametros = dclick.datos["parametros"].split(",");
-                    // emergente = dclick.datos["emergente"];
-                    // dclick = dclick.label;
                 }
 
-                if(rclick!=undefined){
+                if(rclick[0]!=undefined){
                     isrclick2=true;
                 }
 
@@ -398,7 +394,7 @@ $(document).on('dblclick', 'td', async function () {
             }
 
             if(emergente=="tabla"){
-
+            
                 //Convierto para que se envien las etiquetas
                 let algo=[];
                 algo[0]=etiq;
@@ -413,7 +409,7 @@ $(document).on('dblclick', 'td', async function () {
                 string = string.slice(0, string.length - 1);
                 string+="}";
 
-                
+                let labels_modal = JSON.parse(string);
                 if($(base).children().length>1){
                     $(base).children().last().removeClass("show");
                 }
@@ -430,9 +426,9 @@ $(document).on('dblclick', 'td', async function () {
                 modal=modal.replaceAll("#",comando.charAt(0).toUpperCase()+comando.slice(1).replaceAll("_"," "));
                 $(base).append(modal);
                 // $(titulo).append(encabezado);
-                let labels = {"Receptores":"0001","Agencias":"Busus"};
+                
                 $('#tabla'+modal_id).removeClass('invisible');
-                crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,isdclick2,dclick,isrclick2,invisibles,sumatorias,string,"#modal"+modal_id);
+                crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,isdclick2,dclick,isrclick2,invisibles,sumatorias,labels_modal,"#modal"+modal_id);
                 
             }
 
@@ -445,3 +441,138 @@ $(document).on('dblclick', 'td', async function () {
     
 }
 );
+
+
+
+//Click Derecho
+
+$(document).on('contextmenu', 'td', function (e) {
+    let rclick = vtn[vtn.length -1 ];
+    console.log($(this).rowIndex);
+    if(isrclick){
+        for (let a = 0; a < rclick[0].length; a++) {
+            if(rclick[0][a].label=='99'){
+                var elementos=rclick[0][a].datos.items;
+            }
+        }
+        let html = ``;
+
+        for (let i = 0; i < elementos.length; i++) {
+           html+=abrirMenu(elementos[i]);
+            
+        }
+        console.log(html);
+        $("#menuTabla").html(html);
+        const bd = document.body.classList.contains(
+            'sidebar-enable'
+        );
+
+        $('td').css('box-shadow', 'none');
+        if(!bd){
+            var top = e.pageY;
+            var left = e.pageX;
+        }else{
+            var top = e.pageY - 200;
+            var left = e.pageX-50;
+        }
+
+        $(this).css('box-shadow', 'inset 1px 1px 0px 0px red, inset -1px -1px 0px 0px red');
+        $("#menuTabla").css({
+            display: "block",
+            top: top,
+            left: left
+        });
+
+   
+    
+    }
+
+    return false; 
+  
+});
+
+function abrirMenu (elemento){
+    let html = ``;
+    html+=`<a class="dropdown-item" id="rclick" data-id="`+elemento.id+`">`+elemento.titulo+`</a>`;
+    return html;
+    
+}
+
+$("table").on("click", function() {
+	if ( $("#menuTabla").css('display') == 'block' ){
+  	    $("#menuTabla").hide();
+    }
+    $('td').css('box-shadow', 'none');
+});
+
+$("#menuTabla a").on("click", function() {
+  $(this).parent().hide();
+});
+
+
+$(document).on('click', '#rclick', async function () { 
+    let rclick = vtn[vtn.length -1 ];
+    let data = [];
+    let etiq = [];
+    let key;
+    let value;
+    for (let a = 0; a < rclick[0].length; a++) {
+        if(rclick[0][a].label=='99'){
+            var elementos=rclick[0][a].datos.items;
+        }
+    }
+    let data_id = $("#rclick").attr( "data-id" )
+    for (let i = 0; i < elementos.length; i++) {
+        if(elementos[i].id==data_id){
+            let comando = elementos[i].comando;
+            let orden = elementos[i].orden;
+            let parametros = elementos[i].parametros.split(",");
+            let emergente = elementos[i].emergente;
+            Object.assign(data,{"comando":comando});
+            for (let i = 0; i < parametros.length; i++) {
+                if(Number.isInteger(parseInt(parametros[i]))){
+                    key = `c`+parametros[i];
+                    value = $(this).parent().find("td").eq(parseInt(parametros[i])).text();
+                    Object.assign(data,{[key]:value});
+                }else{
+                    if(parametros[i]=="f1"){
+                        if($("#"+parametros[i]).length < 1){
+                            let f = getCurrentDateP(1);
+                            Object.assign(data,{[parametros[i]]:f});
+                        }else{
+                            Object.assign(data,{[parametros[i]]:$('#'+parametros[i]).data('daterangepicker').startDate.format('YYYYMMDD')});
+                        }       
+                    }else if(parametros[i]=="f1f2"){
+                        if($("#"+parametros[i]).length < 1 ){
+                            let f = getCurrentDate(1);
+                            Object.assign(data,{[parametros[i]]:f});
+
+                        }else{
+                           Object.assign(data,{f1:$("#"+parametros[i]).data('daterangepicker').startDate.format('YYYYMMDD')});
+                           Object.assign(data,{f2:$("#"+parametros[i]).data('daterangepicker').endtDate.format('YYYYMMDD')});
+                        }
+                    }else{
+                        Object.assign(data,{[parametros[i]]:$('#'+parametros[i]).selectpicker('val')});
+                    } 
+                }
+            }
+            //Convierto para que se envien los parametros
+            let algo=[];
+            algo[0]=data;
+            let keys = Object.getOwnPropertyNames(data).filter((x)=>{
+                return x!="length"?x:"";
+            });
+            let valores= Object.values(data);
+            let string="{";
+            keys.forEach((key,index)=>{
+                string+=`"${key}":"${valores[index]}",`;
+            })
+            string = string.slice(0, string.length - 1);
+            string+="}";
+            var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST");
+            console.log(info);
+
+        }
+    }
+
+});
