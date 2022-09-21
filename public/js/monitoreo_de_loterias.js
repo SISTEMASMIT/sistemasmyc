@@ -473,10 +473,12 @@ $(document).on('click', '.btn-danger', async function () {
     keys.forEach((key,index)=>{
         string+=`"${key}":"${valores[index]}",`;
     })
-    string = string.slice(0, string.length - 1);
+    string+=`"comando":"${this.id}"`
     string+="}";
-    var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST"); 
-
+    var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST");
+    if (typeof info.data.mensaje !== 'undefined') {
+        alert(info.data.mensaje);
+      }
 });
 
 //Click Derecho

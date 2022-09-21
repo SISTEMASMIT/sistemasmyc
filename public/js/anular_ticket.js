@@ -101,8 +101,8 @@ async function montar_tabla(){
    $("#carga").height( h );
    $("#load").addClass('spinner');
    let data = [];
-   let numero_ticket =$.trim($('#numero_ticket').val());
-   let agencias = $('#agencias').selectpicker('val');
+   let numero_ticket =$.trim($('#nro_ticket').val());
+   let agencias = $('#cod_agencia').selectpicker('val');
    data = {"c2":numero_ticket,"c1":agencias,"comando":"anular_ticket"};
    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
    let set = Object.values(JSON.parse(info.settings.jsr));

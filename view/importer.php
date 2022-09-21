@@ -94,9 +94,11 @@ class Importer
 
     function input_int($label, $json)
     {
-    try {
+    try {   if (!isset($json->id)) {
+                    $json->id = $label;
+                }
             $html = "<div class='col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 filtros'><label class='form-label'>" . $label . "</label>";
-            $html .="<input class='form-control form-control-lg' id='".strtolower(str_replace(" ","_",$label))."' type='numeric' placeholder='".$label."' required>";
+            $html .="<input class='form-control form-control-lg' id='".strtolower(str_replace(" ","_",$json->id))."' type='numeric' placeholder='".$label."' required>";
             $html .= "</div>";
             return $html;
         } catch (Exception $e) {
