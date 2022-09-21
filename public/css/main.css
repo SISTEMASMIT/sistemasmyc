@@ -338,6 +338,7 @@ input:checked+.slider .off_login {
     margin-left: auto;
     width: 95% !important;
   }
+  
   @media (min-width: 768px) {
     .modal-dialog .modal-fullscreen {
       width: 750px;
