@@ -2,6 +2,7 @@
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
+        <button type="button" class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#modal">Registrar</button>
             <?php
                     
                     $pathlocal=$path.'/view'."/".$this->url[0]."/componentes"."/"."modals/";
@@ -55,6 +56,7 @@
                             <tr><td></td></tr>
                             </tbody>
                         </table>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="menuTabla"></div>
                     </div>
                 </div>
             </div> <!-- Row general -->

@@ -236,7 +236,7 @@ $(document).on('dblclick', 'td', async function () {
                     for (let i = 0; i < etiquetas.length; i++) {
                         if(Number.isInteger(parseInt(etiquetas[i]))){
                             // key = `c`+etiquetas[i];
-                            key = etq[0][etiquetas[i]];
+                            key = etq[etq.length-1][etiquetas[i]];
                             value = $(this).parent().find("td").eq(parseInt(etiquetas[i])).text();
                             Object.assign(etiq,{[key]:value});
                         }else{

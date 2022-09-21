@@ -331,6 +331,32 @@ input:checked+.slider .off_login {
     }
   }
   
+  .modal-fullscreen .modal-dialog {
+    margin: 20;
+    margin-right: auto;
+    margin-left: auto;
+    width: 95%;
+  }
+  @media (min-width: 768px) {
+    .modal-dialog .modal-fullscreen {
+      width: 750px;
+    }
+  }
+  @media (min-width: 992px) {
+    .modal-fullscreen .modal-dialog {
+      width: 970px;
+    }
+  }
+  @media (min-width: 1200px) {
+    .modal-fullscreen .modal-dialog {
+       width: 1170px;
+    }
+  }
+
+  .modal .modal-dialog {
+    display: block !important;
+  }
+
   .ritem{
     cursor: pointer;
   }
