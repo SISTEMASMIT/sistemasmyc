@@ -1,7 +1,7 @@
 <div id="base">
 <div>
-<div class="modal fade" id="modal{}" tabindex="-1" aria-labelledby="exampleModalLabel" style="display: none;" aria-hidden="true">
-    <div class="modal-dialog modal-fullscreen" style="max-width: 100%;">
+<div class="modal fade" id="modal{}" tabindex="-1" aria-labelledby="exampleModalLabel"  >
+    <div class="modal-dialog modal-fullscreen" style="max-width: 95%;">
         <div class="modal-content">
             <div class="modal-header">
             <h5 class="modal-title" id="">#</h5>

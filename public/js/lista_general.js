@@ -445,15 +445,15 @@ $(document).on('dblclick', 'td', async function () {
    
 }
 );
-
 $(document).on('click', '.btn-danger', async function () { 
     let btn = btns[btns.length -1 ];
     let data = [];
     let parametros = btn[0].datos.parametros.split(",");
+    let comando2 = btn[0].datos.id;
+    Object.assign(data,{"comando":comando2});
     for (let i = 0; i < parametros.length; i++) {
         Object.assign(data,{[parametros[i]]:et[parametros[i]]});
     }
-
     let keys = Object.getOwnPropertyNames(data).filter((x)=>{
         return x!="length"?x:"";
     });
@@ -464,12 +464,9 @@ $(document).on('click', '.btn-danger', async function () {
     })
     string = string.slice(0, string.length - 1);
     string+="}";
-    var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST");
-    
-
+    var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST"); 
 
 });
-
 //Click Derecho
 
 $(document).on('contextmenu', 'td', function (e) {

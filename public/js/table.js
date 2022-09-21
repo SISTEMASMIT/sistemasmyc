@@ -254,6 +254,7 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,m
                 if(tb!="#tabla1"){
                     setTimeout(function() { 
                         $(tb).DataTable().columns.adjust();
+                        this.input.nativeElement.focus();
                     }, 200);
                 }
                 
