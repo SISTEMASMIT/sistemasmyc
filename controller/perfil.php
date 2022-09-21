@@ -19,7 +19,9 @@ class Perfil extends Controller
     }
     public  function __construct0(){
         parent::__construct();
-        $this->view->render("/perfil/perfil");
+        $this->loadModel("homeModel");
+        $this->view->data["menu"]=$this->model->niveles();
+        $this->view->render('perfil/perfil');
      }
 
 
@@ -35,10 +37,9 @@ class Perfil extends Controller
                     $this->view->data["nombreComponente"] = "view/".$url[0]."/componentes"."/".$url2.".php";
                     $this->view->render('perfil/perfil');
                 }else{
-                    var_dump($url);
+                    
                     $this->loadModel("homeModel");
                     $this->view->data["menu"]=$this->model->niveles();
-                    $this->view->data["nombreComponente"] = "view/".$url[0]."/componentes"."/".$url2.".php";
                     $this->view->render('perfil/perfil');
                 }
             }
