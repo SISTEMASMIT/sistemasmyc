@@ -243,7 +243,10 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,m
             },
             
             initComplete: function () {
-                $(modal).modal('show');
+                if(modal!=undefined){
+                    $(modal).modal('show');
+                    $(modal).addClass("show1");
+                }
                 $("#load").removeClass("spinner");
                 $("#carga").removeClass("carga");
                 $("#carga").removeAttr( 'style' );
