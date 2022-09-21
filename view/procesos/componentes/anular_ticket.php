@@ -4,8 +4,8 @@
         <div class="container-fluid">
         
         <?php
-                $pathlocal=$path.'/view'."/".$this->url[0]."/componentes"."/"."modals/";
-                $modal=file_get_contents($pathlocal."/modalbase.php");
+                $pathlocal=$path.'/view'."/".$this->url[0]."/componentes"."/";
+                $modal=file_get_contents($pathlocal."modalbase.php");
                 echo $modal;
             ?>
             <div class="row">

@@ -4,8 +4,8 @@
         <div class="container-fluid">
         <button type="button" class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#modal">Registrar</button>
         <?php
-                $pathlocal=$path.'/view'."/".$this->url[0]."/componentes"."/"."modals/";
-                $modal=file_get_contents($pathlocal."/modalbase.php");
+                $pathlocal=$path.'/view'."/".$this->url[0]."/componentes"."/";
+                $modal=file_get_contents($pathlocal."modalbase.php");
                 echo $modal;
             ?>
             <div class="row">
