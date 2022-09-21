@@ -51,7 +51,6 @@ class QueryModel{
         }
         $consulta = json_encode($data_inicial);
         $sql = "CALL bl_banca(:consulta)";
-        // var_dump($consulta);
         $this->conexion=conexion::getConexion();
         $statemant=$this->conexion->prepare($sql);
         $statemant->bindParam(":consulta",$consulta);
@@ -61,10 +60,19 @@ class QueryModel{
                 $col = $statemant->getColumnMeta($i);
                 $head[] = $col['name'];
             }
-            $data = array(
-                "head" => $head,
-                "data" => $response
-            );
+            
+            if(!isset($response[0]["resp"])){
+                $data = array(
+                    "head" => $head,
+                    "data" => $response
+                );
+            }else{
+                $data = array(
+                    "head" => "",
+                    "data" => "",
+                    "mensaje"=>$response[0]["resp"]
+                );
+            }
         }else{
             $data = array(
                 "e" => "0",

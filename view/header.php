@@ -162,8 +162,8 @@
                         </button>
                         <div class="dropdown-menu dropdown-menu-end">
                             <!-- item-->
-                            <a class="dropdown-item" href="#">Perfil</a>
-                            <a class="dropdown-item d-block" href="#">Configuraciones</a>
+                            <a class="dropdown-item" href="<? $path;?>perfil/">Perfil</a>
+                            <a class="dropdown-item d-block" href="<? $path;?>config/">Configuraciones</a>
                             <a class="dropdown-item" href="#">Bloquear Pantalla</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item text-danger" href="<? $path; ?>/logout/logout">Cerrar Sesión</a>
