@@ -14,7 +14,24 @@ require_once($path.'/view/header.php');
 <!-- Right bar overlay-->
 <div class="rightbar-overlay"></div>
 <!-- CONTENIDO WEB -->
-<? require_once($this->data["nombreComponente"]); ?>
+
+<div class="main-content">
+    <div class="page-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
+                        <label for="nombre_usuario">Nombre usuario</label>
+                        <input type="text" class="form-control form-control-lg" value="<?php echo json_decode($_SESSION["usuario"])->user?>" disabled>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
+                        <label for="nombre_usuario">Identificador equipo</label>
+                        <input type="text" id="id_equipo"class="form-control form-control-lg" value="" disabled >
+                </div>
+            </div>
+        </div> <!-- container-fluid -->
+    </div>  <!--- page-content --->
+</div><!-- FIN CONTENIDO WEB -->
+<script type="module" src="<? $path;?>/public/js/perfil.js" ></script>
 <!---Mi Js--->
 <script src="<? $path;?>/public/js/app.js"></script>
 <script src="<? $path;?>/public/js/ajax.js"></script>
