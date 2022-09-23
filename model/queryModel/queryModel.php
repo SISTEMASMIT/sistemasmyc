@@ -39,15 +39,11 @@ class QueryModel{
         $data_inicial->usuario = $usuario->user;
         $data_inicial->banca= $usuario->banca;
         $data_inicial->token = $usuario->token;
-        // var_dump($usuario);
-        if(isset($_SESSION[$comando]->comando)){
-            $data_inicial->comando = $_SESSION[$comando]->comando;
-            $orden=$_SESSION[$comando]->orden;
-            $comando=$_SESSION[$comando]->comando;
+        $orden="";
+        if(isset($_SESSION[$comando])){
+            $this->comando_orden($data_inicial,$comando,$orden);
         }else{
-            $data_inicial->comando = $_SESSION[$comando]->datos->comando;
-            $orden=$_SESSION[$comando]->datos->orden;
-            $comando=$_SESSION[$comando]->datos->comando;
+            $orden=$data_inicial->orden;
         }
         $consulta = json_encode($data_inicial);
         $sql = "CALL bl_banca(:consulta)";
@@ -88,7 +84,6 @@ class QueryModel{
         );
         
         $segunda_respuesta = json_encode($segunda_respuesta);
-
         $sql = "CALL bl_parametros(:segunda_respuesta)";
         $this->conexion=conexion::getConexion();
         $statemant=$this->conexion->prepare($sql);
@@ -103,53 +98,55 @@ class QueryModel{
         //Aqui subimos los botones o las acciones a la sesion
         $segunda_r=json_decode($settings["jsr"]);
         foreach ( $segunda_r->filtros as $key => &$r){
-            if(!isset($r->datos->id)){
-                $r->datos->id=$r->label;
-            }
-            if($r->tipo=="dclick"){
-                $_SESSION[$r->datos->id]=$r;
-            }else if($r->tipo=="rclick"){
-                foreach($r->datos->items as $key => $item){
-                    if(!isset($item->id)){
-                        $item->id=$item->label;
-                    }
-                    $_SESSION[$item->id]=$r->datos->items[$key];
+            if(!str_contains($r->tipo,"formulario_emergente")){
+                if(!isset($r->datos->id)){
+                    $r->datos->id=$r->label;
                 }
-            }else if($r->tipo=="execute"){
-                $data_inicial->comando=$r->datos->comando;
-                $data_inicial->orden=$r->datos->orden;
-                $consulta_datos_extra= json_encode($data_inicial);
-                $sql_extra = "CALL bl_banca(:consulta)";
-                $statemant_extra=$this->conexion->prepare($sql_extra);
-                $statemant_extra->bindParam(":consulta",$consulta_datos_extra);
-                if($statemant_extra->execute()){
-                    $datos_extra=$statemant_extra->fetchAll(PDO::FETCH_ASSOC);
-                }
-                
-            }else if($r->tipo=="button_emergente"){
-                if(!empty($datos_extra)){
+                if($r->tipo=="dclick"){
                     $_SESSION[$r->datos->id]=$r;
-                $condicion=explode(",",$r->datos->condicion,);
-                foreach($condicion as $c){
-                    if(isset($r->datos->{$c})){
-                        if(isset($this->{$c})){
-                            if($c=="fecha"){
-                                $r->datos->{$c}=date($this->{$c}[$r->datos->$c]);
+                }else if($r->tipo=="rclick"){
+                    foreach($r->datos->items as $key => $item){
+                        if(!isset($item->id)){
+                            $item->id=$item->label;
+                        }
+                        $_SESSION[$item->id]=$r->datos->items[$key];
+                    }
+                }else if($r->tipo=="execute"){
+                    $data_inicial->comando=$r->datos->comando;
+                    $data_inicial->orden=$r->datos->orden;
+                    $consulta_datos_extra= json_encode($data_inicial);
+                    $sql_extra = "CALL bl_banca(:consulta)";
+                    $statemant_extra=$this->conexion->prepare($sql_extra);
+                    $statemant_extra->bindParam(":consulta",$consulta_datos_extra);
+                    if($statemant_extra->execute()){
+                        $datos_extra=$statemant_extra->fetchAll(PDO::FETCH_ASSOC);
+                    }
+                    
+                }else if($r->tipo=="button_emergente"){
+                    if(!empty($datos_extra)){
+                        $_SESSION[$r->datos->id]=$r;
+                    $condicion=explode(",",$r->datos->condicion,);
+                    foreach($condicion as $c){
+                        if(isset($r->datos->{$c})){
+                            if(isset($this->{$c})){
+                                if($c=="fecha"){
+                                    $r->datos->{$c}=date($this->{$c}[$r->datos->$c]);
+                                }
                             }
                         }
                     }
-                }
-                
-                $valor_condicion="1";
-                foreach($condicion as $c){
-                    if(!$r->datos->{$c}==$datos_extra[0][$c]){
-                        $valor_condicion="0";
-                        break;
+                    
+                    $valor_condicion="1";
+                    foreach($condicion as $c){
+                        if(!$r->datos->{$c}==$datos_extra[0][$c]){
+                            $valor_condicion="0";
+                            break;
+                        }
                     }
+                    $r->datos->condicion=$valor_condicion;
+                    }
+                    
                 }
-                $r->datos->condicion=$valor_condicion;
-                }
-                
             }
         }
         $settings=json_decode($settings["jsr"]);
@@ -165,7 +162,19 @@ class QueryModel{
 
     }
 
+
+    //funcion para modular y configurar el comando y la orden sacandola de la sesion
+    public function comando_orden(&$data_inicial,&$comando,&$orden){
+        if(isset($_SESSION[$comando]->comando)){
+            $data_inicial->comando = $_SESSION[$comando]->comando;
+            $orden=$_SESSION[$comando]->orden;
+            $comando=$_SESSION[$comando]->comando;
+        }else{
+            $data_inicial->comando = $_SESSION[$comando]->datos->comando;
+            $orden=$_SESSION[$comando]->datos->orden;
+            $comando=$_SESSION[$comando]->datos->comando;
+        }
+    }
+    
+
 }
-
-
-?>
