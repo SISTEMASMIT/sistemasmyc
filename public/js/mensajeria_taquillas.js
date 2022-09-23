@@ -1,5 +1,5 @@
 import {ajax_peticion} from "./Ajax-peticiones.js";
-
+import * as imp from "./importer.js";
 $(document).on("change","#receptores",async function(){
     let receptores=$(this).selectpicker().val();
     let data={"receptor":receptores,"comando":"age_rece"};
@@ -21,7 +21,17 @@ $(document).on("click","#agregrar",async function(){
     let data={"comando":"","orden":"modalTaquillas"};
     let info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
     let formulario=JSON.parse(info.settings["jsr"]);
-    console.log(formulario);
+    let html="";
+    if(formulario.filtros!=undefined){
+        formulario.filtros.forEach((element,index)=>{
+            if(element.tipo!="titulo"){
+                if(imp[element.tipo]){
+                    html+=imp[element.tipo](element.label,element.datos)
+                }
+            }
+        })
+        
+    }
 });
 
 function generarHtml(list){
