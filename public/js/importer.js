@@ -53,5 +53,5 @@ export function formulario_emergente_select_multiple(label,json){
 export function button_emergente(label,json){
     return `<div class='col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 filtros'>";
     <button type='button' id='${json.id}' class='btn-lg btn-block btn-success'>${label}</button>
-    $html .= "</div>`
+    </div>`
 }
