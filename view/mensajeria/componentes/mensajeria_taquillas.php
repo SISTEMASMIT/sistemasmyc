@@ -57,6 +57,7 @@
                             <tr><td></td></tr>
                             </tbody>
                         </table>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="menuTabla"></div>
                     </div>
                 </div>
             </div> <!-- Row general -->

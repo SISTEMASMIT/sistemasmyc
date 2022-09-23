@@ -2,7 +2,7 @@ import {oneDate} from "./date.js";
 import {ajax_peticion} from "./Ajax-peticiones.js";
 import {crear_tabla} from "./table.js";
 
-
+var intervalo;
 
 var id='';
 var base="#base";
@@ -28,41 +28,47 @@ var et;
 var modal_id=1;
 var row;
 
-$(document).ready(function(){
-   oneDate("#f1");
-   var columns = 6;
+$(document).ready(function () {
+    var columns = 6;
     var rows = 10;
     var head = crear_head(columns);
     var body = crear_body(columns,rows);
     var html=head+body;
     $('#tablaf').html(html);
     $('#tablaf').DataTable();
-})
-
+});
 
 function crear_head(data){
-   let head = `<thead><tr>`;
-   for(var i=0; i<data;i++){
-       head+=`<th>-</th>`;
-   }
-   head+=`</tr></thead>`;
-   return head;
+    let head = `<thead><tr>`;
+    for(var i=0; i<data;i++){
+        head+=`<th>-</th>`;
+    }
+    head+=`</tr></thead>`;
+    return head;
 }
 
 function crear_body(columns, rows){
-   let body = `<tbody>`;
-   for(var a =0; a< rows; a++){
-       body+=`<tr>`;
-       for(var i=0; i<columns;i++){
-           body+=`<td>-</td>`;
-       }
-       body+=`</tr>`
-   }
-   
-   
-   body+=`</tbody>`;
-   return body;
+    let body = `<tbody>`;
+    for(var a =0; a< rows; a++){
+        body+=`<tr>`;
+        for(var i=0; i<columns;i++){
+            body+=`<td>-</td>`;
+        }
+        body+=`</tr>`
+    }
+    
+    
+    body+=`</tbody>`;
+    return body;
 }
+
+
+$(document).on('click', '#detener', async function() {
+    clearInterval(intervalo);
+});
+
+
+
 //Ocultar El modal
 $(document).on('hidden.bs.modal', '#base', function() {
     modal_id--;
@@ -71,6 +77,7 @@ $(document).on('hidden.bs.modal', '#base', function() {
         $('.modal-backdrop').addClass('show');
         $(base).children().last().addClass("fade");
         $(base).children().last().addClass("show");
+        setTimeout(() => this.input.nativeElement.focus(), 0);
     }
     vtn.pop();
     etq.pop();
@@ -82,102 +89,102 @@ $(document).on('hidden.bs.modal', '#base', function() {
  });
 
 
-$(document).on('click', '#buscar_numero', async function() {
-   $('#tabla1').removeClass('invisible');
-   if($('#numero').val()!=''){
-        montar_tabla();
-   }else{
-    $('#numero').attr("placeholder", "Ingrese un Número").placeholder();
-   }
+$(document).on('click', '#mensajeria_taquillas', async function() {
+    $('#tabla1').removeClass('invisible');
+    // $('#aceptar').prop('disabled', true);
+    montar_tabla();
+    // intervalo = setInterval(montar_tabla, 50000);
+    
 });
 
+
 async function montar_tabla(){
-   var w = document.getElementById("tabla_res").clientWidth;
-   var h = document.getElementById("tabla_res").clientHeight;
-   h = h+500;
-   $('#f').html('');
-   $("#carga").addClass('carga');
-   $("#carga").width( w );
-   $("#carga").height( h );
-   $("#load").addClass('spinner');
-   let data = [];
-   let receptores = $('#receptores').selectpicker('val');
-   let loterias = $('#loteria_mix').selectpicker('val');
-   let f1 = $('#f1').data('daterangepicker').startDate.format('YYYYMMDD');
-   let f1V = $('#f1').data('daterangepicker').startDate.format('DD/MM/YYYY');
-   let numero = $.trim($('#numero').val());
-   data = {"receptor":receptores,"loteria_mix":loterias,"f1":f1,"numero":numero,"comando":"buscar_numero"};
-   var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
+    var w = document.getElementById("tabla_res").clientWidth;
+    var h = document.getElementById("tabla_res").clientHeight;
+    h = h+500;
+    $('#f').html('');
+    $("#carga").addClass('carga');
+    $("#carga").width( w );
+    $("#carga").height( h );
+    $("#load").addClass('spinner');
+    let data = [];
+    let receptores = $('#receptores').selectpicker('val');
+    let agencias = $('#agencias').selectpicker('val');
 
-   let set = Object.values(JSON.parse(info.settings.jsr));
-   etq.push(info.data.head);
-   vtn.push(set);
-   extra.push(info.datos_extra);
-   let invisibles = [];
-   let sumatorias = [];
 
-   if(set[0].length > 0){
+    data = {"receptor":receptores,"agencias":agencias,"comando":"mensajeria_taquillas"};
+
+    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
+    let set = Object.values(JSON.parse(info.settings.jsr));
+    etq.push(info.data.head);
+    vtn.push(set);
+    extra.push(info.datos_extra);
+    let invisibles = [];
+    let sumatorias = [];
+    if(set[0].length > 0){
         have_set.push(true);
 
-      invisibles = set[0].find(function(x){    
-           return x.label == '96';
-      });
+        btns.push(set[0].filter(function(x){
+            return x.label == 'Anular';
+        }));
 
-      sumatorias = set[0].find(function(x){    
-           return x.label == '97';
-      });
-       
+       invisibles = set[0].find(function(x){    
+            return x.label == '96';
+        });
 
-       dclick.push(set[0].filter(function(x){ 
-           if(x.label!='98' && x.label!='99' && x.label!='97' && x.label != '96'){
-               return x;
-           }else if(x.label=='98'){
-               return x;
-           }
-       }));
+        sumatorias = set[0].find(function(x){    
+            return x.label == '97';
+        });
 
-        rclick.push([0].find(function(x){    
+        dclick.push(set[0].filter(function(x){ 
+            if(x.label!='98' && x.label!='99' && x.label!='97' && x.label != '96'){
+                return x;
+            }else if(x.label=='98'){
+                return x;
+            }
+            
+        }));
+
+        rclick.push(set[0].find(function(x){    
             return x.label == '99';
         }));
-    
 
-       if(dclick[0]!=undefined){
-           isdclick=true;
-       }
+        if(dclick[0]!=undefined){
+            isdclick=true;
+        }
 
-       if(rclick[0]!=undefined){
-           isrclick=true;
-       }
-       if(invisibles !=undefined){
-         invisibles=invisibles.datos.c_invisible.split(",");
-         invisibles = invisibles.map(function(x){    
-           return parseInt(x);
-         });   
-      }else{
-         invisibles = [];
-      }
-       
+        if(rclick[0]!=undefined){
+            isrclick=true;
+        }
 
-      if(sumatorias != undefined){
-         sumatorias=sumatorias.datos.c_sumatoria.split(",");
-         sumatorias = sumatorias.map(function(x){    
-           return parseInt(x);
-         });
-      }else{
-         sumatorias = [];
-      }
-         
-   }else{
+        if(invisibles !=undefined){
+            invisibles=invisibles.datos.c_invisible.split(",");
+            invisibles = invisibles.map(function(x){    
+              return parseInt(x);
+            });   
+         }else{
+            invisibles = [];
+         }
+          
+   
+         if(sumatorias != undefined){
+            sumatorias=sumatorias.datos.c_sumatoria.split(",");
+            sumatorias = sumatorias.map(function(x){    
+              return parseInt(x);
+            });
+         }else{
+            sumatorias = [];
+         }
+    }else{
         have_set.push(false);
-       isdclick=false;
-       isrclick=false;
-   }
+        isdclick=false;
+        isrclick=false;
+    }
 
-   let labels = {"Receptores":receptores,"Loterias_Mix":loterias,"Fecha":f1V,"Número":numero};
-   crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels);
+    let labels = {"Receptores":receptores,"Agencias":agencias};
+    crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels);
 
 }
-
 
 
 function getCurrentDate(formato){
@@ -194,7 +201,6 @@ function getCurrentDate(formato){
     }   
   
 }
-
 
 
 
@@ -267,6 +273,7 @@ $(document).on('dblclick', 'td', async function () {
                }
                //Saco las etiquetas
                for (let i = 0; i < etiquetas.length; i++) {
+
                    if(Number.isInteger(parseInt(etiquetas[i]))){
                        // key = `c`+etiquetas[i];
                        key = etq[etq.length-1][etiquetas[i]];
@@ -275,14 +282,14 @@ $(document).on('dblclick', 'td', async function () {
                    }else{
                        if(etiquetas[i]=="f1"){
                            if($("#"+etiquetas[i]).length < 1){
-                               let f = getCurrentDate();
+                               let f = getCurrentDate(0);
                                Object.assign(etiq,{Fecha :f});
                            }else{
                               Object.assign(etiq,{Fecha:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
                            }       
                        }else if(etiquetas[i]=="f1f2"){
                            if($("#"+etiquetas[i]).length < 1 ){
-                               let f = getCurrentDate();
+                               let f = getCurrentDate(0);
                                Object.assign(etiq,{Fecha2 :f});
                            }else{
                               Object.assign(etiq,{Desde:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
@@ -318,6 +325,7 @@ $(document).on('dblclick', 'td', async function () {
            vtn.push(set);
            extra.push(info.datos_extra);
            if(set[0].length > 0){
+               
                 have_set.push(true);
 
                 btns.push(set[0].filter(function(x){
@@ -463,24 +471,12 @@ $(document).on('click', '.btn-danger', async function () {
     keys.forEach((key,index)=>{
         string+=`"${key}":"${valores[index]}",`;
     })
-    string = string.slice(0, string.length - 1);
+    string+=`"comando":"${this.id}"`
     string+="}";
     var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST");
-    if(info.data.mensaje=="El ticket ya esta anulado"){
-        Swal.fire({
-            title: '',
-            text: info.data.mensaje,
-            icon: 'warning',
-            confirmButtonText: 'Aceptar'
-          })
-    }else{
-        Swal.fire({
-        title: '',
-        text: info.data.mensaje,
-        icon: 'success',
-        confirmButtonText: 'Aceptar'
-      })
-    }
+    if (typeof info.data.mensaje !== 'undefined') {
+        alert(info.data.mensaje);
+      }
 });
 
 //Click Derecho
@@ -608,12 +604,7 @@ $(document).on('click', '#rclick', async function () {
             string = string.slice(0, string.length - 1);
             string+="}";
             var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST");
-            Swal.fire({
-                title: '',
-                text: info.data.mensaje,
-                icon: 'success',
-                confirmButtonText: 'Aceptar'
-              })
+            console.log(info);
 
         }
     }

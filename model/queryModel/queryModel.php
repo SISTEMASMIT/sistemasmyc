@@ -50,6 +50,7 @@ class QueryModel{
             $comando=$_SESSION[$comando]->datos->comando;
         }
         $consulta = json_encode($data_inicial);
+        // var_dump($consulta);
         $sql = "CALL bl_banca(:consulta)";
         $this->conexion=conexion::getConexion();
         $statemant=$this->conexion->prepare($sql);

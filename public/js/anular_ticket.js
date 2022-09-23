@@ -97,7 +97,12 @@ async function montar_tabla(){
    info2=info;
    let set = Object.values(JSON.parse(info.settings.jsr));
    if(info.data.data<1){
-        alert("¡Error! Ticket o Agencia erróneos");
+    Swal.fire({
+        title: 'Error!',
+        text: 'Ticket o Agencia Erroneos',
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      })
         $("#carga").removeClass('carga');
         $("#load").removeClass('spinner');
    }else{
@@ -201,5 +206,10 @@ $(document).on('click', '.btn-danger', async function () {
     string = string.slice(0, string.length - 1);
     string+="}";
     var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST"); 
-    alert(info.data.mensaje);
+    Swal.fire({
+        title: 'Error!',
+        text: info.data.mensaje,
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      })
 });
