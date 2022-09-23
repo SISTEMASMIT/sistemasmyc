@@ -43,7 +43,9 @@ class QueryModel{
         if(isset($_SESSION[$comando])){
             $this->comando_orden($data_inicial,$comando,$orden);
         }else{
-            $orden=$data_inicial->orden;
+            if(isset($data_inicial->orden)){
+                $orden=$data_inicial->orden;
+            }
         }
         $consulta = json_encode($data_inicial);
         // var_dump($consulta);
