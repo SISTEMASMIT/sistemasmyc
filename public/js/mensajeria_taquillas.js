@@ -1,50 +1,7 @@
-import {oneDate} from "./date.js";
+import {futuDate} from "./date.js";
 import {ajax_peticion} from "./Ajax-peticiones.js";
 import {crear_tabla} from "./table.js";
 import * as imp from "./importer.js";
-
-
-$(document).on("change","#receptores",async function(){
-    let receptores=$(this).selectpicker().val();
-    let data={"receptor":receptores,"comando":"age_rece"};
-    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
-    if(info.data.data.length ==  0){
-        // aqui metemos su alerta jhoan
-        let agencias=$("#agencias");
-        agencias.html("");
-        agencias.selectpicker("refresh");
-    }else{
-        let agencias=$("#agencias");
-        agencias.html(generarHtml(info.data.data));
-        agencias.selectpicker("refresh");
-    }
-
-});
-
-$(document).on("click","#agregrar",async function(){
-    let data={"comando":"","orden":"modalTaquillas"};
-    let info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
-    let formulario=JSON.parse(info.settings["jsr"]);
-    let html="";
-    if(formulario.filtros!=undefined){
-        formulario.filtros.forEach((element,index)=>{
-            if(element.tipo!="titulo"){
-                if(imp[element.tipo]){
-                    html+=imp[element.tipo](element.label,element.datos)
-                }
-            }
-        })
-        
-    }
-});
-
-function generarHtml(list){
-    let html=""
-    list.forEach(function(element){
-        html+=`<option value="${element.codigo_age}">${element.nombre_age}</option>`
-    });
-    return html;
-}
 
 var id='';
 var base="#base";
@@ -69,6 +26,80 @@ var have_set = [];
 var et;
 var modal_id=1;
 var row;
+
+$(document).on("change","#receptores",async function(){
+    let receptores=$(this).selectpicker().val();
+    let data={"receptor":receptores,"comando":"age_rece"};
+    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
+    if(info.data.data.length ==  0){
+        Swal.fire({
+            title: '',
+            text: "Este receptor no tiene Agencias",
+            icon: 'warning',
+            confirmButtonText: 'Aceptar'
+          });
+        let agencias=$("#agencias");
+        agencias.html("");
+        agencias.selectpicker("refresh");
+    }else{
+        let agencias=$("#agencias");
+        agencias.html(generarHtml(info.data.data));
+        agencias.selectpicker("refresh");
+    }
+
+});
+
+$(document).on("click","#agregrar",async function(){
+    let data={"comando":"","orden":"modalTaquillas"};
+    let info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
+    let formulario=JSON.parse(info.settings["jsr"]);
+    let html="";
+    modal_id++;
+    let modal = $(base).children().first().html().replaceAll("{}",modal_id);
+    let modalsplit=modal.split("*");
+    let titulo ='';
+    if(formulario.filtros!=undefined){
+        formulario.filtros.forEach((element,index)=>{
+            if(element.tipo!="titulo"){
+                if(imp[element.tipo]){
+                    html+=imp[element.tipo](element.label,element.datos)
+                }
+            }else{
+                titulo = element.datos.id;
+            }
+        })
+        modalsplit[1] = html;
+        modal=modalsplit.join("");
+        modal=modal.replaceAll("#",titulo);
+        $(base).append(modal);
+        let agencias=$("#agencias").html();
+        $("#agencias_receptor").html(agencias);
+        $("#agencias_receptor").selectpicker("refresh");
+        $("#tipo_mensaje").selectpicker("refresh");
+        futuDate("#f1f2");
+        if($(base).children().length>1){
+            $('.modal-backdrop').addClass('show');
+            $(base).children().last().addClass("fade");
+            $(base).children().last().addClass("show1");
+            $(base).children().last().modal("show");
+        }
+    }
+});
+
+function generarHtml(list){
+    let html=""
+    list.forEach(function(element,index){
+        if(index==0){
+            html+=`<option value="todos" selected>Todos</option>`;
+            html+=`<option value="${element.codigo_age}">${element.nombre_age}</option>`;
+        }else{
+            html+=`<option value="${element.codigo_age}">${element.nombre_age}</option>`;
+        }
+    });
+    return html;
+}
+
+
 
 $(document).ready(function () {
     var columns = 6;
@@ -137,6 +168,18 @@ $(document).on('click', '#mensajeria_taquillas', async function() {
     montar_tabla();
     // intervalo = setInterval(montar_tabla, 50000);
     
+});
+
+//Funcion para guardar los mensajes
+
+$(document).on('click', '#agregar_mensaje_taquillas', async function() {
+    let agencias =$('#agencias_receptor').selectpicker('val').join(',');
+    let f1 = $("#f1f2").data('daterangepicker').startDate.format('YYYYMMDD');
+    let f2 = $("#f1f2").data('daterangepicker').endDate.format('YYYYMMDD');
+    let tipo_mensaje = $("#tipo_mensaje").selectpicker('val');
+    let mensaje= $('#texto').val();
+    let data = {"agencias":agencias,"f1":f1,"f2":f2,"tipo_mensaje":tipo_mensaje,"mensaje":mensaje,"comando":"agregar_mensaje_taquillas"};
+    console.log(data);
 });
 
 
@@ -517,7 +560,12 @@ $(document).on('click', '.btn-danger', async function () {
     string+="}";
     var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST");
     if (typeof info.data.mensaje !== 'undefined') {
-        alert(info.data.mensaje);
+        Swal.fire({
+            title: '',
+            text: info.data.mensaje,
+            icon: 'info',
+            confirmButtonText: 'Aceptar'
+          })
       }
 });
 
