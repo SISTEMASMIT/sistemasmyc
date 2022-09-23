@@ -29,6 +29,27 @@ export function formulario_emergente_select(label,json){
     console.log(e)
    }
 }
+export function formulario_emergente_select_multiple(label,json){
+    try{
+         let html=`<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>${label}</label>
+         <select class='selectpicker' id='${label.replaceAll(" ", "_")}' data-live-search='true' data-selected-text-format='count' multiple>`
+         json.forEach((elemento,index)=>{
+             if(elemento.id==undefined){
+                 elemento.id=elemento.label
+             }
+             if(index==0){
+                 html+=`<option value='${elemento.id}' selected>${elemento.label}</option>`
+             }
+              else {
+                 html+=`<option value='${elemento.id}'>${elemento.label}</option>`
+             }
+         })
+         html+=`</select></div>`;
+         return html;
+    }catch(e){
+     console.log(e)
+    }
+ }
 export function button_emergente(label,json){
     return `<div class='col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 filtros'>";
     <button type='button' id='${json.id}' class='btn-lg btn-block btn-success'>${label}</button>
