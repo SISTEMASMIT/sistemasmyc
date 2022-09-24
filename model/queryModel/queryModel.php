@@ -48,11 +48,12 @@ class QueryModel{
             }
         }
         $consulta = json_encode($data_inicial);
-        // var_dump($consulta);
+        
         $sql = "CALL bl_banca(:consulta)";
         $this->conexion=conexion::getConexion();
         $statemant=$this->conexion->prepare($sql);
         $statemant->bindParam(":consulta",$consulta);
+        
         if($statemant->execute()){
             $response=$statemant->fetchAll(PDO::FETCH_ASSOC);
             for ($i = 0; $i < $statemant->columnCount(); $i++) {
@@ -102,6 +103,7 @@ class QueryModel{
         $segunda_r=json_decode($settings["jsr"]);
         foreach ( $segunda_r->filtros as $key => &$r){
             if(!str_contains($r->tipo,"formulario_emergente")){
+                
                 if(!isset($r->datos->id)){
                     $r->datos->id=$r->label;
                 }
@@ -126,6 +128,7 @@ class QueryModel{
                     }
                     
                 }else if($r->tipo=="button_emergente"){
+
                     if(!empty($datos_extra)){
                         $_SESSION[$r->datos->id]=$r;
                     $condicion=explode(",",$r->datos->condicion,);
@@ -147,6 +150,8 @@ class QueryModel{
                         }
                     }
                     $r->datos->condicion=$valor_condicion;
+                    }else{
+                        $_SESSION[$r->datos->id]=$r;
                     }
                     
                 }
