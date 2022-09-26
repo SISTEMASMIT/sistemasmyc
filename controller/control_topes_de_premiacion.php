@@ -2,7 +2,6 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
 class Control_topes_de_premiacion extends Controller
 {
     /**
@@ -20,14 +19,20 @@ class Control_topes_de_premiacion extends Controller
 
     public  function __construct1($url){
         parent::__construct();
+        $url[0]=str_replace("-","_",$url[0]);
         if(isset($_SESSION["usuario"])){
             if($this->loadModel($url[0]."Model")){
                 $url2=str_replace("-","_",$url[1]);
-                if(method_exists($this->model,$url2)){
-                    $this->view->data["vista"]=$this->model->{$url2}();
+                if(method_exists($this,$url2)){
+                    $this->view->url=$url;
+                    $this->{$url2}();
                     $this->loadModel("homeModel");
                     $this->view->data["menu"]=$this->model->niveles();
+                    $this->loadModel("queryModel");
+                    $url_inicial=str_replace("_","-",$url[0]);
+                    $this->view->filtros=$this->model->getFiltros($url_inicial."/".$url[1]);
                     $this->view->data["nombreComponente"] = "view/".$url[0]."/componentes"."/".$url2.".php";
+                    $this->view->title = strtoupper(str_replace("_"," ",$url2));
                     $this->view->render($url[0]."/".$url[0]);
                 }else{
                     $this->loadModel("homeModel");
@@ -40,6 +45,11 @@ class Control_topes_de_premiacion extends Controller
             header("Location:/");
         }
      }
+
+    function agencias(){
+    } 
+
+    
 
 }
 
