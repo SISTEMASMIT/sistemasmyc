@@ -52,7 +52,26 @@ class Consultas extends Controller
     function reporte_de_vtas_solo_agencia(){
     } 
     function reporte_de_vtas_global(){
+    }
+    function lista_por_agencias(){
     } 
+    function resumen_de_ventas_x_tickets(){
+    }
+    function auditoria(){
+    } 
+    function reporte_de_ventas_x_dispositivo(){
+    } 
+    function graficos_premiacion_x_loteria(){
+    } 
+    function disponibilidad_x_nro(){
+    } 
+    function control_de_horarios__agencias(){
+    } 
+    function ventas_global_sistemas_consolidados(){
+        
+    }
+    
+    
 
 }
 
