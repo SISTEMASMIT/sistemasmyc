@@ -66,9 +66,9 @@ function crear_body(columns, rows){
 }
 //Ocultar El modal
 $(document).on('hidden.bs.modal', '#modal_edit', function() {
-    $("#modal_edit").removeClass("show1"); 
+    $("#modal_edit").removeClass("show1");
   
- });
+});
 
 
 $(document).on('click', '#cargar_numeros_premiados', async function() {
@@ -186,15 +186,19 @@ function getCurrentDate(formato){
 
 $(document).on('click','#modal_save', function(){
     let num = $("#num_prem").val();
+    let signo = $('#signo').selectpicker('val');
     $("#tabla1").DataTable().cell(row_act, 3).data(num);
+    $("#tabla1").DataTable().cell(row_act, 4).data(signo);
+    var $tr = $($('#tabla1').DataTable().row(row_act).node());
+    var $checkbox = $tr.find('td:first-child')
+    $checkbox.prop('checked', true);
+    // $('td[id=check_'+row_act+']').prop('indeterminate', false);
+    $('#tabla1').DataTable().row(':eq('+row_act+')', { page: 'current' }).select();
 
-    DataTable().cells(null, 'select-checkbox').every( function () {
-        var cell = this.node();
-        $(cell).find('input[type=checkbox]').prop('checked', true); 
-        $(cell).find('input[type=checkbox]').prop('checked', true); 
-      } );
 
-    $('#tabla1').DataTable().cell(row_act,0).prop('checked', true);
+    $("#modal_edit").modal('hide');
+    $("#modal_edit").removeClass("show1"); 
+    
 });
 
 
@@ -205,12 +209,33 @@ $(document).on('click','td', function(){
     row_act = $('#tabla1').DataTable().row( this ).index();
     if(column=="7"){
         $("#load").addClass('spinner');
-        console.log( $(this).parent().find("td").eq(2).text());
-        console.log( $(this).parent().find("td").eq(3).text());
-        let html=`<input class="form-control form-control-lg" type="numeric" id="num_prem" placeholder="Número a premiar" required><label>Signo:`
-        +$('#tabla1').DataTable().row(currentRow).data()[8]+`</label>`;
         let have_sig = $('#tabla1').DataTable().row(currentRow).data()[8];
+        let html=`<label>Loteria: `+$('#tabla1').DataTable().row(currentRow).data()[2]+`</label>`;
+        if(have_sig=="NO"){
+            html +=`<input class="form-control form-control-lg" type="numeric" maxlength="3" id="num_prem" placeholder="Número a premiar" required>`;
+        }
+        html +=`<input class="form-control form-control-lg" type="numeric" id="num_prem" placeholder="Número a premiar" required><label>Signo:`
+        +have_sig+`</label>`;
+        if(have_sig=="SI"){
+            html+=`<select class='selectpicker' data-live-search='true' id="signo">`
+            html+=`<option value='ARI' selected>Aries</option>
+            <option value='TAU' selected>Tauro</option>
+            <option value='GEM' selected>Géminis</option>
+            <option value='CAN' selected>Cáncer</option>
+            <option value='LEO' selected>Leo</option>
+            <option value='VIR' selected>Virgo</option>
+            <option value='LIB' selected>Libra</option>
+            <option value='ESC' selected>Escorpio</option>
+            <option value='SAG' selected>Sagitario</option>
+            <option value='CAP' selected>Capricornio</option>
+            <option value='ACU' selected>Acuario</option>
+            <option value='PIS' selected>Piscis</option>
+            `
+            html+=`</select>`;
+        }
+        console.log($('#body_modal:last-child'));
         $("#body_modal").html(html);
+        $('#signo').selectpicker('refresh');
         $("#modal_edit").modal('show');
         $("#modal_edit").addClass("show1"); 
         $("#load").removeClass('spinner');
