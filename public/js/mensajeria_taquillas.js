@@ -53,7 +53,8 @@ $(document).on("click","#agregrar",async function(){
     let data={"comando":"","orden":"modalTaquillas"};
     let info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
     let formulario=JSON.parse(info.settings["jsr"]);
-    let html="";
+    let receptor = $("#receptores").selectpicker('val');
+    let html=`<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>Receptor:</label><label class='form-label'>${receptor}</label></div>`;
     modal_id++;
     let modal = $(base).children().first().html().replaceAll("{}",modal_id);
     let modalsplit=modal.split("*");
@@ -90,7 +91,7 @@ function generarHtml(list){
     let html=""
     list.forEach(function(element,index){
         if(index==0){
-            html+=`<option value="todos" selected>Todos</option>`;
+            html+=`<option value="todas" selected>Todas</option>`;
             html+=`<option value="${element.codigo_age}">${element.nombre_age}</option>`;
         }else{
             html+=`<option value="${element.codigo_age}">${element.nombre_age}</option>`;
@@ -173,13 +174,15 @@ $(document).on('click', '#mensajeria_taquillas', async function() {
 //Funcion para guardar los mensajes
 
 $(document).on('click', '#agregar_mensaje_taquillas', async function() {
-    let agencias =$('#agencias_receptor').selectpicker('val').join(',');
+    let agencia =$('#agencias_receptor').selectpicker('val').join(',');
     let f1 = $("#f1f2").data('daterangepicker').startDate.format('YYYYMMDD');
     let f2 = $("#f1f2").data('daterangepicker').endDate.format('YYYYMMDD');
     let tipo_mensaje = $("#tipo_mensaje").selectpicker('val');
+    let receptor = $("#receptores").selectpicker('val');
     let mensaje= $('#texto').val();
-    let data = {"agencias":agencias,"f1":f1,"f2":f2,"tipo_mensaje":tipo_mensaje,"mensaje":mensaje,"comando":"agregar_mensaje_taquillas"};
-    console.log(data);
+    let data = {"agencia":agencia,"receptor":receptor,"f1":f1,"f2":f2,"tipo_mensaje":tipo_mensaje,"mensaje":mensaje,"comando":"agregar_mensaje_taquillas"};
+    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
+    console.log(info);
 });
 
 

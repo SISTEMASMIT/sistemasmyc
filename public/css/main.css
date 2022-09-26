@@ -1,4 +1,6 @@
-
+table .selected{
+    background-color: #2196F3 !important;
+}
 .niveles{
     text-align: left;
 }
@@ -331,6 +333,8 @@ input:checked+.slider .off_login {
     }
   }
   
+
+
   .modal-fullscreen .modal-dialog {
     position: fixed;
     margin: 20;

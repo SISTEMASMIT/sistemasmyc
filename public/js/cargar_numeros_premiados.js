@@ -1,8 +1,9 @@
 import {oneDate} from "./date.js";
 import {ajax_peticion} from "./Ajax-peticiones.js";
-import {crear_tabla} from "./table.js";
+import {crear_tabla} from "./editable.js";
 
-
+var col_act;
+var row_act;
 
 var id='';
 var base="#base";
@@ -64,21 +65,9 @@ function crear_body(columns, rows){
    return body;
 }
 //Ocultar El modal
-$(document).on('hidden.bs.modal', '#base', function() {
-    modal_id--;
-    $(base).children().last().remove();
-    if($(base).children().length>1){
-        $('.modal-backdrop').addClass('show');
-        $(base).children().last().addClass("fade");
-        $(base).children().last().addClass("show");
-    }
-    vtn.pop();
-    etq.pop();
-    extra.pop();
-    let ss=have_set[have_set.length-1];
-    if(ss){
-        btns.pop();
-    }
+$(document).on('hidden.bs.modal', '#modal_edit', function() {
+    $("#modal_edit").removeClass("show1"); 
+  
  });
 
 
@@ -141,7 +130,7 @@ async function montar_tabla(){
         }));
     
 
-       if(dclick[0]!=undefined){
+       if(dclick[0].length>0){
            isdclick=true;
        }
 
@@ -195,13 +184,46 @@ function getCurrentDate(formato){
   
 }
 
+$(document).on('click','#modal_save', function(){
+    let num = $("#num_prem").val();
+    $("#tabla1").DataTable().cell(row_act, 3).data(num);
+
+    DataTable().cells(null, 'select-checkbox').every( function () {
+        var cell = this.node();
+        $(cell).find('input[type=checkbox]').prop('checked', true); 
+        $(cell).find('input[type=checkbox]').prop('checked', true); 
+      } );
+
+    $('#tabla1').DataTable().cell(row_act,0).prop('checked', true);
+});
 
 
+$(document).on('click','td', function(){
+    var column = $(this).parent().children().index(this);
+    var currentRow = $(this).closest("tr");
+    col_act = column;
+    row_act = $('#tabla1').DataTable().row( this ).index();
+    if(column=="7"){
+        $("#load").addClass('spinner');
+        console.log( $(this).parent().find("td").eq(2).text());
+        console.log( $(this).parent().find("td").eq(3).text());
+        let html=`<input class="form-control form-control-lg" type="numeric" id="num_prem" placeholder="Número a premiar" required><label>Signo:`
+        +$('#tabla1').DataTable().row(currentRow).data()[8]+`</label>`;
+        let have_sig = $('#tabla1').DataTable().row(currentRow).data()[8];
+        $("#body_modal").html(html);
+        $("#modal_edit").modal('show');
+        $("#modal_edit").addClass("show1"); 
+        $("#load").removeClass('spinner');
+       
+    }
+
+    
+})
 
 //Detectamos el Doble Click
 $(document).on('dblclick', 'td', async function () {
 
-    $("#load").addClass('spinner');
+    
     let dclick = vtn[vtn.length -1 ];
     
    let data = [];
@@ -212,6 +234,7 @@ $(document).on('dblclick', 'td', async function () {
    let iscorrect = false;
    var column = $(this).parent().children().index(this);
    if(isdclick){  
+    $("#load").addClass('spinner');
        for (let a = 0; a < dclick[0].length; a++) {
            if(dclick[0][a].label!='98'){
                if (column==dclick[0][a].label){

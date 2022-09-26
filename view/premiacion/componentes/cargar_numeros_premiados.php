@@ -59,8 +59,32 @@
                         </table>
                     </div>
                 </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="modal_edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-editar" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Premiar Número</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="body_modal" class="modal-body">
+                       
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" id="modal_save" class="btn btn-primary">Guardar Cambios</button>
+                    </div>
+                    </div>
+                </div>
+                </div>
+
             </div> <!-- Row general -->
         </div> <!-- container-fluid -->
     </div>  <!--- page-content --->
 </div><!-- FIN CONTENIDO WEB -->
 <script type="module" src="<? $path;?>/public/js/<?php echo str_replace("-","_",$this->url[1])?>.js" ></script>
+<script src="<? $path;?>/public/js/dataTables.select.min.js"></script>
+<script src="<? $path;?>/public/js/dataTables.editor.min.js"></script>
