@@ -17,10 +17,14 @@ class Importer
                     $select->id = $select->label;
                 }
                 if ($key == 0) {
-                    $html .= "<option value='Todos' selected>Todos</option>";
-                    $html .= "<option value=" . $select->id . " data-subtext=" . $select->label . " title=" . $select->label . ">" . $select->id . "</option>";
+                    if($label=="Agencias"){
+                        $html .= "<option value='Todas' selected>Todas</option>";
+                    }else{
+                        $html .= "<option value='Todos' selected>Todos</option>";
+                    }
+                    $html .= "<option value=" . $select->id . " data-subtext=" . $select->label . " title=" . $select->id . ">" . $select->id . "</option>";
                 } else {
-                    $html .= "<option value=" . $select->id . " data-subtext=" . $select->label . " title=" . $select->label . ">" . $select->id . "</option>";
+                    $html .= "<option value=" . $select->id . " data-subtext=" . $select->label . " title=" . $select->id . ">" . $select->id . "</option>";
                 }
             }
             $html .= "</select></div>";
@@ -62,7 +66,6 @@ class Importer
                     $select->id = $select->label;
                 }
                 if ($key == 0) {
-                    
                     $html .= "<option value=" . $select->id . " selected>" . $select->label . "</option>";
                 } else {
                     $html .= "<option value=" . $select->id . ">" . $select->label . "</option>";
