@@ -184,11 +184,20 @@ function getCurrentDate(formato){
   
 }
 
+function checkedTargets(checkboxes) {
+    return checkboxes.filter(function (index) {
+      return $(checkboxes[index]).prop('checked');
+    });
+  }
+
 $(document).on('click','#modal_save', function(){
     let num = $("#num_prem").val();
     let signo = $('#signo').selectpicker('val');
     $("#tabla1").DataTable().cell(row_act, 3).data(num);
-    $("#tabla1").DataTable().cell(row_act, 4).data(signo);
+    let have_sig = $('#tabla1').DataTable().row(row_act).data()[8];
+    if(have_sig=="SI"){
+        $("#tabla1").DataTable().cell(row_act, 4).data(signo);
+    }
     var $tr = $($('#tabla1').DataTable().row(row_act).node());
     var $checkbox = $tr.find('td:first-child')
     $checkbox.prop('checked', true);
@@ -201,6 +210,24 @@ $(document).on('click','#modal_save', function(){
     
 });
 
+$(document).on('click','#cargar_numeros_premiados_premiar', function(){
+
+    var data = $("#tabla1").DataTable()
+    .rows( function ( idx, data, node ) {
+        // Get all the checkboxes in the row
+        var cells = $(node).find('td:first-child');   
+        // Keep the rows with checked checkboxes
+        return checkedTargets(cells).length;
+    } )
+    .data()
+    .toArray();
+
+    if (data.length) {
+        for (var i = 0; i < data.length; i++) {
+         console.log(JSON.stringify(data[i]));
+        }
+      } 
+});
 
 $(document).on('click','td', function(){
     var column = $(this).parent().children().index(this);
@@ -213,23 +240,26 @@ $(document).on('click','td', function(){
         let html=`<label>Loteria: `+$('#tabla1').DataTable().row(currentRow).data()[2]+`</label>`;
         if(have_sig=="NO"){
             html +=`<input class="form-control form-control-lg" type="numeric" maxlength="3" id="num_prem" placeholder="Número a premiar" required>`;
+        }else if(have_sig="SI"){
+            html +=`<input class="form-control form-control-lg" type="numeric" maxlength="4" id="num_prem" placeholder="Número a premiar" required>`;
         }
-        html +=`<input class="form-control form-control-lg" type="numeric" id="num_prem" placeholder="Número a premiar" required><label>Signo:`
-        +have_sig+`</label>`;
+        html +=`<label>Signo:`+have_sig+`</label>`;
         if(have_sig=="SI"){
             html+=`<select class='selectpicker' data-live-search='true' id="signo">`
-            html+=`<option value='ARI' selected>Aries</option>
-            <option value='TAU' selected>Tauro</option>
-            <option value='GEM' selected>Géminis</option>
-            <option value='CAN' selected>Cáncer</option>
-            <option value='LEO' selected>Leo</option>
-            <option value='VIR' selected>Virgo</option>
-            <option value='LIB' selected>Libra</option>
-            <option value='ESC' selected>Escorpio</option>
-            <option value='SAG' selected>Sagitario</option>
-            <option value='CAP' selected>Capricornio</option>
-            <option value='ACU' selected>Acuario</option>
-            <option value='PIS' selected>Piscis</option>
+            html+=`
+            <option value='' selected></option>
+            <option value='ARI' >Aries</option>
+            <option value='TAU' >Tauro</option>
+            <option value='GEM' >Géminis</option>
+            <option value='CAN' >Cáncer</option>
+            <option value='LEO' >Leo</option>
+            <option value='VIR' >Virgo</option>
+            <option value='LIB' >Libra</option>
+            <option value='ESC' >Escorpio</option>
+            <option value='SAG' >Sagitario</option>
+            <option value='CAP' >Capricornio</option>
+            <option value='ACU' >Acuario</option>
+            <option value='PIS' >Piscis</option>
             `
             html+=`</select>`;
         }

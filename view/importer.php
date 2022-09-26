@@ -5,7 +5,8 @@ class Importer
     public $colores=Array(
     "Aceptar"=>"btn btn-success",
     "Detener"=>"btn btn-danger",
-    "Agregar"=>"btn btn-info"
+    "Agregar"=>"btn btn-info",
+    "Premiar" => "btn btn-secondary"
     );
     function select_search_shadow($label, $json)
     {   
