@@ -120,6 +120,10 @@ async function montar_tabla(){
    if(set[0].length > 0){
         have_set.push(true);
 
+        btns.push(set[0].filter(function(x){
+            return x.label == 'Anular';
+        }));
+
       invisibles = set[0].find(function(x){    
            return x.label == '96';
       });
@@ -169,6 +173,7 @@ async function montar_tabla(){
       }
          
    }else{
+    
         have_set.push(false);
        isdclick=false;
        isrclick=false;
@@ -178,7 +183,6 @@ async function montar_tabla(){
    crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels);
 
 }
-
 
 
 function getCurrentDate(formato){
@@ -198,11 +202,10 @@ function getCurrentDate(formato){
 
 
 
-
 //Detectamos el Doble Click
 $(document).on('dblclick', 'td', async function () {
 
-    $("#load").addClass('spinner');
+    
     let dclick = vtn[vtn.length -1 ];
     
    let data = [];
@@ -213,24 +216,54 @@ $(document).on('dblclick', 'td', async function () {
    let iscorrect = false;
    var column = $(this).parent().children().index(this);
    if(isdclick){  
+    $("#load").addClass('spinner');
        for (let a = 0; a < dclick[0].length; a++) {
            if(dclick[0][a].label!='98'){
-               if (column==dclick[0][a].label){
-                   iscorrect=true;
-                   parametros = dclick[0][a].datos["parametros"].split(",")
-                   etiquetas = dclick[0][a].datos["etiquetas"].split(",")
-                   emergente = dclick[0][a].datos["emergente"];
-                   comando = dclick[0][a].datos["id"];
-                   titulo = dclick[0][a].datos["titulo_emergente"];
-                   Object.assign(data,{"comando":dclick[0][a].datos["id"]});
-                   for (let i = 0; i < parametros.length; i++) {
-                       if(Number.isInteger(parseInt(parametros[i]))){
-                           key = `c`+parametros[i];
-                           value = $(this).parent().find("td").eq(parseInt(parametros[i])).text();
-                           Object.assign(data,{[key]:value});
-                       }
-                   }
-               }
+            if (column==dclick[0][a].label){
+                iscorrect=true;
+                parametros = dclick[0][a].datos["parametros"].split(",")
+                etiquetas = dclick[0][a].datos["etiquetas"].split(",")
+                emergente = dclick[0][a].datos["emergente"];
+                comando = dclick[0][a].datos["id"];
+                titulo = dclick[0][a].datos["titulo_emergente"];
+                Object.assign(data,{"comando":dclick[0][a].datos["id"]});
+                for (let i = 0; i < parametros.length; i++) {
+                    if(Number.isInteger(parseInt(parametros[i]))){
+                        key = `c`+parametros[i];
+                        value = $(this).parent().find("td").eq(parseInt(parametros[i])).text();
+                        Object.assign(data,{[key]:value});
+                    }
+                }
+                //Saco las etiquetas
+                 for (let i = 0; i < etiquetas.length; i++) {
+                     if(Number.isInteger(parseInt(etiquetas[i]))){
+                         // key = `c`+etiquetas[i];
+                         key = etq[etq.length-1][etiquetas[i]];
+                         value = $(this).parent().find("td").eq(parseInt(etiquetas[i])).text();
+                         Object.assign(etiq,{[key]:value});
+                     }else{
+                         if(etiquetas[i]=="f1"){
+                             if($("#"+etiquetas[i]).length < 1){
+                                 let f = getCurrentDate(0);
+                                 Object.assign(etiq,{Fecha :f});
+                             }else{
+                             Object.assign(etiq,{Fecha:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
+                             }       
+                         }else if(etiquetas[i]=="f1f2"){
+                             if($("#"+etiquetas[i]).length < 1 ){
+                                 let f = getCurrentDate(0);
+                                 Object.assign(etiq,{Fecha2 :f});
+                             }else{
+                             Object.assign(etiq,{Desde:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
+                             Object.assign(etiq,{Hasta:$("#"+etiquetas[i]).data('daterangepicker').endtDate.format('DD/MM/YYYY')});
+                             }
+                         }else{
+                             let str = etiquetas[i];
+                             Object.assign(etiq,{[str.charAt(0).toUpperCase()+str.slice(1)]:$('#'+etiquetas[i]).selectpicker('val')});
+                         } 
+                     }
+                 }
+            }
            }else{
                iscorrect=true;
                parametros = dclick[0][a].datos["parametros"].split(",")
@@ -268,6 +301,7 @@ $(document).on('dblclick', 'td', async function () {
                }
                //Saco las etiquetas
                for (let i = 0; i < etiquetas.length; i++) {
+
                    if(Number.isInteger(parseInt(etiquetas[i]))){
                        // key = `c`+etiquetas[i];
                        key = etq[etq.length-1][etiquetas[i]];
@@ -276,14 +310,14 @@ $(document).on('dblclick', 'td', async function () {
                    }else{
                        if(etiquetas[i]=="f1"){
                            if($("#"+etiquetas[i]).length < 1){
-                               let f = getCurrentDate();
+                               let f = getCurrentDate(0);
                                Object.assign(etiq,{Fecha :f});
                            }else{
                               Object.assign(etiq,{Fecha:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
                            }       
                        }else if(etiquetas[i]=="f1f2"){
                            if($("#"+etiquetas[i]).length < 1 ){
-                               let f = getCurrentDate();
+                               let f = getCurrentDate(0);
                                Object.assign(etiq,{Fecha2 :f});
                            }else{
                               Object.assign(etiq,{Desde:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
@@ -319,6 +353,7 @@ $(document).on('dblclick', 'td', async function () {
            vtn.push(set);
            extra.push(info.datos_extra);
            if(set[0].length > 0){
+               
                 have_set.push(true);
 
                 btns.push(set[0].filter(function(x){
@@ -375,13 +410,14 @@ $(document).on('dblclick', 'td', async function () {
                }
 
            }else{
+            btns.push();
                 have_set.push(false);
-               isdclick2=false;
-               isrclick2=false;
+                isdclick2=false;
+                isrclick2=false;
            }
 
            if(emergente=="tabla"){
-            let btn = btns[btns.length -1];
+            let btn = btns[btns.length -1][0];
                 
              let labels_extra = extra[extra.length -1 ];
                //Convierto para que se envien las etiquetas
@@ -464,24 +500,12 @@ $(document).on('click', '.btn-danger', async function () {
     keys.forEach((key,index)=>{
         string+=`"${key}":"${valores[index]}",`;
     })
-    string = string.slice(0, string.length - 1);
+    string+=`"comando":"${this.id}"`
     string+="}";
     var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST");
-    if(info.data.mensaje=="El ticket ya esta anulado"){
-        Swal.fire({
-            title: '',
-            text: info.data.mensaje,
-            icon: 'warning',
-            confirmButtonText: 'Aceptar'
-          })
-    }else{
-        Swal.fire({
-        title: '',
-        text: info.data.mensaje,
-        icon: 'success',
-        confirmButtonText: 'Aceptar'
-      })
-    }
+    if (typeof info.data.mensaje !== 'undefined') {
+        alert(info.data.mensaje);
+      }
 });
 
 //Click Derecho
@@ -609,12 +633,7 @@ $(document).on('click', '#rclick', async function () {
             string = string.slice(0, string.length - 1);
             string+="}";
             var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST");
-            Swal.fire({
-                title: '',
-                text: info.data.mensaje,
-                icon: 'success',
-                confirmButtonText: 'Aceptar'
-              })
+            console.log(info);
 
         }
     }
