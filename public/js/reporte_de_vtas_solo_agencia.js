@@ -39,8 +39,29 @@ $(document).ready(function(){
     $('#tablaf').DataTable();
     cargaAdicional()
 })
+function cargaAdicional(){
+    let loterias = $('#loterias');
+    loterias.prepend(`<option value="todas">Todas</option>`)
+    loterias.selectpicker("refresh");
+    loterias.val("todas");
+    loterias.selectpicker("render")
 
+    let grupos = $('#grupos');
+    grupos.prepend(`<option value="todos">Todos</option>`);
+    grupos.selectpicker("refresh");
+    grupos.val("todos");
+    grupos.selectpicker("render")
+    
+ }
 
+ function crear_head(data){
+    let head = `<thead><tr>`;
+    for(var i=0; i<data;i++){
+        head+=`<th>-</th>`;
+    }
+    head+=`</tr></thead>`;
+    return head;
+ }
 
 $(document).on("change","#receptores",async function(){
     let receptores=$(this).selectpicker().val();
@@ -60,6 +81,8 @@ $(document).on("change","#receptores",async function(){
         let agencias=$("#agencias");
         agencias.html(generarHtml(info.data.data));
         agencias.selectpicker("refresh");
+        agencias.val("todas");
+        agencias.selectpicker("render")
     }
 
 });
@@ -111,7 +134,7 @@ $(document).on('hidden.bs.modal', '#base', function() {
  });
 
 
-$(document).on('click', '#numeros_premiados_premiacion', async function() {
+$(document).on('click', '#repote_de_vtas_solo_agencias', async function() {
    $('#tabla1').removeClass('invisible');
    if($('#numero').val()!=''){
         montar_tabla();
@@ -130,12 +153,21 @@ async function montar_tabla(){
    $("#carga").height( h );
    $("#load").addClass('spinner');
    let data = [];
-   let producto = $('#productos').selectpicker('val');
-   let filtro = $('#filtrar_por').selectpicker('val');
-   let f1 = $('#f1').data('daterangepicker').startDate.format('YYYYMMDD');
-   let f1V = $('#f1').data('daterangepicker').startDate.format('DD/MM/YYYY');
+   let receptores = $('#receptores').selectpicker('val');
+   let loterias = $('#loterias').selectpicker('val');
+   let grupos = $('#grupos').selectpicker('val');
+   let agencias = $('#agencias').selectpicker('val');
+   let agrupar = $('#agrupar_por').selectpicker('val');
+   let ventas = $('#ventas_a_mostrar').selectpicker('val');
+//      Aqui se modifican los id de cada data necesaria para la peticion 
+//      Para sacar un rango de fechas se usa el mismo identificador lo que cambia es el metodo
+   let f1 = $('#f1f2').data('daterangepicker').startDate.format('YYYYMMDD');
+   let f1V = $('#f1f2').data('daterangepicker').startDate.format('DD/MM/YYYY');
+   let f2 = $('#f1f2').data('daterangepicker').endDate.format('YYYYMMDD');
+   let f2V = $('#f1f2').data('daterangepicker').endDate.format('DD/MM/YYYY');
+
    
-   data = {"producto_loteria":producto,"f1":f1,"filtro_resultados":filtro,"comando":"numeros_premiados_premiacion"};
+   data = {"receptor":receptores,"loteria":loterias,"f1":f1,"f2":f2,"grupo_agencias":grupos,"agencia":agencias,"agrupar_reporte":agrupar,"comando":"repote_de_vtas_solo_agencias","ventas_mostrar":ventas};
    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
 
    let set = Object.values(JSON.parse(info.settings.jsr));
@@ -202,7 +234,7 @@ async function montar_tabla(){
        isrclick=false;
    }
 
-   let labels = {"producto_loteria":producto,"f1":f1,"filtro_resultados":filtro,"comando":"numeros_premiados_premiacion"};
+   let labels = {"Receptores":receptores,"Loterias":loterias,"Fecha inicial":f1V,"Fecha final":f2V,"Grupo":grupos,"Agencias":agencias};
    crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels);
 
 }
