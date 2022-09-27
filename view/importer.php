@@ -35,6 +35,34 @@ class Importer
         }
     }
 
+    function select_search($label, $json)
+    {   
+        try {
+            $html = "<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>" . $label . "</label>";
+            $html .= "<select class='selectpicker' data-live-search='true' id=".strtolower(str_replace(" ","_",$label)).">";
+            foreach ($json as $key => $select) {
+                if (!isset($select->id)) {
+                    $select->id = $select->label;
+                }
+                if ($key == 0) {
+                    if($label=="Agencias"){
+                        $html .= "<option value='Todas' selected>Todas</option>";
+                    }else{
+                        $html .= "<option value='Todos' selected>Todos</option>";
+                    }
+                    $html .= "<option value=" . $select->id . " title=" . $select->label . ">" . $select->label . "</option>";
+                } else {
+                    $html .= "<option value=" . $select->id . " title=" . $select->label . ">" . $select->label . "</option>";
+                }
+            }
+            $html .= "</select></div>";
+            return $html;
+        } catch (Exception $e) {
+            echo $e;
+        }
+    }
+
+
     function select_multiple($label, $json)
     {
         try {

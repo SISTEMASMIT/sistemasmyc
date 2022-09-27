@@ -182,7 +182,28 @@ $(document).on('click', '#agregar_mensaje_taquillas', async function() {
     let mensaje= $('#texto').val();
     let data = {"agencia":agencia,"receptor":receptor,"f1":f1,"f2":f2,"tipo_mensaje":tipo_mensaje,"mensaje":mensaje,"comando":"agregar_mensaje_taquillas"};
     var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
-    console.log(info);
+    if(info.data.mensaje=="Mensaje creado Correctamente"){
+        Swal.fire({
+            title: '',
+            text: info.data.mensaje,
+            icon: 'success',
+            confirmButtonText: 'Aceptar'
+          });
+    }else{
+        Swal.fire({
+            title: '',
+            text: 'Ocurrió un error inesperado, intente nuevamente',
+            icon: 'error',
+            confirmButtonText: 'Aceptar'
+          });
+    }
+    $("#modal2").modal('hide');
+    $("#modal2").removeClass("show1");
+    $('#tabla1').removeClass('invisible');
+    montar_tabla();
+
+
+
 });
 
 
@@ -295,7 +316,6 @@ function getCurrentDate(formato){
 //Detectamos el Doble Click
 $(document).on('dblclick', 'td', async function () {
 
-    $("#load").addClass('spinner');
     let dclick = vtn[vtn.length -1 ];
     
    let data = [];
@@ -306,6 +326,7 @@ $(document).on('dblclick', 'td', async function () {
    let iscorrect = false;
    var column = $(this).parent().children().index(this);
    if(isdclick){  
+    if(have_set[have_set.length -1 ]){$("#load").addClass('spinner');}
        for (let a = 0; a < dclick[0].length; a++) {
            if(dclick[0][a].label!='98'){
                if (column==dclick[0][a].label){

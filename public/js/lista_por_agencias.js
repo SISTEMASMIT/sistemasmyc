@@ -1,4 +1,4 @@
-import {rangeDate} from "./date.js";
+import {oneDate} from "./date.js";
 import {ajax_peticion} from "./Ajax-peticiones.js";
 import {crear_tabla} from "./table.js";
 
@@ -29,7 +29,7 @@ var modal_id=1;
 var row;
 
 $(document).ready(function(){
-    rangeDate("#f1f2");
+   oneDate("#f1");
    var columns = 6;
     var rows = 10;
     var head = crear_head(columns);
@@ -82,7 +82,7 @@ $(document).on('hidden.bs.modal', '#base', function() {
  });
 
 
-$(document).on('click', '#tickets_ganadores_premiacion', async function() {
+$(document).on('click', '#consultas_lista_por_agencias', async function() {
    $('#tabla1').removeClass('invisible');
    if($('#numero').val()!=''){
         montar_tabla();
@@ -101,13 +101,12 @@ async function montar_tabla(){
    $("#carga").height( h );
    $("#load").addClass('spinner');
    let data = [];
-   let receptores = $('#receptores').selectpicker('val');
-   let grupos = $('#grupos').selectpicker('val');
-   let f1 = $('#f1f2').data('daterangepicker').startDate.format('YYYYMMDD');
-   let f1V = $('#f1f2').data('daterangepicker').startDate.format('DD/MM/YYYY');
-   let f2 = $('#f1f2').data('daterangepicker').endDate.format('YYYYMMDD');
-   let f2V = $('#f1f2').data('daterangepicker').endDate.format('DD/MM/YYYY');
-   data = {"receptor":receptores,"grupo_agencias":grupos,"f1":f1,"f2":f2,"comando":"tickets_ganadores_premiacion"};
+   let agencias = $('#agencias').selectpicker('val');
+   let cifras = $('#tipo').selectpicker('val');
+   let f1 = $('#f1').data('daterangepicker').startDate.format('YYYYMMDD');
+   let f1V = $('#f1').data('daterangepicker').startDate.format('DD/MM/YYYY');
+   let loterias =  $('#loterias').selectpicker('val');
+   data = {"agencias":agencias,"cifras":cifras,"loteria":loterias,"f1":f1,"comando":"consultas_lista_por_agencias"};
    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
 
    let set = Object.values(JSON.parse(info.settings.jsr));
@@ -119,10 +118,6 @@ async function montar_tabla(){
 
    if(set[0].length > 0){
         have_set.push(true);
-
-        btns.push(set[0].filter(function(x){
-            return x.label == 'Anular';
-        }));
 
       invisibles = set[0].find(function(x){    
            return x.label == '96';
@@ -173,16 +168,16 @@ async function montar_tabla(){
       }
          
    }else{
-    
         have_set.push(false);
        isdclick=false;
        isrclick=false;
    }
 
-   let labels = {"receptor":receptores,"grupo_agencias":grupos,"f1":f1V,"f2":f2V,"comando":"tickets_ganadores_premiacion"};
+   let labels = {"Agencias":agencias,"Cifras":cifras,"Loteria":loterias,"Fecha: ":f1V};
    crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels);
 
 }
+
 
 
 function getCurrentDate(formato){
@@ -202,67 +197,67 @@ function getCurrentDate(formato){
 
 
 
+
 //Detectamos el Doble Click
 $(document).on('dblclick', 'td', async function () {
 
-    
     let dclick = vtn[vtn.length -1 ];
     
-   let data = [];
-   let etiq = [];
-   let key;
-   let value;
-   let cosas = [];
-   let iscorrect = false;
-   var column = $(this).parent().children().index(this);
-   if(isdclick){  
-    if(have_set[have_set.length -1 ]){$("#load").addClass('spinner');}
+    let data = [];
+    let etiq = [];
+    let key;
+    let value;
+    let cosas = [];
+    let iscorrect = false;
+    var column = $(this).parent().children().index(this);
+    if(isdclick){  
+        if(have_set[have_set.length -1 ]){$("#load").addClass('spinner');}
        for (let a = 0; a < dclick[0].length; a++) {
            if(dclick[0][a].label!='98'){
-            if (column==dclick[0][a].label){
-                iscorrect=true;
-                parametros = dclick[0][a].datos["parametros"].split(",")
-                etiquetas = dclick[0][a].datos["etiquetas"].split(",")
-                emergente = dclick[0][a].datos["emergente"];
-                comando = dclick[0][a].datos["id"];
-                titulo = dclick[0][a].datos["titulo_emergente"];
-                Object.assign(data,{"comando":dclick[0][a].datos["id"]});
-                for (let i = 0; i < parametros.length; i++) {
-                    if(Number.isInteger(parseInt(parametros[i]))){
-                        key = `c`+parametros[i];
-                        value = $(this).parent().find("td").eq(parseInt(parametros[i])).text();
-                        Object.assign(data,{[key]:value});
-                    }
+               if (column==dclick[0][a].label){
+                   iscorrect=true;
+                   parametros = dclick[0][a].datos["parametros"].split(",")
+                   etiquetas = dclick[0][a].datos["etiquetas"].split(",")
+                   emergente = dclick[0][a].datos["emergente"];
+                   comando = dclick[0][a].datos["id"];
+                   titulo = dclick[0][a].datos["titulo_emergente"];
+                   Object.assign(data,{"comando":dclick[0][a].datos["id"]});
+                   for (let i = 0; i < parametros.length; i++) {
+                       if(Number.isInteger(parseInt(parametros[i]))){
+                           key = `c`+parametros[i];
+                           value = $(this).parent().find("td").eq(parseInt(parametros[i])).text();
+                           Object.assign(data,{[key]:value});
+                       }
+                   }
+               }
+               //Saco las etiquetas
+               for (let i = 0; i < etiquetas.length; i++) {
+                if(Number.isInteger(parseInt(etiquetas[i]))){
+                    // key = `c`+etiquetas[i];
+                    key = etq[etq.length-1][etiquetas[i]];
+                    value = $(this).parent().find("td").eq(parseInt(etiquetas[i])).text();
+                    Object.assign(etiq,{[key]:value});
+                }else{
+                    if(etiquetas[i]=="f1"){
+                        if($("#"+etiquetas[i]).length < 1){
+                            let f = getCurrentDate();
+                            Object.assign(etiq,{Fecha :f});
+                        }else{
+                           Object.assign(etiq,{Fecha:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
+                        }       
+                    }else if(etiquetas[i]=="f1f2"){
+                        if($("#"+etiquetas[i]).length < 1 ){
+                            let f = getCurrentDate();
+                            Object.assign(etiq,{Fecha2 :f});
+                        }else{
+                           Object.assign(etiq,{Desde:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
+                           Object.assign(etiq,{Hasta:$("#"+etiquetas[i]).data('daterangepicker').endtDate.format('DD/MM/YYYY')});
+                        }
+                    }else{
+                        let str = etiquetas[i];
+                        Object.assign(etiq,{[str.charAt(0).toUpperCase()+str.slice(1)]:$('#'+etiquetas[i]).selectpicker('val')});
+                    } 
                 }
-                //Saco las etiquetas
-                 for (let i = 0; i < etiquetas.length; i++) {
-                     if(Number.isInteger(parseInt(etiquetas[i]))){
-                         // key = `c`+etiquetas[i];
-                         key = etq[etq.length-1][etiquetas[i]];
-                         value = $(this).parent().find("td").eq(parseInt(etiquetas[i])).text();
-                         Object.assign(etiq,{[key]:value});
-                     }else{
-                         if(etiquetas[i]=="f1"){
-                             if($("#"+etiquetas[i]).length < 1){
-                                 let f = getCurrentDate(0);
-                                 Object.assign(etiq,{Fecha :f});
-                             }else{
-                             Object.assign(etiq,{Fecha:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
-                             }       
-                         }else if(etiquetas[i]=="f1f2"){
-                             if($("#"+etiquetas[i]).length < 1 ){
-                                 let f = getCurrentDate(0);
-                                 Object.assign(etiq,{Fecha2 :f});
-                             }else{
-                             Object.assign(etiq,{Desde:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
-                             Object.assign(etiq,{Hasta:$("#"+etiquetas[i]).data('daterangepicker').endtDate.format('DD/MM/YYYY')});
-                             }
-                         }else{
-                             let str = etiquetas[i];
-                             Object.assign(etiq,{[str.charAt(0).toUpperCase()+str.slice(1)]:$('#'+etiquetas[i]).selectpicker('val')});
-                         } 
-                     }
-                 }
             }
            }else{
                iscorrect=true;
@@ -301,7 +296,6 @@ $(document).on('dblclick', 'td', async function () {
                }
                //Saco las etiquetas
                for (let i = 0; i < etiquetas.length; i++) {
-
                    if(Number.isInteger(parseInt(etiquetas[i]))){
                        // key = `c`+etiquetas[i];
                        key = etq[etq.length-1][etiquetas[i]];
@@ -310,14 +304,14 @@ $(document).on('dblclick', 'td', async function () {
                    }else{
                        if(etiquetas[i]=="f1"){
                            if($("#"+etiquetas[i]).length < 1){
-                               let f = getCurrentDate(0);
+                               let f = getCurrentDate();
                                Object.assign(etiq,{Fecha :f});
                            }else{
                               Object.assign(etiq,{Fecha:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
                            }       
                        }else if(etiquetas[i]=="f1f2"){
                            if($("#"+etiquetas[i]).length < 1 ){
-                               let f = getCurrentDate(0);
+                               let f = getCurrentDate();
                                Object.assign(etiq,{Fecha2 :f});
                            }else{
                               Object.assign(etiq,{Desde:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
@@ -353,7 +347,6 @@ $(document).on('dblclick', 'td', async function () {
            vtn.push(set);
            extra.push(info.datos_extra);
            if(set[0].length > 0){
-               
                 have_set.push(true);
 
                 btns.push(set[0].filter(function(x){
@@ -410,10 +403,9 @@ $(document).on('dblclick', 'td', async function () {
                }
 
            }else{
-            btns.push();
                 have_set.push(false);
-                isdclick2=false;
-                isrclick2=false;
+               isdclick2=false;
+               isrclick2=false;
            }
 
            if(emergente=="tabla"){
@@ -500,12 +492,24 @@ $(document).on('click', '.btn-danger', async function () {
     keys.forEach((key,index)=>{
         string+=`"${key}":"${valores[index]}",`;
     })
-    string+=`"comando":"${this.id}"`
+    string = string.slice(0, string.length - 1);
     string+="}";
     var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST");
-    if (typeof info.data.mensaje !== 'undefined') {
-        alert(info.data.mensaje);
-      }
+    if(info.data.mensaje=="El ticket ya esta anulado"){
+        Swal.fire({
+            title: '',
+            text: info.data.mensaje,
+            icon: 'warning',
+            confirmButtonText: 'Aceptar'
+          })
+    }else{
+        Swal.fire({
+        title: '',
+        text: info.data.mensaje,
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
+      })
+    }
 });
 
 //Click Derecho
@@ -633,7 +637,12 @@ $(document).on('click', '#rclick', async function () {
             string = string.slice(0, string.length - 1);
             string+="}";
             var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST");
-            console.log(info);
+            Swal.fire({
+                title: '',
+                text: info.data.mensaje,
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+              })
 
         }
     }

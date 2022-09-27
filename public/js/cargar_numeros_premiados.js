@@ -38,6 +38,11 @@ $(document).ready(function(){
     var html=head+body;
     $('#tablaf').html(html);
     $('#tablaf').DataTable();
+    let productos = $('#productos');
+   productos.prepend(`<option value="todos">Todos</option>`)
+   productos.selectpicker("refresh");
+   productos.val("todos");
+   productos.selectpicker("render")
 })
 
 
@@ -93,9 +98,9 @@ async function montar_tabla(){
    let f1 = $('#f1').data('daterangepicker').startDate.format('YYYYMMDD');
    let f1V = $('#f1').data('daterangepicker').startDate.format('DD/MM/YYYY');
    let estado = $('#estado').selectpicker('val');
-   let loteria = $('#loteria').selectpicker('val');
+   let loteria = $('#loterias').selectpicker('val');
    let productos = $('#productos').selectpicker('val');
-   data = {"f1":f1,"estado":estado,"loteria":loteria,"productos":productos,"comando":"cargar_numeros_premiados"};
+   data = {"f1":f1,"estado_loteria_premio":estado,"loteria_mix":loteria,"producto":productos,"comando":"cargar_numeros_premiados"};
    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
 
    let set = Object.values(JSON.parse(info.settings.jsr));
@@ -190,23 +195,41 @@ function checkedTargets(checkboxes) {
     });
   }
 
-$(document).on('click','#modal_save', function(){
+$(document).on('click','#modal_save', async function(){
     let num = $("#num_prem").val();
-    let signo = $('#signo').selectpicker('val');
-    $("#tabla1").DataTable().cell(row_act, 3).data(num);
+    let loteria = $('#tabla1').DataTable().row(row_act).data()[2];
+    // $("#tabla1").DataTable().cell(row_act, 3).data(num);
     let have_sig = $('#tabla1').DataTable().row(row_act).data()[8];
+    let signo='';
     if(have_sig=="SI"){
-        $("#tabla1").DataTable().cell(row_act, 4).data(signo);
+        signo = $('#signo').selectpicker('val');
+        // $("#tabla1").DataTable().cell(row_act, 4).data(signo);
     }
+    let f1 = $('#f1').data('daterangepicker').startDate.format('YYYYMMDD');
+    let f1V = $('#f1').data('daterangepicker').startDate.format('DD/MM/YYYY');
     var $tr = $($('#tabla1').DataTable().row(row_act).node());
-    var $checkbox = $tr.find('td:first-child')
-    $checkbox.prop('checked', true);
+    var $checkbox = $tr.find('td:first-child');
+    // $checkbox.prop('checked', true);
     // $('td[id=check_'+row_act+']').prop('indeterminate', false);
-    $('#tabla1').DataTable().row(':eq('+row_act+')', { page: 'current' }).select();
+    // $('#tabla1').DataTable().row(':eq('+row_act+')', { page: 'current' }).select();
 
+    
 
     $("#modal_edit").modal('hide');
     $("#modal_edit").removeClass("show1"); 
+    $("#load").addClass('spinner');
+
+    let data = {"loteria":loteria,"numero_vendido":num,"loteria":loteria,"f1":f1,"signo_unico":signo,"comando":"premiar"};
+    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
+    Swal.fire({
+        title: '',
+        text: info.data.mensaje,
+        icon: 'warning',
+        confirmButtonText: 'Aceptar'
+      })
+    
+    montar_tabla();
+    $("#load").removeClass('spinner');
     
 });
 
@@ -234,13 +257,15 @@ $(document).on('click','td', function(){
     var currentRow = $(this).closest("tr");
     col_act = column;
     row_act = $('#tabla1').DataTable().row( this ).index();
-    if(column=="7"){
+    if(column=="0"){
         $("#load").addClass('spinner');
         let have_sig = $('#tabla1').DataTable().row(currentRow).data()[8];
         let html=`<label>Loteria: `+$('#tabla1').DataTable().row(currentRow).data()[2]+`</label>`;
         if(have_sig=="NO"){
-            html +=`<input class="form-control form-control-lg" type="numeric" maxlength="3" id="num_prem" placeholder="Número a premiar" required>`;
-        }else if(have_sig="SI"){
+            html +=`<input class="form-control form-control-lg" type="numeric" maxlength="4" id="num_prem" placeholder="Número a premiar" required>`;
+        }else if(have_sig=="SI"){
+            html +=`<input class="form-control form-control-lg" type="numeric" maxlength="4" id="num_prem" placeholder="Número a premiar" required>`;
+        }else{
             html +=`<input class="form-control form-control-lg" type="numeric" maxlength="4" id="num_prem" placeholder="Número a premiar" required>`;
         }
         html +=`<label>Signo:`+have_sig+`</label>`;
@@ -289,7 +314,7 @@ $(document).on('dblclick', 'td', async function () {
    let iscorrect = false;
    var column = $(this).parent().children().index(this);
    if(isdclick){  
-    $("#load").addClass('spinner');
+    if(have_set[have_set.length -1 ]){$("#load").addClass('spinner');}
        for (let a = 0; a < dclick[0].length; a++) {
            if(dclick[0][a].label!='98'){
                if (column==dclick[0][a].label){

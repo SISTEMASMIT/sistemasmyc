@@ -74,8 +74,8 @@
                        
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" id="modal_save" class="btn btn-primary">Guardar Cambios</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="button" id="modal_save" class="btn btn-primary"><i class="fa-solid fa-trophy"></i>Premiar</button>
                     </div>
                     </div>
                 </div>
@@ -86,5 +86,4 @@
     </div>  <!--- page-content --->
 </div><!-- FIN CONTENIDO WEB -->
 <script type="module" src="<? $path;?>/public/js/<?php echo str_replace("-","_",$this->url[1])?>.js" ></script>
-<script src="<? $path;?>/public/js/dataTables.select.min.js"></script>
-<script src="<? $path;?>/public/js/dataTables.editor.min.js"></script>
+<script src="<? $path;?>/public/js/sweetalert2.js"></script>

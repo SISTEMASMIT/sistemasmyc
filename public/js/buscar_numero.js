@@ -211,7 +211,7 @@ $(document).on('dblclick', 'td', async function () {
     let iscorrect = false;
     var column = $(this).parent().children().index(this);
     if(isdclick){  
-       $("#load").addClass('spinner');
+        if(have_set[have_set.length -1 ]){$("#load").addClass('spinner');}
        for (let a = 0; a < dclick[0].length; a++) {
            if(dclick[0][a].label!='98'){
                if (column==dclick[0][a].label){
@@ -230,6 +230,35 @@ $(document).on('dblclick', 'td', async function () {
                        }
                    }
                }
+               //Saco las etiquetas
+               for (let i = 0; i < etiquetas.length; i++) {
+                if(Number.isInteger(parseInt(etiquetas[i]))){
+                    // key = `c`+etiquetas[i];
+                    key = etq[etq.length-1][etiquetas[i]];
+                    value = $(this).parent().find("td").eq(parseInt(etiquetas[i])).text();
+                    Object.assign(etiq,{[key]:value});
+                }else{
+                    if(etiquetas[i]=="f1"){
+                        if($("#"+etiquetas[i]).length < 1){
+                            let f = getCurrentDate();
+                            Object.assign(etiq,{Fecha :f});
+                        }else{
+                           Object.assign(etiq,{Fecha:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
+                        }       
+                    }else if(etiquetas[i]=="f1f2"){
+                        if($("#"+etiquetas[i]).length < 1 ){
+                            let f = getCurrentDate();
+                            Object.assign(etiq,{Fecha2 :f});
+                        }else{
+                           Object.assign(etiq,{Desde:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
+                           Object.assign(etiq,{Hasta:$("#"+etiquetas[i]).data('daterangepicker').endtDate.format('DD/MM/YYYY')});
+                        }
+                    }else{
+                        let str = etiquetas[i];
+                        Object.assign(etiq,{[str.charAt(0).toUpperCase()+str.slice(1)]:$('#'+etiquetas[i]).selectpicker('val')});
+                    } 
+                }
+            }
            }else{
                iscorrect=true;
                parametros = dclick[0][a].datos["parametros"].split(",")

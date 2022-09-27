@@ -47,10 +47,10 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,m
                 $(row).addClass('rclick');
             }
             },
-            select: {
-                style:    'multi',
-                selector: 'td:first-child'
-            },
+            // select: {
+            //     style:    'multi',
+            //     selector: 'td:first-child'
+            // },
             scrollX: true,
             processing: true,
             destroy: true,
@@ -191,11 +191,11 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,m
 function crear_head(data){
     
     let head = `<tr>`;
-    head += `<th>Marca</th>`;
+    head += `<th>Premiar</th>`;
     for(var i in data){
         head+=`<th>`+data[i]+`</th>`;
     }
-    head+=`<th>Editar</th></tr>`;
+    head+=`</tr>`;
     return head;
 }
 
@@ -203,7 +203,7 @@ function crear_body(data){
     let body = ``;
     for(var i in data){
         body+=`<tr>`
-        body+=`<td type="checkbox" class="select-checkbox" id="check_`+i+`"></td>`;
+        body+=`<td class="btn btn-sm btn-info"  id="editar"><i class="fa-solid fa-trophy"></i></td>`;
         for(var a in data[i]){
             if(Number.isInteger(parseInt(data[i][a]))){
                 body+=`<td class="num_aling">`+data[i][a]+`</td>`;
@@ -212,7 +212,7 @@ function crear_body(data){
             }
              
         }
-        body+=`<td class="btn btn-sm btn-info"  id="editar"><i class="fa fa-edit"></i></td></tr>`
+        body+=`</tr>`
     }
     body+=``;
 

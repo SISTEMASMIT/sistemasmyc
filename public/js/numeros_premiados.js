@@ -208,7 +208,6 @@ function getCurrentDate(formato){
 //Detectamos el Doble Click
 $(document).on('dblclick', 'td', async function () {
 
-    $("#load").addClass('spinner');
     let dclick = vtn[vtn.length -1 ];
     
    let data = [];
@@ -219,6 +218,7 @@ $(document).on('dblclick', 'td', async function () {
    let iscorrect = false;
    var column = $(this).parent().children().index(this);
    if(isdclick){  
+    if(have_set[have_set.length -1 ]){$("#load").addClass('spinner');}
        for (let a = 0; a < dclick[0].length; a++) {
            if(dclick[0][a].label!='98'){
                if (column==dclick[0][a].label){
