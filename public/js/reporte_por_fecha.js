@@ -240,7 +240,7 @@ async function montar_tabla(){
    }
 
    let labels = {"receptor":receptores,"loteria_mix":loterias,"f1":f1V,"f2":f2V,"producto_loteria":productos,"grupo_agencias":grupos,"agencia":agencias,"comando":"reporte_por_fecha"};
-   crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels);
+   crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels,'Reporte Por Fecha');
 
 }
 
@@ -266,9 +266,15 @@ function getCurrentDate(formato){
 
 //Detectamos el Doble Click
 $(document).on('dblclick', 'td', async function () {
-
+    let have_dclick;
     let dclick = vtn[vtn.length -1 ];
-    
+    for (let i = 0; i < dclick.length; i++) {
+        have_dclick = dclick[i].filter(function(x){ 
+            if(x.tipo=='dclick'){
+                return x;
+            }  
+        });
+    }
    let data = [];
    let etiq = [];
    let key;
@@ -277,7 +283,7 @@ $(document).on('dblclick', 'td', async function () {
    let iscorrect = false;
    var column = $(this).parent().children().index(this);
    if(isdclick){  
-    if(have_set[have_set.length -1 ]){$("#load").addClass('spinner');}
+    if(have_dclick.length>0){$("#load").addClass('spinner');}
        for (let a = 0; a < dclick[0].length; a++) {
            if(dclick[0][a].label!='98'){
                if (column==dclick[0][a].label){
@@ -506,7 +512,7 @@ $(document).on('dblclick', 'td', async function () {
                $(base).append(modal);
 
                $('#tabla'+modal_id).removeClass('invisible');
-               crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,isdclick2,dclick,isrclick2,invisibles,sumatorias,labels_modal,"#modal"+modal_id);
+               crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,isdclick2,dclick,isrclick2,invisibles,sumatorias,labels_modal,titulo,"#modal"+modal_id);
                
            }
 
