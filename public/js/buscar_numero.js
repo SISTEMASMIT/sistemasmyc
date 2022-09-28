@@ -174,7 +174,7 @@ async function montar_tabla(){
    }
 
    let labels = {"Receptores":receptores,"Loterias_Mix":loterias,"Fecha":f1V,"Número":numero};
-   crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels);
+   crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels,'Buscar Número');
 
 }
 
@@ -200,8 +200,16 @@ function getCurrentDate(formato){
 
 //Detectamos el Doble Click
 $(document).on('dblclick', 'td', async function () {
+    let have_dclick;
+    let dclick = vtn[vtn.length -1 ]; 
 
-    let dclick = vtn[vtn.length -1 ];
+    for (let i = 0; i < dclick.length; i++) {
+        have_dclick = dclick[i].filter(function(x){ 
+            if(x.tipo=='dclick'){
+                return x;
+            }  
+        });
+    }
     
     let data = [];
     let etiq = [];
@@ -210,8 +218,8 @@ $(document).on('dblclick', 'td', async function () {
     let cosas = [];
     let iscorrect = false;
     var column = $(this).parent().children().index(this);
-    if(isdclick){  
-        if(have_set[have_set.length -1 ]){$("#load").addClass('spinner');}
+   if(isdclick){  
+    if(have_dclick.length>0){$("#load").addClass('spinner');}
        for (let a = 0; a < dclick[0].length; a++) {
            if(dclick[0][a].label!='98'){
                if (column==dclick[0][a].label){
@@ -461,7 +469,7 @@ $(document).on('dblclick', 'td', async function () {
                $(base).append(modal);
 
                $('#tabla'+modal_id).removeClass('invisible');
-               crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,isdclick2,dclick,isrclick2,invisibles,sumatorias,labels_modal,"#modal"+modal_id);
+               crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,isdclick2,dclick,isrclick2,invisibles,sumatorias,labels_modal,titulo,"#modal"+modal_id);
                
            }
 

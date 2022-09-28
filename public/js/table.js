@@ -330,9 +330,10 @@ function crear_body_sum(data){
     const formato = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
     let body = ``;
     for(var i in data){
-        body+=`<tr>`
+       
         for (let b = 0; b < sumados.length; b++) {
             var idx=0;
+            body+=`<tr>`
             for(var a in data[i]){
                 if(idx==sumados[b]){
                     body+=`<td class="num_aling">`+formato.format(data[i][a])+`</td>`;
@@ -345,8 +346,9 @@ function crear_body_sum(data){
                 }
                 idx++;
             }
+            body+=`</tr>`
         }
-        body+=`</tr>`
+        
     }
     body+=``;
 

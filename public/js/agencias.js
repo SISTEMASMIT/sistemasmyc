@@ -171,7 +171,7 @@ async function montar_tabla(){
    }
 
    let labels = {"Receptores":receptores,"Grupos":grupos};
-   crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels);
+   crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels,'Agencias');
 
 }
 
@@ -458,7 +458,7 @@ $(document).on('dblclick', 'td', async function () {
                $(base).append(modal);
 
                $('#tabla'+modal_id).removeClass('invisible');
-               crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,isdclick2,dclick,isrclick2,invisibles,sumatorias,labels_modal,"#modal"+modal_id);
+               crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,isdclick2,dclick,isrclick2,invisibles,sumatorias,labels_modal,titulo,"#modal"+modal_id);
                
            }
 
