@@ -9,6 +9,10 @@
                     $modal=file_get_contents($pathlocal."modalbase.php");
                     echo $modal;
                 }
+                if(file_exists($pathlocal."modalbase_formulario.php")){
+                    $modal=file_get_contents($pathlocal."modalbase_formulario.php");
+                    echo $modal;
+                }
             ?>
             <div class="row">
                 <div class="row divFiltro">

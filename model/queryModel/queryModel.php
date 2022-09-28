@@ -53,7 +53,7 @@ class QueryModel{
         $this->conexion=conexion::getConexion();
         $statemant=$this->conexion->prepare($sql);
         $statemant->bindParam(":consulta",$consulta);
-        
+        // var_dump($consulta);
         if($statemant->execute()){
             $response=$statemant->fetchAll(PDO::FETCH_ASSOC);
             for ($i = 0; $i < $statemant->columnCount(); $i++) {
@@ -92,6 +92,7 @@ class QueryModel{
         $this->conexion=conexion::getConexion();
         $statemant=$this->conexion->prepare($sql);
         $statemant->bindParam(":segunda_respuesta",$segunda_respuesta);
+        // var_dump($segunda_respuesta);
         if($statemant->execute()){
             $response=$statemant->fetchAll(PDO::FETCH_ASSOC);
             $settings = $response[0];
@@ -111,6 +112,7 @@ class QueryModel{
                     $_SESSION[$r->datos->id]=$r;
                 }else if($r->tipo=="rclick"){
                     foreach($r->datos->items as $key => $item){
+                        // var_dump($item);
                         if(!isset($item->id)){
                             $item->id=$item->label;
                         }

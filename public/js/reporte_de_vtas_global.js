@@ -1,7 +1,8 @@
-import {futuDate} from "./date.js";
+import {rangeDate} from "./date.js";
 import {ajax_peticion} from "./Ajax-peticiones.js";
 import {crear_tabla} from "./table.js";
 import * as imp from "./importer.js";
+
 
 var id='';
 var base="#base";
@@ -26,91 +27,18 @@ var have_set = [];
 var et;
 var modal_id=1;
 var row;
+var parametros_segundo_envio = [];
 
-$(document).on("change","#receptores",async function(){
-    let receptores=$(this).selectpicker().val();
-    let data={"receptor":receptores,"comando":"age_rece"};
-    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
-    if(info.data.data.length ==  0){
-        Swal.fire({
-            title: '',
-            text: "Este receptor no tiene Agencias",
-            icon: 'warning',
-            confirmButtonText: 'Aceptar'
-          });
-        let agencias=$("#agencias");
-        agencias.html("");
-        agencias.selectpicker("refresh");
-    }else{
-        let agencias=$("#agencias");
-        agencias.html(generarHtml(info.data.data));
-        agencias.selectpicker("refresh");
-    }
-
-});
-
-$(document).on("click","#agregrar",async function(){
-    let data={"comando":"","orden":"modalTaquillas"};
-    let info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
-    let formulario=JSON.parse(info.settings["jsr"]);
-    let receptor = $("#receptores").selectpicker('val');
-    let html=`<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>Receptor:</label><label class='form-label'>${receptor}</label></div>`;
-    modal_id++;
-    let modal = $(base).children().first().html().replaceAll("{}",modal_id);
-    let modalsplit=modal.split("*");
-    let titulo ='';
-    if(formulario.filtros!=undefined){
-        formulario.filtros.forEach((element,index)=>{
-            if(element.tipo!="titulo"){
-                if(imp[element.tipo]){
-                    html+=imp[element.tipo](element.label,element.datos)
-                }
-            }else{
-                titulo = element.datos.id;
-            }
-        })
-        modalsplit[1] = html;
-        modal=modalsplit.join("");
-        modal=modal.replaceAll("#",titulo);
-        $(base).append(modal);
-        let agencias=$("#agencias").html();
-        $("#agencias_receptor").html(agencias);
-        $("#agencias_receptor").selectpicker("refresh");
-        $("#tipo_mensaje").selectpicker("refresh");
-        futuDate("#f1f2");
-        if($(base).children().length>1){
-            $('.modal-backdrop').addClass('show');
-            $(base).children().last().addClass("fade");
-            $(base).children().last().addClass("show1");
-            $(base).children().last().modal("show");
-        }
-    }
-});
-
-function generarHtml(list){
-    let html=""
-    list.forEach(function(element,index){
-        if(index==0){
-            html+=`<option value="todas" selected>Todas</option>`;
-            html+=`<option value="${element.codigo_age}" data-subtext='${elemento.id}' > ${element.nombre_age}</option>`;
-        }else{
-            html+=`<option value="${element.codigo_age}" data-subtext='${elemento.id}' >${element.nombre_age}</option>`;
-        }
-    });
-    return html;
-}
-
-
-
-$(document).ready(function () {
-    var columns = 6;
+$(document).ready(function(){
+    rangeDate("#f1f2");
+   var columns = 6;
     var rows = 10;
     var head = crear_head(columns);
     var body = crear_body(columns,rows);
     var html=head+body;
     $('#tablaf').html(html);
     $('#tablaf').DataTable();
-});
+})
 
 function crear_head(data){
     let head = `<thead><tr>`;
@@ -119,29 +47,25 @@ function crear_head(data){
     }
     head+=`</tr></thead>`;
     return head;
-}
+ }
+
+
+
 
 function crear_body(columns, rows){
-    let body = `<tbody>`;
-    for(var a =0; a< rows; a++){
-        body+=`<tr>`;
-        for(var i=0; i<columns;i++){
-            body+=`<td>-</td>`;
-        }
-        body+=`</tr>`
-    }
-    
-    
-    body+=`</tbody>`;
-    return body;
+   let body = `<tbody>`;
+   for(var a =0; a< rows; a++){
+       body+=`<tr>`;
+       for(var i=0; i<columns;i++){
+           body+=`<td>-</td>`;
+       }
+       body+=`</tr>`
+   }
+   
+   
+   body+=`</tbody>`;
+   return body;
 }
-
-
-$(document).on('click', '#detener', async function() {
-    clearInterval(intervalo);
-});
-
-
 
 //Ocultar El modal
 $(document).on('hidden.bs.modal', '#base', function() {
@@ -161,139 +85,131 @@ $(document).on('hidden.bs.modal', '#base', function() {
         btns.pop();
     }
  });
-
-
-$(document).on('click', '#mensajeria_taquillas', async function() {
-    $('#tabla1').removeClass('invisible');
-    // $('#aceptar').prop('disabled', true);
-    montar_tabla();
-    // intervalo = setInterval(montar_tabla, 50000);
-    
-});
-
-//Funcion para guardar los mensajes
-
-$(document).on('click', '#agregar_mensaje_taquillas', async function() {
-    let agencia =$('#agencias_receptor').selectpicker('val').join(',');
-    let f1 = $("#f1f2").data('daterangepicker').startDate.format('YYYYMMDD');
-    let f2 = $("#f1f2").data('daterangepicker').endDate.format('YYYYMMDD');
-    let tipo_mensaje = $("#tipo_mensaje").selectpicker('val');
-    let receptor = $("#receptores").selectpicker('val');
-    let mensaje= $('#texto').val();
-    let data = {"agencia":agencia,"receptor":receptor,"f1":f1,"f2":f2,"tipo_mensaje":tipo_mensaje,"mensaje":mensaje,"comando":"agregar_mensaje_taquillas"};
-    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
-    if(info.data.mensaje=="Mensaje creado Correctamente"){
-        Swal.fire({
-            title: '',
-            text: info.data.mensaje,
-            icon: 'success',
-            confirmButtonText: 'Aceptar'
-          });
-    }else{
-        Swal.fire({
-            title: '',
-            text: 'Ocurrió un error inesperado, intente nuevamente',
-            icon: 'error',
-            confirmButtonText: 'Aceptar'
-          });
+//Ocultar El modal
+$(document).on('hidden.bs.modal', '#base_formulario', function() {
+    let base="#base_formulario";
+    modal_id--;
+    $(base).children().last().remove();
+    if($(base).children().length>1){
+        $('.modal-backdrop').addClass('show');
+        $(base).children().last().addClass("fade");
+        $(base).children().last().addClass("show");
+        setTimeout(() => this.input.nativeElement.focus(), 0);
     }
-    $("#modal2").modal('hide');
-    $("#modal2").removeClass("show1");
-    $('#tabla1').removeClass('invisible');
-    montar_tabla();
+    // vtn.pop();
+    etq.pop();
+    extra.pop();
+    let ss=have_set[have_set.length-1];
+    if(ss){
+        btns.pop();
+    }
+ });
 
-
-
+$(document).on('click', '#reporte_ventas_globales', async function() {
+   $('#tabla1').removeClass('invisible');
+   if($('#numero').val()!=''){
+        montar_tabla();
+   }else{
+    $('#numero').attr("placeholder", "Ingrese un Número").placeholder();
+   }
 });
-
 
 async function montar_tabla(){
-    var w = document.getElementById("tabla_res").clientWidth;
-    var h = document.getElementById("tabla_res").clientHeight;
-    h = h+500;
-    $('#f').html('');
-    $("#carga").addClass('carga');
-    $("#carga").width( w );
-    $("#carga").height( h );
-    $("#load").addClass('spinner');
-    let data = [];
-    let receptores = $('#receptores').selectpicker('val');
-    let agencias = $('#agencias').selectpicker('val');
+   var w = document.getElementById("tabla_res").clientWidth;
+   var h = document.getElementById("tabla_res").clientHeight;
+   h = h+500;
+   $('#f').html('');
+   $("#carga").addClass('carga');
+   $("#carga").width( w );
+   $("#carga").height( h );
+   $("#load").addClass('spinner');
+   let data = [];
+   let receptores = $('#receptores').selectpicker('val');
+   let loterias = $('#loterias').selectpicker('val');
+   let grupos = $('#grupos').selectpicker('val');
+   let agencias = $('#agencias').selectpicker('val');
+   let agrupar = $('#agrupar_por').selectpicker('val');
+   let ventas = $('#ventas_a_mostrar').selectpicker('val');
+//      Aqui se modifican los id de cada data necesaria para la peticion 
+//      Para sacar un rango de fechas se usa el mismo identificador lo que cambia es el metodo
+   let f1 = $('#f1f2').data('daterangepicker').startDate.format('YYYYMMDD');
+   let f1V = $('#f1f2').data('daterangepicker').startDate.format('DD/MM/YYYY');
+   let f2 = $('#f1f2').data('daterangepicker').endDate.format('YYYYMMDD');
+   let f2V = $('#f1f2').data('daterangepicker').endDate.format('DD/MM/YYYY');
 
+   
+   data = {"receptor":receptores,"f1":f1,"f2":f2,"comando":"reporte_ventas_globales","ventas_mostrar":ventas};
+   var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
 
-    data = {"receptor":receptores,"agencias":agencias,"comando":"mensajeria_taquillas"};
+   let set = Object.values(JSON.parse(info.settings.jsr));
+   etq.push(info.data.head);
+   vtn.push(set);
+   extra.push(info.datos_extra);
+   let invisibles = [];
+   let sumatorias = [];
 
-    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
-    let set = Object.values(JSON.parse(info.settings.jsr));
-    etq.push(info.data.head);
-    vtn.push(set);
-    extra.push(info.datos_extra);
-    let invisibles = [];
-    let sumatorias = [];
-    if(set[0].length > 0){
+   if(set[0].length > 0){
         have_set.push(true);
 
-        btns.push(set[0].filter(function(x){
-            return x.label == 'Anular';
-        }));
+      invisibles = set[0].find(function(x){    
+           return x.label == '96';
+      });
 
-       invisibles = set[0].find(function(x){    
-            return x.label == '96';
-        });
+      sumatorias = set[0].find(function(x){    
+           return x.label == '97';
+      });
+       
 
-        sumatorias = set[0].find(function(x){    
-            return x.label == '97';
-        });
-
-        dclick.push(set[0].filter(function(x){ 
-            if(x.label!='98' && x.label!='99' && x.label!='97' && x.label != '96'){
-                return x;
-            }else if(x.label=='98'){
-                return x;
-            }
-            
-        }));
+       dclick.push(set[0].filter(function(x){ 
+           if(x.label!='98' && x.label!='99' && x.label!='97' && x.label != '96'){
+               return x;
+           }else if(x.label=='98'){
+               return x;
+           }
+       }));
 
         rclick.push(set[0].find(function(x){    
             return x.label == '99';
         }));
+    
 
-        if(dclick[0]!=undefined){
-            isdclick=true;
-        }
+       if(dclick[0]!=undefined){
+           isdclick=true;
+       }
 
-        if(rclick[0]!=undefined){
-            isrclick=true;
-        }
+       if(rclick[0]!=undefined){
+           isrclick=true;
+       }
+       if(invisibles !=undefined){
+         invisibles=invisibles.datos.c_invisible.split(",");
+         invisibles = invisibles.map(function(x){    
+           return parseInt(x);
+         });   
+      }else{
+         invisibles = [];
+      }
+       
 
-        if(invisibles !=undefined){
-            invisibles=invisibles.datos.c_invisible.split(",");
-            invisibles = invisibles.map(function(x){    
-              return parseInt(x);
-            });   
-         }else{
-            invisibles = [];
-         }
-          
-   
-         if(sumatorias != undefined){
-            sumatorias=sumatorias.datos.c_sumatoria.split(",");
-            sumatorias = sumatorias.map(function(x){    
-              return parseInt(x);
-            });
-         }else{
-            sumatorias = [];
-         }
-    }else{
+      if(sumatorias != undefined){
+         sumatorias=sumatorias.datos.c_sumatoria.split(",");
+         sumatorias = sumatorias.map(function(x){    
+           return parseInt(x);
+         });
+      }else{
+         sumatorias = [];
+      }
+         
+   }else{
         have_set.push(false);
-        isdclick=false;
-        isrclick=false;
-    }
+       isdclick=false;
+       isrclick=false;
+   }
 
-    let labels = {"Receptores":receptores,"Agencias":agencias};
-    crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels);
+   let labels = {"Receptor":receptores,"Fecha inicial":f1V,"Fecha final":f2V,"Ventas mostrar":ventas};
+   crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels);
 
 }
+
 
 
 function getCurrentDate(formato){
@@ -313,9 +229,11 @@ function getCurrentDate(formato){
 
 
 
+
 //Detectamos el Doble Click
 $(document).on('dblclick', 'td', async function () {
 
+    $("#load").addClass('spinner');
     let dclick = vtn[vtn.length -1 ];
     
    let data = [];
@@ -326,7 +244,6 @@ $(document).on('dblclick', 'td', async function () {
    let iscorrect = false;
    var column = $(this).parent().children().index(this);
    if(isdclick){  
-    if(have_set[have_set.length -1 ]){$("#load").addClass('spinner');}
        for (let a = 0; a < dclick[0].length; a++) {
            if(dclick[0][a].label!='98'){
                if (column==dclick[0][a].label){
@@ -382,7 +299,6 @@ $(document).on('dblclick', 'td', async function () {
                }
                //Saco las etiquetas
                for (let i = 0; i < etiquetas.length; i++) {
-
                    if(Number.isInteger(parseInt(etiquetas[i]))){
                        // key = `c`+etiquetas[i];
                        key = etq[etq.length-1][etiquetas[i]];
@@ -391,14 +307,14 @@ $(document).on('dblclick', 'td', async function () {
                    }else{
                        if(etiquetas[i]=="f1"){
                            if($("#"+etiquetas[i]).length < 1){
-                               let f = getCurrentDate(0);
+                               let f = getCurrentDate();
                                Object.assign(etiq,{Fecha :f});
                            }else{
                               Object.assign(etiq,{Fecha:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
                            }       
                        }else if(etiquetas[i]=="f1f2"){
                            if($("#"+etiquetas[i]).length < 1 ){
-                               let f = getCurrentDate(0);
+                               let f = getCurrentDate();
                                Object.assign(etiq,{Fecha2 :f});
                            }else{
                               Object.assign(etiq,{Desde:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
@@ -434,7 +350,6 @@ $(document).on('dblclick', 'td', async function () {
            vtn.push(set);
            extra.push(info.datos_extra);
            if(set[0].length > 0){
-               
                 have_set.push(true);
 
                 btns.push(set[0].filter(function(x){
@@ -459,7 +374,7 @@ $(document).on('dblclick', 'td', async function () {
                    
                }));
                rclick=[];
-               rclick.push([0].find(function(x){    
+               rclick.push(set[0].find(function(x){    
                    return x.label == '99';
                }));
 
@@ -580,17 +495,24 @@ $(document).on('click', '.btn-danger', async function () {
     keys.forEach((key,index)=>{
         string+=`"${key}":"${valores[index]}",`;
     })
-    string+=`"comando":"${this.id}"`
+    string = string.slice(0, string.length - 1);
     string+="}";
     var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST");
-    if (typeof info.data.mensaje !== 'undefined') {
+    if(info.data.mensaje=="El ticket ya esta anulado"){
         Swal.fire({
             title: '',
             text: info.data.mensaje,
-            icon: 'info',
+            icon: 'warning',
             confirmButtonText: 'Aceptar'
           })
-      }
+    }else{
+        Swal.fire({
+        title: '',
+        text: info.data.mensaje,
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
+      })
+    }
 });
 
 //Click Derecho
@@ -661,6 +583,7 @@ $("#menuTabla a").on("click", function() {
 $(document).on('click', '#rclick', async function () { 
     let rclick = vtn[vtn.length -1 ];
     let data = [];
+    
     let etiq = [];
     let key;
     let value;
@@ -676,12 +599,12 @@ $(document).on('click', '#rclick', async function () {
             let orden = elementos[i].orden;
             let parametros = elementos[i].parametros.split(",");
             let emergente = elementos[i].emergente;
-            Object.assign(data,{"comando":comando});
-            Object.assign(data,{"orden":orden});
+            Object.assign(data,{"comando":comando,"orden":orden});
             for (let i = 0; i < parametros.length; i++) {
                 if(Number.isInteger(parseInt(parametros[i]))){
                     key = `c`+parametros[i];
                     value = row.find("td").eq(parseInt(parametros[i])).text();
+                    Object.assign(parametros_segundo_envio,{[key]:value});
                     Object.assign(data,{[key]:value});
                 }else{
                     if(parametros[i]=="f1"){
@@ -705,6 +628,35 @@ $(document).on('click', '#rclick', async function () {
                     } 
                 }
             }
+            //Saco las etiquetas
+            for (let i = 0; i < etiquetas.length; i++) {
+                if(Number.isInteger(parseInt(etiquetas[i]))){
+                    // key = `c`+etiquetas[i];
+                    key = etq[etq.length-1][etiquetas[i]];
+                    value = $(this).parent().find("td").eq(parseInt(etiquetas[i])).text();
+                    Object.assign(etiq,{[key]:value});
+                }else{
+                    if(etiquetas[i]=="f1"){
+                        if($("#"+etiquetas[i]).length < 1){
+                            let f = getCurrentDate();
+                            Object.assign(etiq,{Fecha :f});
+                        }else{
+                           Object.assign(etiq,{Fecha:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
+                        }       
+                    }else if(etiquetas[i]=="f1f2"){
+                        if($("#"+etiquetas[i]).length < 1 ){
+                            let f = getCurrentDate();
+                            Object.assign(etiq,{Fecha2 :f});
+                        }else{
+                           Object.assign(etiq,{Desde:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
+                           Object.assign(etiq,{Hasta:$("#"+etiquetas[i]).data('daterangepicker').endtDate.format('DD/MM/YYYY')});
+                        }
+                    }else{
+                        let str = etiquetas[i];
+                        Object.assign(etiq,{[str.charAt(0).toUpperCase()+str.slice(1)]:$('#'+etiquetas[i]).selectpicker('val')});
+                    } 
+                }
+            }
             //Convierto para que se envien los parametros
             let algo=[];
             algo[0]=data;
@@ -718,8 +670,36 @@ $(document).on('click', '#rclick', async function () {
             })
             string = string.slice(0, string.length - 1);
             string+="}";
+            let base="#base_formulario";
             var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST");
-            console.log(info);
+            let formulario=JSON.parse(info.settings["jsr"]);
+            let html=``;
+            modal_id++;
+            let modal = $(base).children().first().html().replaceAll("{}",modal_id);
+            let modalsplit=modal.split("*");
+            let titulo ='';
+            if(formulario.filtros!=undefined){
+                formulario.filtros.forEach((element,index)=>{
+                    if(element.tipo!="titulo"){
+                        if(imp[element.tipo]){
+                            html+=imp[element.tipo](element.label,element.datos)
+                        }
+                    }else{
+                        titulo = element.datos.id;
+                    }
+                })
+                modalsplit[1] = html;
+                modal=modalsplit.join("");
+                modal=modal.replaceAll("#",titulo);
+                $(base).append(modal);
+                $("#f3").selectpicker("refresh");
+                if($(base).children().length>1){
+                    $('.modal-backdrop').addClass('show');
+                    $(base).children().last().addClass("fade");
+                    $(base).children().last().addClass("show1");
+                    $(base).children().last().modal("show");
+                }
+            }
 
         }
     }
