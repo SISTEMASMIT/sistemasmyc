@@ -705,3 +705,93 @@ $(document).on('click', '#rclick', async function () {
     }
 
 });
+
+$(document).on("change","#f3",async function(){
+    let data=parametros_segundo_envio;
+    Object.assign(data,{"ano":$(this).selectpicker("val")});
+    Object.assign(data,{"comando":"csl_vtas_globalesf4a"});
+    let keys = Object.getOwnPropertyNames(data).filter((x)=>{
+        return x!="length"?x:"";
+    });
+    let valores= Object.values(data);
+    let string="{";
+    keys.forEach((key,index)=>{
+        string+=`"${key}":"${valores[index]}",`;
+    })
+    string = string.slice(0, string.length - 1);
+    string+="}";
+    var info =  await ajax_peticion("/query/standard_query", {'data':string}, "POST");
+    let set = Object.values(JSON.parse(info.settings.jsr));
+           let invisibles = [];
+           let sumatorias = [];
+           etq.push(info.data.head);
+           vtn.push(set);
+           extra.push(info.datos_extra);
+           if(set[0].length > 0){
+                have_set.push(true);
+
+                btns.push(set[0].filter(function(x){
+                    return x.label == 'Anular';
+                }));
+
+               invisibles = set[0].find(function(x){    
+                   return x.label == '96';
+               });
+
+               sumatorias = set[0].find(function(x){    
+                   return x.label == '97';
+               });
+               
+               dclick =[];
+               dclick.push(set[0].filter(function(x){ 
+                   if(x.label!='98' && x.label!='99' && x.label!='97' && x.label != '96'){
+                       return x;
+                   }else if(x.label=='98'){
+                       return x;
+                   }
+                   
+               }));
+               rclick=[];
+               rclick.push(set[0].find(function(x){    
+                   return x.label == '99';
+               }));
+
+               if(dclick[0]!=undefined){
+                   isdclick2=true;
+               }
+
+               if(rclick[0]!=undefined){
+                   isrclick2=true;
+               }
+
+               if(invisibles !=undefined){
+                  invisibles=invisibles.datos.c_invisible.split(",");
+                  invisibles = invisibles.map(function(x){    
+                    return parseInt(x);
+                  });   
+               }else{
+                  invisibles = [];
+               }
+                
+         
+               if(sumatorias != undefined){
+                  sumatorias=sumatorias.datos.c_sumatoria.split(",");
+                  sumatorias = sumatorias.map(function(x){    
+                    return parseInt(x);
+                  });
+               }else{
+                  sumatorias = [];
+               }
+
+           }else{
+            btns.push();
+                have_set.push(false);
+               isdclick2=false;
+               isrclick2=false;
+           }
+                
+       
+            crear_tabla(info.data,"#tabla_formu","#thead_formu","#tbody_formu",isdclick2,dclick,isrclick2,invisibles,sumatorias,[],"#modal_formu");
+        
+
+})

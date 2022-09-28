@@ -1,6 +1,6 @@
 <div id="base_formulario">
 <div>
-<div class="modal fade " id="modal{}" tabindex="-1" aria-labelledby="exampleModalLabel" style="display: none;" aria-hidden="true">
+<div class="modal fade " id="modal_formu" tabindex="-1" aria-labelledby="exampleModalLabel" style="display: none;" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen" style="max-width: 95%;">
         <div class="modal-content">
             <div class="modal-header">
@@ -9,6 +9,14 @@
             </div>
             <div class="modal-body mb2">
             <div class='row'>*<h5 class="" id="">#</h5>*</div>
+            <table id="tabla_formu" class="cell-border display nowrap invisible" style="width:100%">
+                            <thead class="thead" id="thead_formu">
+                                <tr><th></th></tr>
+                            </thead>
+                            <tbody id="tbody_formu">
+                            <tr><td></td></tr>
+                            </tbody>
+                        </table>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="menuTabla{}"></div>
             </div>
             <div class="modal-footer">
