@@ -1,9 +1,8 @@
-import {oneDate} from "./date.js";
+import {rangeDate} from "./date.js";
 import {ajax_peticion} from "./Ajax-peticiones.js";
-import {crear_tabla} from "./editable.js";
+import {crear_tabla} from "./table.js";
 
-var col_act;
-var row_act;
+
 
 var id='';
 var base="#base";
@@ -30,7 +29,7 @@ var modal_id=1;
 var row;
 
 $(document).ready(function(){
-   oneDate("#f1");
+    rangeDate("#f1f2");
    var columns = 6;
     var rows = 10;
     var head = crear_head(columns);
@@ -38,22 +37,19 @@ $(document).ready(function(){
     var html=head+body;
     $('#tablaf').html(html);
     $('#tablaf').DataTable();
-    let productos = $('#productos');
-   productos.prepend(`<option value="todos">Todos</option>`)
-   productos.selectpicker("refresh");
-   productos.val("todos");
-   productos.selectpicker("render")
 })
 
-
 function crear_head(data){
-   let head = `<thead><tr>`;
-   for(var i=0; i<data;i++){
-       head+=`<th>-</th>`;
-   }
-   head+=`</tr></thead>`;
-   return head;
-}
+    let head = `<thead><tr>`;
+    for(var i=0; i<data;i++){
+        head+=`<th>-</th>`;
+    }
+    head+=`</tr></thead>`;
+    return head;
+ }
+
+
+
 
 function crear_body(columns, rows){
    let body = `<tbody>`;
@@ -70,13 +66,25 @@ function crear_body(columns, rows){
    return body;
 }
 //Ocultar El modal
-$(document).on('hidden.bs.modal', '#modal_edit', function() {
-    $("#modal_edit").removeClass("show1");
-  
-});
+$(document).on('hidden.bs.modal', '#base', function() {
+    modal_id--;
+    $(base).children().last().remove();
+    if($(base).children().length>1){
+        $('.modal-backdrop').addClass('show');
+        $(base).children().last().addClass("fade");
+        $(base).children().last().addClass("show");
+    }
+    vtn.pop();
+    etq.pop();
+    extra.pop();
+    let ss=have_set[have_set.length-1];
+    if(ss){
+        btns.pop();
+    }
+ });
 
 
-$(document).on('click', '#cargar_numeros_premiados', async function() {
+$(document).on('click', '#reporte_ventas_globales', async function() {
    $('#tabla1').removeClass('invisible');
    if($('#numero').val()!=''){
         montar_tabla();
@@ -95,12 +103,21 @@ async function montar_tabla(){
    $("#carga").height( h );
    $("#load").addClass('spinner');
    let data = [];
-   let f1 = $('#f1').data('daterangepicker').startDate.format('YYYYMMDD');
-   let f1V = $('#f1').data('daterangepicker').startDate.format('DD/MM/YYYY');
-   let estado = $('#estado').selectpicker('val');
-   let loteria = $('#loterias').selectpicker('val');
-   let productos = $('#productos').selectpicker('val');
-   data = {"f1":f1,"estado_loteria_premio":estado,"loteria_mix":loteria,"producto":productos,"comando":"cargar_numeros_premiados"};
+   let receptores = $('#receptores').selectpicker('val');
+   let loterias = $('#loterias').selectpicker('val');
+   let grupos = $('#grupos').selectpicker('val');
+   let agencias = $('#agencias').selectpicker('val');
+   let agrupar = $('#agrupar_por').selectpicker('val');
+   let ventas = $('#ventas_a_mostrar').selectpicker('val');
+//      Aqui se modifican los id de cada data necesaria para la peticion 
+//      Para sacar un rango de fechas se usa el mismo identificador lo que cambia es el metodo
+   let f1 = $('#f1f2').data('daterangepicker').startDate.format('YYYYMMDD');
+   let f1V = $('#f1f2').data('daterangepicker').startDate.format('DD/MM/YYYY');
+   let f2 = $('#f1f2').data('daterangepicker').endDate.format('YYYYMMDD');
+   let f2V = $('#f1f2').data('daterangepicker').endDate.format('DD/MM/YYYY');
+
+   
+   data = {"receptor":receptores,"f1":f1,"f2":f2,"comando":"reporte_ventas_globales","ventas_mostrar":ventas};
    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
 
    let set = Object.values(JSON.parse(info.settings.jsr));
@@ -135,7 +152,7 @@ async function montar_tabla(){
         }));
     
 
-       if(dclick[0].length>0){
+       if(dclick[0]!=undefined){
            isdclick=true;
        }
 
@@ -167,8 +184,8 @@ async function montar_tabla(){
        isrclick=false;
    }
 
-   let labels = {"Fecha":f1V,"Estado":estado,"Loteria":loteria,"Productos":productos};
-   crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels,'');
+   let labels = {"Receptor":receptores,"Fecha inicial":f1V,"Fecha final":f2V,"Ventas mostrar":ventas};
+   crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels);
 
 }
 
@@ -189,121 +206,13 @@ function getCurrentDate(formato){
   
 }
 
-function checkedTargets(checkboxes) {
-    return checkboxes.filter(function (index) {
-      return $(checkboxes[index]).prop('checked');
-    });
-  }
 
-$(document).on('click','#modal_save', async function(){
-    let num = $("#num_prem").val();
-    let loteria = $('#tabla1').DataTable().row(row_act).data()[2];
-    // $("#tabla1").DataTable().cell(row_act, 3).data(num);
-    let have_sig = $('#tabla1').DataTable().row(row_act).data()[8];
-    let signo='';
-    if(have_sig=="SI"){
-        signo = $('#signo').selectpicker('val');
-        // $("#tabla1").DataTable().cell(row_act, 4).data(signo);
-    }
-    let f1 = $('#f1').data('daterangepicker').startDate.format('YYYYMMDD');
-    let f1V = $('#f1').data('daterangepicker').startDate.format('DD/MM/YYYY');
-    var $tr = $($('#tabla1').DataTable().row(row_act).node());
-    var $checkbox = $tr.find('td:first-child');
-    // $checkbox.prop('checked', true);
-    // $('td[id=check_'+row_act+']').prop('indeterminate', false);
-    // $('#tabla1').DataTable().row(':eq('+row_act+')', { page: 'current' }).select();
 
-    
-
-    $("#modal_edit").modal('hide');
-    $("#modal_edit").removeClass("show1"); 
-    $("#load").addClass('spinner');
-
-    let data = {"loteria":loteria,"numero_vendido":num,"loteria":loteria,"f1":f1,"signo_unico":signo,"comando":"premiar"};
-    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
-    Swal.fire({
-        title: '',
-        text: info.data.mensaje,
-        icon: 'warning',
-        confirmButtonText: 'Aceptar'
-      })
-    
-    montar_tabla();
-    $("#load").removeClass('spinner');
-    
-});
-
-$(document).on('click','#cargar_numeros_premiados_premiar', function(){
-
-    var data = $("#tabla1").DataTable()
-    .rows( function ( idx, data, node ) {
-        // Get all the checkboxes in the row
-        var cells = $(node).find('td:first-child');   
-        // Keep the rows with checked checkboxes
-        return checkedTargets(cells).length;
-    } )
-    .data()
-    .toArray();
-
-    if (data.length) {
-        for (var i = 0; i < data.length; i++) {
-         console.log(JSON.stringify(data[i]));
-        }
-      } 
-});
-
-$(document).on('click','td', function(){
-    var column = $(this).parent().children().index(this);
-    var currentRow = $(this).closest("tr");
-    col_act = column;
-    row_act = $('#tabla1').DataTable().row( this ).index();
-    if(column=="0"){
-        $("#load").addClass('spinner');
-        let have_sig = $('#tabla1').DataTable().row(currentRow).data()[8];
-        let html=`<label>Loteria: `+$('#tabla1').DataTable().row(currentRow).data()[2]+`</label>`;
-        if(have_sig=="NO"){
-            html +=`<input class="form-control form-control-lg" type="numeric" maxlength="4" id="num_prem" placeholder="Número a premiar" required>`;
-        }else if(have_sig=="SI"){
-            html +=`<input class="form-control form-control-lg" type="numeric" maxlength="4" id="num_prem" placeholder="Número a premiar" required>`;
-        }else{
-            html +=`<input class="form-control form-control-lg" type="numeric" maxlength="4" id="num_prem" placeholder="Número a premiar" required>`;
-        }
-        html +=`<label>Signo:`+have_sig+`</label>`;
-        if(have_sig=="SI"){
-            html+=`<select class='selectpicker' data-live-search='true' id="signo">`
-            html+=`
-            <option value='' selected></option>
-            <option value='ARI' >Aries</option>
-            <option value='TAU' >Tauro</option>
-            <option value='GEM' >Géminis</option>
-            <option value='CAN' >Cáncer</option>
-            <option value='LEO' >Leo</option>
-            <option value='VIR' >Virgo</option>
-            <option value='LIB' >Libra</option>
-            <option value='ESC' >Escorpio</option>
-            <option value='SAG' >Sagitario</option>
-            <option value='CAP' >Capricornio</option>
-            <option value='ACU' >Acuario</option>
-            <option value='PIS' >Piscis</option>
-            `
-            html+=`</select>`;
-        }
-        console.log($('#body_modal:last-child'));
-        $("#body_modal").html(html);
-        $('#signo').selectpicker('refresh');
-        $("#modal_edit").modal('show');
-        $("#modal_edit").addClass("show1"); 
-        $("#load").removeClass('spinner');
-       
-    }
-
-    
-})
 
 //Detectamos el Doble Click
 $(document).on('dblclick', 'td', async function () {
 
-    
+    $("#load").addClass('spinner');
     let dclick = vtn[vtn.length -1 ];
     
    let data = [];
@@ -314,7 +223,6 @@ $(document).on('dblclick', 'td', async function () {
    let iscorrect = false;
    var column = $(this).parent().children().index(this);
    if(isdclick){  
-    if(have_set[have_set.length -1 ]){$("#load").addClass('spinner');}
        for (let a = 0; a < dclick[0].length; a++) {
            if(dclick[0][a].label!='98'){
                if (column==dclick[0][a].label){
@@ -535,7 +443,7 @@ $(document).on('dblclick', 'td', async function () {
                $(base).append(modal);
 
                $('#tabla'+modal_id).removeClass('invisible');
-               crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,isdclick2,dclick,isrclick2,invisibles,sumatorias,labels_modal,'',"#modal"+modal_id);
+               crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,isdclick2,dclick,isrclick2,invisibles,sumatorias,labels_modal,"#modal"+modal_id);
                
            }
 
