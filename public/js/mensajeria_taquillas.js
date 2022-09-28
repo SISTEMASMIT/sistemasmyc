@@ -677,6 +677,7 @@ $(document).on('click', '#rclick', async function () {
             let parametros = elementos[i].parametros.split(",");
             let emergente = elementos[i].emergente;
             Object.assign(data,{"comando":comando});
+            Object.assign(data,{"orden":orden});
             for (let i = 0; i < parametros.length; i++) {
                 if(Number.isInteger(parseInt(parametros[i]))){
                     key = `c`+parametros[i];

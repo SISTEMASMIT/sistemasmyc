@@ -59,7 +59,17 @@ use Firebase\JWT\Key;
             return "Error";
         }
      }
-     public function decode_jwt(){
+     public function decode_jwt($jwt){
+        // Your passphrase
+        $passphrase = getenv("PASSPHRASE");
+        // Your private key file with passphrase
+        // Can be generated with "ssh-keygen -t rsa -m pem"
+        $privateKeyFile = '/var/www/html/.ssh/private_key.pem';
+        // Create a private key of type "resource"
+        $privateKey = openssl_pkey_get_private(
+            file_get_contents($privateKeyFile),
+            $passphrase
+        );
         // Get public key from the private key, or pull from from a file.
         $publicKey = openssl_pkey_get_details($privateKey)['key'];
 

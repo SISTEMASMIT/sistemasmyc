@@ -55,3 +55,27 @@ export function button_emergente(label,json){
     <button type='button' id='${json.id}' class='btn-lg btn-block btn-success'>${label}</button>
     </div>`
 }
+
+export function formulario_emergente_date_year(label,json){
+    try{
+        let html=`<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>${label}</label>
+        <select class='selectpicker' id='${json.id}'>`
+        let arreglo=Array(json.num_max_pass).fill(0)
+        let y = new Date().getFullYear();
+        let anos =arreglo.map((e,i)=>{
+            return y-i;
+        })
+        anos.forEach((elemento,index)=>{
+            if(index==0){
+                html+=`<option value='${elemento}' selected>${elemento}</option>`
+            }
+             else {
+                html+=`<option value='${elemento}'>${elemento}</option>`
+            }
+        })
+        html+=`</select></div>`;
+        return html;
+   }catch(e){
+    console.log(e)
+   }
+}

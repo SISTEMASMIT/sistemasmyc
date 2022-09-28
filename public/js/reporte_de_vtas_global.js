@@ -1,7 +1,7 @@
 import {rangeDate} from "./date.js";
 import {ajax_peticion} from "./Ajax-peticiones.js";
 import {crear_tabla} from "./table.js";
-
+import * as imp from "./importer.js";
 
 
 var id='';
@@ -27,6 +27,7 @@ var have_set = [];
 var et;
 var modal_id=1;
 var row;
+var parametros_segundo_envio = [];
 
 $(document).ready(function(){
     rangeDate("#f1f2");
@@ -65,6 +66,7 @@ function crear_body(columns, rows){
    body+=`</tbody>`;
    return body;
 }
+
 //Ocultar El modal
 $(document).on('hidden.bs.modal', '#base', function() {
     modal_id--;
@@ -73,6 +75,7 @@ $(document).on('hidden.bs.modal', '#base', function() {
         $('.modal-backdrop').addClass('show');
         $(base).children().last().addClass("fade");
         $(base).children().last().addClass("show");
+        setTimeout(() => this.input.nativeElement.focus(), 0);
     }
     vtn.pop();
     etq.pop();
@@ -82,7 +85,25 @@ $(document).on('hidden.bs.modal', '#base', function() {
         btns.pop();
     }
  });
-
+//Ocultar El modal
+$(document).on('hidden.bs.modal', '#base_formulario', function() {
+    let base="#base_formulario";
+    modal_id--;
+    $(base).children().last().remove();
+    if($(base).children().length>1){
+        $('.modal-backdrop').addClass('show');
+        $(base).children().last().addClass("fade");
+        $(base).children().last().addClass("show");
+        setTimeout(() => this.input.nativeElement.focus(), 0);
+    }
+    // vtn.pop();
+    etq.pop();
+    extra.pop();
+    let ss=have_set[have_set.length-1];
+    if(ss){
+        btns.pop();
+    }
+ });
 
 $(document).on('click', '#reporte_ventas_globales', async function() {
    $('#tabla1').removeClass('invisible');
@@ -147,7 +168,7 @@ async function montar_tabla(){
            }
        }));
 
-        rclick.push([0].find(function(x){    
+        rclick.push(set[0].find(function(x){    
             return x.label == '99';
         }));
     
@@ -353,7 +374,7 @@ $(document).on('dblclick', 'td', async function () {
                    
                }));
                rclick=[];
-               rclick.push([0].find(function(x){    
+               rclick.push(set[0].find(function(x){    
                    return x.label == '99';
                }));
 
@@ -562,6 +583,7 @@ $("#menuTabla a").on("click", function() {
 $(document).on('click', '#rclick', async function () { 
     let rclick = vtn[vtn.length -1 ];
     let data = [];
+    
     let etiq = [];
     let key;
     let value;
@@ -577,11 +599,12 @@ $(document).on('click', '#rclick', async function () {
             let orden = elementos[i].orden;
             let parametros = elementos[i].parametros.split(",");
             let emergente = elementos[i].emergente;
-            Object.assign(data,{"comando":comando});
+            Object.assign(data,{"comando":comando,"orden":orden});
             for (let i = 0; i < parametros.length; i++) {
                 if(Number.isInteger(parseInt(parametros[i]))){
                     key = `c`+parametros[i];
                     value = row.find("td").eq(parseInt(parametros[i])).text();
+                    Object.assign(parametros_segundo_envio,{[key]:value});
                     Object.assign(data,{[key]:value});
                 }else{
                     if(parametros[i]=="f1"){
@@ -605,6 +628,35 @@ $(document).on('click', '#rclick', async function () {
                     } 
                 }
             }
+            //Saco las etiquetas
+            for (let i = 0; i < etiquetas.length; i++) {
+                if(Number.isInteger(parseInt(etiquetas[i]))){
+                    // key = `c`+etiquetas[i];
+                    key = etq[etq.length-1][etiquetas[i]];
+                    value = $(this).parent().find("td").eq(parseInt(etiquetas[i])).text();
+                    Object.assign(etiq,{[key]:value});
+                }else{
+                    if(etiquetas[i]=="f1"){
+                        if($("#"+etiquetas[i]).length < 1){
+                            let f = getCurrentDate();
+                            Object.assign(etiq,{Fecha :f});
+                        }else{
+                           Object.assign(etiq,{Fecha:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
+                        }       
+                    }else if(etiquetas[i]=="f1f2"){
+                        if($("#"+etiquetas[i]).length < 1 ){
+                            let f = getCurrentDate();
+                            Object.assign(etiq,{Fecha2 :f});
+                        }else{
+                           Object.assign(etiq,{Desde:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
+                           Object.assign(etiq,{Hasta:$("#"+etiquetas[i]).data('daterangepicker').endtDate.format('DD/MM/YYYY')});
+                        }
+                    }else{
+                        let str = etiquetas[i];
+                        Object.assign(etiq,{[str.charAt(0).toUpperCase()+str.slice(1)]:$('#'+etiquetas[i]).selectpicker('val')});
+                    } 
+                }
+            }
             //Convierto para que se envien los parametros
             let algo=[];
             algo[0]=data;
@@ -618,13 +670,36 @@ $(document).on('click', '#rclick', async function () {
             })
             string = string.slice(0, string.length - 1);
             string+="}";
+            let base="#base_formulario";
             var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST");
-            Swal.fire({
-                title: '',
-                text: info.data.mensaje,
-                icon: 'success',
-                confirmButtonText: 'Aceptar'
-              })
+            let formulario=JSON.parse(info.settings["jsr"]);
+            let html=``;
+            modal_id++;
+            let modal = $(base).children().first().html().replaceAll("{}",modal_id);
+            let modalsplit=modal.split("*");
+            let titulo ='';
+            if(formulario.filtros!=undefined){
+                formulario.filtros.forEach((element,index)=>{
+                    if(element.tipo!="titulo"){
+                        if(imp[element.tipo]){
+                            html+=imp[element.tipo](element.label,element.datos)
+                        }
+                    }else{
+                        titulo = element.datos.id;
+                    }
+                })
+                modalsplit[1] = html;
+                modal=modalsplit.join("");
+                modal=modal.replaceAll("#",titulo);
+                $(base).append(modal);
+                $("#f3").selectpicker("refresh");
+                if($(base).children().length>1){
+                    $('.modal-backdrop').addClass('show');
+                    $(base).children().last().addClass("fade");
+                    $(base).children().last().addClass("show1");
+                    $(base).children().last().modal("show");
+                }
+            }
 
         }
     }
