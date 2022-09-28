@@ -77,7 +77,7 @@ $(document).on('hidden.bs.modal', '#base', function() {
         $('.modal-backdrop').addClass('show');
         $(base).children().last().addClass("fade");
         $(base).children().last().addClass("show");
-        setTimeout(() => this.input.nativeElement.focus(), 0);
+        // setTimeout(() => this.input.nativeElement.focus(), 0);
     }
     vtn.pop();
     etq.pop();
@@ -139,20 +139,20 @@ async function montar_tabla(){
         });
 
         dclick.push(set[0].filter(function(x){ 
-            if(x.label!='98' && x.label!='99' && x.label!='97' && x.label != '96'){
-                return x;
-            }else if(x.label=='98'){
+            if(x.tipo=='dclick'){
                 return x;
             }
             
         }));
 
         rclick.push(set[0].find(function(x){    
-            return x.label == '99';
+            return x.tipo == 'rclick';
         }));
 
         if(dclick[0]!=undefined){
             isdclick=true;
+        }else{
+            isdclick=false;
         }
 
         if(rclick[0]!=undefined){
@@ -184,7 +184,7 @@ async function montar_tabla(){
     }
 
     let labels = {"Receptores":receptores,"Loterias":loterias,"Signo":signo,"Cifras":cifras};
-    crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels);
+    crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels,'Monitoreo de Loterias');
 
 }
 
@@ -208,19 +208,26 @@ function getCurrentDate(formato){
 
 //Detectamos el Doble Click
 $(document).on('dblclick', 'td', async function () {
+    let have_dclick;
+    let dclick = vtn[vtn.length -1 ]; 
 
+    for (let i = 0; i < dclick.length; i++) {
+        have_dclick = dclick[i].filter(function(x){ 
+            if(x.tipo=='dclick'){
+                return x;
+            }  
+        });
+    }
     
-    let dclick = vtn[vtn.length -1 ];
-    
-   let data = [];
-   let etiq = [];
-   let key;
-   let value;
-   let cosas = [];
-   let iscorrect = false;
-   var column = $(this).parent().children().index(this);
+    let data = [];
+    let etiq = [];
+    let key;
+    let value;
+    let cosas = [];
+    let iscorrect = false;
+    var column = $(this).parent().children().index(this);
    if(isdclick){  
-    if(have_set[have_set.length -1 ]){$("#load").addClass('spinner');}
+    if(have_dclick.length>0){$("#load").addClass('spinner');}
        for (let a = 0; a < dclick[0].length; a++) {
            if(dclick[0][a].label!='98'){
                if (column==dclick[0][a].label){
@@ -345,16 +352,14 @@ $(document).on('dblclick', 'td', async function () {
                
                dclick =[];
                dclick.push(set[0].filter(function(x){ 
-                   if(x.label!='98' && x.label!='99' && x.label!='97' && x.label != '96'){
-                       return x;
-                   }else if(x.label=='98'){
+                   if(x.tipo=='dclick'){
                        return x;
                    }
                    
                }));
                rclick=[];
                rclick.push([0].find(function(x){    
-                   return x.label == '99';
+                   return x.tipo == 'rclick';
                }));
 
                if(dclick[0]!=undefined){
@@ -443,7 +448,7 @@ $(document).on('dblclick', 'td', async function () {
                $(base).append(modal);
 
                $('#tabla'+modal_id).removeClass('invisible');
-               crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,isdclick2,dclick,isrclick2,invisibles,sumatorias,labels_modal,"#modal"+modal_id);
+               crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,isdclick2,dclick,isrclick2,invisibles,sumatorias,labels_modal,titulo,"#modal"+modal_id);
                
            }
 
@@ -478,7 +483,23 @@ $(document).on('click', '.btn-danger', async function () {
     string+="}";
     var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST");
     if (typeof info.data.mensaje !== 'undefined') {
-        alert(info.data.mensaje);
+        let mensaje = info.data.mensaje;
+        if(mensaje.includes("ya esta")){
+            Swal.fire({
+                title: '',
+                text: mensaje,
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+              });
+        }else{
+            Swal.fire({
+                title: '',
+                text: mensaje,
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+              });
+        }
+        
       }
 });
 
