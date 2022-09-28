@@ -1,5 +1,5 @@
 var totalTime = 50;
-export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,modal){
+export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,titulo,modal){
    
     let html=``;
     let head =``;
@@ -163,6 +163,9 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,m
                 footer: true,
                 className: 'btn-info btn-sm ', 
                 autoPrint: true,
+                title: function(){
+                    return titulo             
+                },
                 customize: function ( win ) {
         
 
@@ -218,27 +221,31 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,m
             "responsive": false,
             // "select": true,
             "footerCallback": function (row, data, start, end, display) {
-                if(isNaN(sum)){
+                if(sum.length==0){
                     sum=[];
                 }
                 var api = this.api(), data;
                 var colNumber = sum;
      
                 var intVal = function (i) {
-                    return typeof i === 'string' ?
-                            i.replace(/[, ]|(\.\d{2})/g, "") * 1 :
-                            typeof i === 'number' ?
-                            i : 0;
+                    i = parseFloat(i);
+                    console.log(i+' es tipo '+typeof(i))
+                    if(typeof(i)==='string'){
+                        return 0;
+                    }else if(typeof(i)==='number'){
+                        return i;
+                    }
                 };
                 for (i = 0; i < colNumber.length; i++) {
                     var colNo = colNumber[i];
                     var total2 = api
-                            .column(colNo)
+                            .column(colNo, {page: 'current'})
                             .data()
                             .reduce(function (a, b) {
                                 return intVal(a) + intVal(b);
                             }, 0);
-                    $(api.column(colNo).footer()).html('<h5 class="total">TOTAL '+ total2+' </h5>');
+                    const formato = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    $(api.column(colNo).footer()).html('<h5 class="total">TOTAL '+ formato.format(total2)+' </h5>');
                 }
             },
             
