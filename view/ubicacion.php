@@ -1,6 +1,6 @@
 <html>
 <script src="<? $path;?>/public/js/sweetalert2.js"></script>
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="//maps.google.com/maps/api/js?sensor=false"></script>
     <script>
         if(navigator.geolocation){
             
