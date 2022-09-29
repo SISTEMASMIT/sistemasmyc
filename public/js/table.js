@@ -261,8 +261,8 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,t
                                 return intVal(a) + intVal(b);
                             }, 0);
                     const formato = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                    $(api.column(colNo).footer()).html('<h5 class="total">Sum: '+ formato.format(total2)+' </h5>');
-                    $(api.column(colNo).footer()).append('<h5 class="total">Total: '+ formato.format(total3)+' </h5>');
+                    $(api.column(colNo).footer()).html('<h6 class="total">Sum: '+ formato.format(total2)+' </h6>');
+                    $(api.column(colNo).footer()).append('<h6 class="total">Total: '+ formato.format(total3)+' </h6>');
                 }
             },
             
@@ -316,7 +316,13 @@ function crear_body(data){
                 if(Number.isInteger(parseInt(data[i][a]))){
                     body+=`<td class="num_aling">`+data[i][a]+`</td>`;
                 }else{
-                    body+=`<td>`+data[i][a]+`</td>`;
+                    if(data[i][a].includes('~')){
+                        let row = data[i][a].split('~');
+                        body+=`<td style="background-color: #`+row[1]+`">`+row[0]+`</td>`;
+                    }else{
+
+                        body+=`<td>`+data[i][a]+`</td>`;
+                    }
                 }
         }
         body+=`</tr>`
@@ -329,27 +335,27 @@ function crear_body(data){
 function crear_body_sum(data){
     const formato = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
     let body = ``;
-    for(var i in data){
-       
-        for (let b = 0; b < sumados.length; b++) {
-            var idx=0;
-            body+=`<tr>`
-            for(var a in data[i]){
-                if(idx==sumados[b]){
-                    body+=`<td class="num_aling">`+formato.format(data[i][a])+`</td>`;
+    data.forEach((elemento)=>{
+        body+=`<tr>`
+        elemento=Object.values(elemento);
+           elemento.forEach((row,i)=>{
+                if(sumados.find( e=> e==i)){
+                    body+=`<td class="num_aling">`+formato.format(row)+`</td>`;
                 }else{
-                    if(Number.isInteger(parseInt(data[i][a]))){
-                        body+=`<td class="num_aling">`+data[i][a]+`</td>`;
+                    if(Number.isInteger(parseInt(row))){
+                        body+=`<td class="num_aling">`+row+`</td>`;
                     }else{
-                        body+=`<td>`+data[i][a]+`</td>`;
+                        if(row.includes('~')){
+                            row = row.split('~');
+                            body+=`<td style="background-color: `+row[1]+`">`+row[0]+`</td>`;
+                        }else{
+                            body+=`<td>`+row+`</td>`;
+                        }
                     }
                 }
-                idx++;
-            }
-            body+=`</tr>`
-        }
-        
-    }
+           })
+           body+=`</tr>`
+        })
     body+=``;
 
     return body

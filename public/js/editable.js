@@ -223,6 +223,8 @@ function crear_body(data){
 }
 
 
+
+
 function crear_foot(data){
     let foot = `<tr>`;
     for(var i in data){

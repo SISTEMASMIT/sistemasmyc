@@ -273,7 +273,7 @@ $(document).on('dblclick', 'td', async function () {
 
                            }else{
                               Object.assign(data,{f1:$("#"+parametros[i]).data('daterangepicker').startDate.format('YYYYMMDD')});
-                              Object.assign(data,{f2:$("#"+parametros[i]).data('daterangepicker').endtDate.format('YYYYMMDD')});
+                              Object.assign(data,{f2:$("#"+parametros[i]).data('daterangepicker').endDate.format('YYYYMMDD')});
                            }
                        }else{
                            Object.assign(data,{[parametros[i]]:$('#'+parametros[i]).selectpicker('val')});
@@ -302,7 +302,7 @@ $(document).on('dblclick', 'td', async function () {
                                Object.assign(etiq,{Fecha2 :f});
                            }else{
                               Object.assign(etiq,{Desde:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
-                              Object.assign(etiq,{Hasta:$("#"+etiquetas[i]).data('daterangepicker').endtDate.format('DD/MM/YYYY')});
+                              Object.assign(etiq,{Hasta:$("#"+etiquetas[i]).data('daterangepicker').endDate.format('DD/MM/YYYY')});
                            }
                        }else{
                            let str = etiquetas[i];

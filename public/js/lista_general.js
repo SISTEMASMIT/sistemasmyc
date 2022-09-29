@@ -200,7 +200,16 @@ function getCurrentDate(formato){
 //Detectamos el Doble Click
 $(document).on('dblclick', 'td', async function () {
 
-    let dclick = vtn[vtn.length -1 ];
+    let have_dclick;
+    let dclick = vtn[vtn.length -1 ]; 
+
+    for (let i = 0; i < dclick.length; i++) {
+        have_dclick = dclick[i].filter(function(x){ 
+            if(x.tipo=='dclick'){
+                return x;
+            }  
+        });
+    }
     
     let data = [];
     let etiq = [];
@@ -209,8 +218,8 @@ $(document).on('dblclick', 'td', async function () {
     let cosas = [];
     let iscorrect = false;
     var column = $(this).parent().children().index(this);
-    if(isdclick){  
-        if(have_set[have_set.length -1 ]){$("#load").addClass('spinner');}
+   if(isdclick){  
+    if(have_dclick.length>0){$("#load").addClass('spinner');}
        for (let a = 0; a < dclick[0].length; a++) {
            if(dclick[0][a].label!='98'){
                if (column==dclick[0][a].label){

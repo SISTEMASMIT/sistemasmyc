@@ -92,9 +92,9 @@ function generarHtml(list){
     list.forEach(function(element,index){
         if(index==0){
             html+=`<option value="todas" selected>Todas</option>`;
-            html+=`<option value="${element.codigo_age}" data-subtext='${elemento.id}' > ${element.nombre_age}</option>`;
+            html+=`<option value="${element.codigo_age}" data-subtext='${element.id}' > ${element.nombre_age}</option>`;
         }else{
-            html+=`<option value="${element.codigo_age}" data-subtext='${elemento.id}' >${element.nombre_age}</option>`;
+            html+=`<option value="${element.codigo_age}" data-subtext='${element.id}' >${element.nombre_age}</option>`;
         }
     });
     return html;
