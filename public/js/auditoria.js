@@ -90,7 +90,7 @@ $(document).on('hidden.bs.modal', '#base', function() {
  });
 
 
-$(document).on('click', '#tickets_ganadores_premiacion', async function() {
+$(document).on('click', '#auditoria', async function() {
     $('#tabla1').removeClass('invisible');
     // $('#aceptar').prop('disabled', true);
     montar_tabla();
@@ -110,13 +110,12 @@ async function montar_tabla(){
     $("#load").addClass('spinner');
     let data = [];
     let receptores = $('#receptores').selectpicker('val');
-    let grupo = $('#grupos').selectpicker('val');
     let f1 = $('#f1f2').data('daterangepicker').startDate.format('YYYYMMDD');
     let f1V = $('#f1f2').data('daterangepicker').startDate.format('DD/MM/YYYY');
     let f2 = $('#f1f2').data('daterangepicker').endDate.format('YYYYMMDD');
     let f2V = $('#f1f2').data('daterangepicker').endDate.format('DD/MM/YYYY');
  
-    data = {"receptor":receptores,"grupo_agencias":grupo,"f1":f1,"f2":f2,"comando":"tickets_ganadores_premiacion"};
+    data = {"receptor":receptores,"f1":f1,"f2":f2,"comando":"auditoria"};
 
 
     var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
@@ -185,8 +184,8 @@ async function montar_tabla(){
         isdclick=false;
         isrclick=false;
     }
-    let labels = {"Receptor":receptores,"Grupo":grupo,"Fecha Inicial":f1V,"Fecha Final":f2V};
-    crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels,'Ticket');
+    let labels = {"Receptor":receptores,"Fecha Inicial":f1V,"Fecha Final":f2V};
+    crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels,'Auditoria');
 
 }
 
@@ -234,11 +233,6 @@ $(document).on('dblclick', 'td', async function () {
            if(dclick[0][a].label!='98'){
                if (column==dclick[0][a].label){
                    iscorrect=true;
-                   if(column=='3'){
-                    Object.assign(data,{"estado":"n"});
-                   }else if(column=='5'){
-                    Object.assign(data,{"estado":"c"});
-                   }
                    parametros = dclick[0][a].datos["parametros"].split(",")
                    etiquetas = dclick[0][a].datos["etiquetas"].split(",")
                    emergente = dclick[0][a].datos["emergente"];
@@ -250,58 +244,8 @@ $(document).on('dblclick', 'td', async function () {
                            key = `c`+parametros[i];
                            value = $(this).parent().find("td").eq(parseInt(parametros[i])).text();
                            Object.assign(data,{[key]:value});
-                       }else{
-                        if(parametros[i]=="f1"){
-                            if($("#"+parametros[i]).length < 1){
-                                let f = getCurrentDate(1);
-                                Object.assign(data,{[parametros[i]]:f});
-                            }else{
-                                Object.assign(data,{[parametros[i]]:$('#'+parametros[i]).data('daterangepicker').startDate.format('YYYYMMDD')});
-                            }       
-                        }else if(parametros[i]=="f1f2"){
-                            if($("#"+parametros[i]).length < 1 ){
-                                let f = getCurrentDate(1);
-                                Object.assign(data,{[parametros[i]]:f});
- 
-                            }else{
-                               Object.assign(data,{f1:$("#"+parametros[i]).data('daterangepicker').startDate.format('YYYYMMDD')});
-                               Object.assign(data,{f2:$("#"+parametros[i]).data('daterangepicker').endDate.format('YYYYMMDD')});
-                            }
-                        }else{
-                            Object.assign(data,{[parametros[i]]:$('#'+parametros[i]).selectpicker('val')});
-                        } 
-                    }
+                       }
                    }
-                   //Saco las etiquetas
-               for (let i = 0; i < etiquetas.length; i++) {
-
-                if(Number.isInteger(parseInt(etiquetas[i]))){
-                    // key = `c`+etiquetas[i];
-                    key = etq[etq.length-1][etiquetas[i]];
-                    value = $(this).parent().find("td").eq(parseInt(etiquetas[i])).text();
-                    Object.assign(etiq,{[key]:value});
-                }else{
-                    if(etiquetas[i]=="f1"){
-                        if($("#"+etiquetas[i]).length < 1){
-                            let f = getCurrentDate(0);
-                            Object.assign(etiq,{Fecha :f});
-                        }else{
-                           Object.assign(etiq,{Fecha:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
-                        }       
-                    }else if(etiquetas[i]=="f1f2"){
-                        if($("#"+etiquetas[i]).length < 1 ){
-                            let f = getCurrentDate(0);
-                            Object.assign(etiq,{Fecha2 :f});
-                        }else{
-                           Object.assign(etiq,{Desde:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
-                           Object.assign(etiq,{Hasta:$("#"+etiquetas[i]).data('daterangepicker').endDate.format('DD/MM/YYYY')});
-                        }
-                    }else{
-                        let str = etiquetas[i];
-                        Object.assign(etiq,{[str.charAt(0).toUpperCase()+str.slice(1)]:$('#'+etiquetas[i]).selectpicker('val')});
-                    } 
-                }
-            }
                }
            }else{
                iscorrect=true;
