@@ -954,6 +954,8 @@ $(document).on("change","#f3",async function(){
 
                if(rclick[0]!=undefined){
                    isrclick2=true;
+               }else{
+                isrclick2=false;
                }
 
                if(invisibles !=undefined){

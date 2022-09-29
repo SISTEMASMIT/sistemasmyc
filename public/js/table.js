@@ -340,6 +340,7 @@ function crear_body_sum(data){
         elemento=Object.values(elemento);
            elemento.forEach((row,i)=>{
                 if(sumados.find( e=> e==i)){
+                    row=row.replaceAll(',','');
                     body+=`<td class="num_aling">`+formato.format(row)+`</td>`;
                 }else{
                     if(Number.isInteger(parseInt(row))){

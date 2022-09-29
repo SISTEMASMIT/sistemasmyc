@@ -72,6 +72,9 @@ $(document).on('click', '#detener', async function() {
 
 //Ocultar El modal
 $(document).on('hidden.bs.modal', '#base', function() {
+    hay_f4=false;
+    hay_mes=false;
+    isrclick=false;
     modal_id--;
     $(base).children().last().remove();
     if($(base).children().length>1){
@@ -160,6 +163,8 @@ async function montar_tabla(){
 
         if(rclick[0]!=undefined){
             isrclick=true;
+        }else{
+            isrclick2=false;
         }
 
         if(invisibles !=undefined){
@@ -181,6 +186,7 @@ async function montar_tabla(){
             sumatorias = [];
          }
     }else{
+        btns.push();
         have_set.push(false);
         isdclick=false;
         isrclick=false;
@@ -317,8 +323,7 @@ $(document).on('dblclick', 'td', async function () {
        }
        if(iscorrect){
            //Convierto para que se envien los parametros
-           let algo=[];
-           algo[0]=data;
+
            let keys = Object.getOwnPropertyNames(data).filter((x)=>{
                return x!="length"?x:"";
            });
@@ -366,10 +371,14 @@ $(document).on('dblclick', 'td', async function () {
 
                if(dclick[0]!=undefined){
                    isdclick2=true;
+               }else{
+                isdclick2=true;
                }
 
                if(rclick[0]!=undefined){
                    isrclick2=true;
+               }else{
+                isrclick2=false;
                }
 
                if(invisibles !=undefined){
@@ -392,6 +401,7 @@ $(document).on('dblclick', 'td', async function () {
                }
 
            }else{
+                btns.push();
                 have_set.push(false);
                isdclick2=false;
                isrclick2=false;
@@ -509,8 +519,17 @@ $(document).on('click', '.btn-danger', async function () {
 
 $(document).on('contextmenu', 'td', function (e) {
     let rclick = vtn[vtn.length -1 ];
+    let have_rclick;
+    for (let i = 0; i < rclick.length; i++) {
+         have_rclick = rclick[i].filter(function(x){ 
+            if(x.tipo=='rclick'){
+                return x;
+            }  
+        });
+    }
+   
     row = $(this).closest("tr"); 
-    if(isrclick){
+    if(have_rclick.length>0){
         for (let a = 0; a < rclick[0].length; a++) {
             if(rclick[0][a].label=='99'){
                 var elementos=rclick[0][a].datos.items;
@@ -540,7 +559,8 @@ $(document).on('contextmenu', 'td', function (e) {
         $("#menuTabla").css({
             display: "block",
             top: top,
-            left: left
+            left: left,
+            "z-index": 99999
         });
 
    
@@ -558,12 +578,20 @@ function abrirMenu (elemento){
     
 }
 
-$("table").on("click", function() {
-	if ( $("#menuTabla").css('display') == 'block' ){
-  	    $("#menuTabla").hide();
+$(document).click(function() {
+    var obj = $("#menuTabla");
+    if (!obj.is(event.target) && !obj.has(event.target).length) {
+        if ( $("#menuTabla").css('display') == 'block' ){
+            $("#menuTabla").hide();
+        }
+        $('td').css('box-shadow', 'none');
+    }else{
+        $("#menuTabla").hide();
+        $('td').css('box-shadow', 'none');
     }
-    $('td').css('box-shadow', 'none');
+  
 });
+
 
 $("#menuTabla a").on("click", function() {
   $(this).parent().hide();
@@ -573,6 +601,7 @@ $("#menuTabla a").on("click", function() {
 $(document).on('click', '#rclick', async function () { 
     let rclick = vtn[vtn.length -1 ];
     let data = [];
+    
     let etiq = [];
     let key;
     let value;
@@ -581,18 +610,25 @@ $(document).on('click', '#rclick', async function () {
             var elementos=rclick[0][a].datos.items;
         }
     }
-    let data_id = $("#rclick").attr( "data-id" )
+    let data_id = $(this).attr("data-id");
+
+        if(data_id=='f4'){
+            hay_f4=true;
+        }
+    
     for (let i = 0; i < elementos.length; i++) {
+        
         if(elementos[i].id==data_id){
             let comando = elementos[i].comando;
             let orden = elementos[i].orden;
             let parametros = elementos[i].parametros.split(",");
             let emergente = elementos[i].emergente;
-            Object.assign(data,{"comando":comando});
+            Object.assign(data,{"comando":comando,"orden":orden});
             for (let i = 0; i < parametros.length; i++) {
                 if(Number.isInteger(parseInt(parametros[i]))){
                     key = `c`+parametros[i];
                     value = row.find("td").eq(parseInt(parametros[i])).text();
+                    Object.assign(parametros_segundo_envio,{[key]:value});
                     Object.assign(data,{[key]:value});
                 }else{
                     if(parametros[i]=="f1"){
@@ -612,13 +648,50 @@ $(document).on('click', '#rclick', async function () {
                            Object.assign(data,{f2:$("#"+parametros[i]).data('daterangepicker').endDate.format('YYYYMMDD')});
                         }
                     }else{
+                        if(!hay_mes){
                         Object.assign(data,{[parametros[i]]:$('#'+parametros[i]).selectpicker('val')});
+                        }
+                    } 
+                }
+            }
+            //Saco las etiquetas
+            for (let i = 0; i < etiquetas.length; i++) {
+                if(Number.isInteger(parseInt(etiquetas[i]))){
+                    // key = `c`+etiquetas[i];
+                    key = etq[etq.length-1][etiquetas[i]];
+                    value = row.find("td").eq(parseInt(etiquetas[i])).text();
+                    Object.assign(etiq,{[key]:value});
+                }else{
+                    if(etiquetas[i]=="f1"){
+                        if($("#"+etiquetas[i]).length < 1){
+                            let f = getCurrentDate();
+                            Object.assign(etiq,{Fecha :f});
+                        }else{
+                           Object.assign(etiq,{Fecha:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
+                        }       
+                    }else if(etiquetas[i]=="f1f2"){
+                        if($("#"+etiquetas[i]).length < 1 ){
+                            let f = getCurrentDate();
+                            Object.assign(etiq,{Fecha2 :f});
+                        }else{
+                           Object.assign(etiq,{Desde:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
+                           Object.assign(etiq,{Hasta:$("#"+etiquetas[i]).data('daterangepicker').endDate.format('DD/MM/YYYY')});
+                        }
+                    }else{
+                        let str = etiquetas[i];
+                        Object.assign(etiq,{[str.charAt(0).toUpperCase()+str.slice(1)]:$('#'+etiquetas[i]).selectpicker('val')});
                     } 
                 }
             }
             //Convierto para que se envien los parametros
-            let algo=[];
-            algo[0]=data;
+            if(hay_f4){
+                Object.assign(data,{"comando":"csl_vtas_globalesf4a"});
+                Object.assign(data,{"orden":"modalReporteGlobalf4"});
+                let y = new Date().getFullYear();
+                Object.assign(data,{"ano":y});
+            }
+            
+            
             let keys = Object.getOwnPropertyNames(data).filter((x)=>{
                 return x!="length"?x:"";
             });
@@ -630,11 +703,266 @@ $(document).on('click', '#rclick', async function () {
             string = string.slice(0, string.length - 1);
             string+="}";
             var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST");
-            
-            // Aqui pegar la emergente de lo que trae info
-            console.log(info);
+            let set = Object.values(JSON.parse(info.settings.jsr));
+            let invisibles = [];
+            let sumatorias = [];
+            etq.push(info.data.head);
+            vtn.push(set);
+            extra.push(info.datos_extra);
+            if(set[0].length > 0){
+               
+                have_set.push(true);
+
+                formulario_emergente = set[0].find(function(x){
+                    return x.tipo=='formulario_emergente_date_year';
+                });
+
+                btns.push(set[0].filter(function(x){
+                    return x.label == 'Anular';
+                }));
+
+               invisibles = set[0].find(function(x){    
+                   return x.label == '96';
+               });
+
+               sumatorias = set[0].find(function(x){    
+                   return x.label == '97';
+               });
+               
+               dclick =[];
+               dclick.push(set[0].filter(function(x){ 
+                   if(x.tipo=='dclick'){
+                       return x;
+                   }
+                   
+               }));
+               rclick=[];
+               rclick.push([0].find(function(x){    
+                   return x.tipo == 'rclick';
+               }));
+
+               if(dclick[0]!=undefined){
+                   isdclick2=true;
+               }
+
+               if(rclick[0]!=undefined){
+                   isrclick2=true;
+               }else{
+                isrclick2=false;
+               }
+
+               if(invisibles !=undefined){
+                  invisibles=invisibles.datos.c_invisible.split(",");
+                  invisibles = invisibles.map(function(x){    
+                    return parseInt(x);
+                  });   
+               }else{
+                  invisibles = [];
+               }
+                
+         
+               if(sumatorias != undefined){
+                  sumatorias=sumatorias.datos.c_sumatoria.split(",");
+                  sumatorias = sumatorias.map(function(x){    
+                    return parseInt(x);
+                  });
+               }else{
+                  sumatorias = [];
+               }
+
+           }else{
+            btns.push();
+                have_set.push(false);
+               isdclick2=false;
+               isrclick2=false;
+           }
+
+
+            let html=``;
+            if($(base).children().length>1){
+                $(base).children().last().removeClass("show");
+            }
+            modal_id++;
+            let modal = $(base).children().first().html().replaceAll("{}",modal_id);
+            let modalsplit=modal.split("*");
+            let titulo ='';
+            if(hay_f4){
+                    if(formulario_emergente.tipo!="titulo"){
+                        if(imp[formulario_emergente.tipo]){
+                            html+=imp[formulario_emergente.tipo](formulario_emergente.label,formulario_emergente.datos)
+                        }
+                    }else{
+                        titulo = formulario_emergente.datos.id;
+                    }
+                    
+                modalsplit[1] = html;
+                modal=modalsplit.join("");
+                modal=modal.replaceAll("#",titulo);
+                $(base).append(modal);
+                $("#f3").selectpicker("refresh");
+                $('#tabla'+modal_id).removeClass('invisible');
+                crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,isdclick2,dclick,isrclick2,invisibles,sumatorias,[],'Reporte Por Meses',"#modal"+modal_id);
+                    
+                // if($(base).children().length>1){
+                //     $('.modal-backdrop').addClass('show');
+                //     $(base).children().last().addClass("fade");
+                //     $(base).children().last().addClass("show1");
+                //     $(base).children().last().modal("show");
+                // }
+            }if(emergente=="tabla"){
+                let btn = btns[btns.length -1];
+                    
+                 let labels_extra = extra[extra.length -1 ];
+                   //Convierto para que se envien las etiquetas
+                   let algo=[];
+                   algo[0]=etiq;
+                   et = etiq;
+                   let keys = Object.getOwnPropertyNames(etiq).filter((x)=>{
+                       return x!="length"?x:"";
+                   });
+                   let valores= Object.values(etiq);
+                   let string="{";
+                   keys.forEach((key,index)=>{
+                       string+=`"${key}":"${valores[index]}",`;
+                   })
+                   string = string.slice(0, string.length - 1);
+                   string+="}";
+                   let labels_modal = JSON.parse(string);
+                   if($(base).children().length>1){
+                       $(base).children().last().removeClass("show");
+                   }
+                   modal_id++;
+                   let modal = $(base).children().first().html().replaceAll("{}",modal_id);
+                   let modalsplit=modal.split("*");
+                   let string_divs="";
+                   keys.forEach((key,index)=>{
+                       string_divs+=`<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><p><label>${key}</label>:<label>${valores[index]}</label></p></div>`;
+                   });
+                   let button = ``;
+                   if(btn[0]!=undefined){
+                        if(btn[0].datos.condicion=="1"){
+                            button += `<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><button type="button" class="btn btn-lg btn-danger" id="`+btn.datos.id+`">`+btn.label+`</button></div>`;
+                        }
+                   }
+                   if(labels_extra.length > 0){
+                        let d=[];
+                        d[0]=labels_extra[0];
+                        let keys_extra = Object.getOwnPropertyNames(labels_extra[0]).filter((x)=>{
+                            return x!="length"?x:"";
+                        });
+                        let valores_extra= Object.values(labels_extra[0]);
+                        keys_extra.forEach((key,index)=>{
+                            string_divs+=`<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><p><label>${key}</label>:<label>${valores_extra[index]}</label></p></div>`;
+                        })
+                    }
+                   string_divs+=button;
+                   modalsplit[1]=string_divs;
+                   modal=modalsplit.join("");
+                   modal=modal.replaceAll("#",titulo.charAt(0).toUpperCase()+titulo.slice(1).replaceAll("_"," "));
+                   $(base).append(modal);
+    
+                   $('#tabla'+modal_id).removeClass('invisible');
+                   crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,isdclick2,dclick,isrclick2,invisibles,sumatorias,labels_modal,titulo,"#modal"+modal_id);
+                   
+               }
+    
 
         }
     }
 
 });
+
+$(document).on("change","#f3",async function(){
+
+    let data=parametros_segundo_envio;
+    Object.assign(data,{"ano":$(this).selectpicker("val")});
+    Object.assign(data,{"comando":"csl_vtas_globalesf4a"});
+    let keys = Object.getOwnPropertyNames(data).filter((x)=>{
+        return x!="length"?x:"";
+    });
+    let valores= Object.values(data);
+    let string="{";
+    keys.forEach((key,index)=>{
+        string+=`"${key}":"${valores[index]}",`;
+    })
+    string = string.slice(0, string.length - 1);
+    string+="}";
+    var info =  await ajax_peticion("/query/standard_query", {'data':string}, "POST");
+    let set = Object.values(JSON.parse(info.settings.jsr));
+            let invisibles = [];
+            let sumatorias = [];
+            etq.push(info.data.head);
+            vtn.push(set);
+            extra.push(info.datos_extra);
+            if(set[0].length > 0){
+               
+                have_set.push(true);
+
+                formulario_emergente = set[0].find(function(x){
+                    return x.tipo=='formulario_emergente_date_year';
+                });
+
+                btns.push(set[0].filter(function(x){
+                    return x.label == 'Anular';
+                }));
+
+               invisibles = set[0].find(function(x){    
+                   return x.label == '96';
+               });
+
+               sumatorias = set[0].find(function(x){    
+                   return x.label == '97';
+               });
+               
+               dclick =[];
+               dclick.push(set[0].filter(function(x){ 
+                   if(x.tipo=='dclick'){
+                       return x;
+                   }
+                   
+               }));
+               rclick=[];
+               rclick.push([0].find(function(x){    
+                   return x.tipo == 'rclick';
+               }));
+
+               if(dclick[0]!=undefined){
+                   isdclick2=true;
+               }
+
+               if(rclick[0]!=undefined){
+                   isrclick2=true;
+               }
+
+               if(invisibles !=undefined){
+                  invisibles=invisibles.datos.c_invisible.split(",");
+                  invisibles = invisibles.map(function(x){    
+                    return parseInt(x);
+                  });   
+               }else{
+                  invisibles = [];
+               }
+                
+         
+               if(sumatorias != undefined){
+                  sumatorias=sumatorias.datos.c_sumatoria.split(",");
+                  sumatorias = sumatorias.map(function(x){    
+                    return parseInt(x);
+                  });
+               }else{
+                  sumatorias = [];
+               }
+
+           }else{
+                have_set.push(false);
+               isdclick2=false;
+               isrclick2=false;
+           }
+
+                $("#f3").selectpicker("refresh");
+                $("#load").addClass('spinner');
+                
+                crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,isdclick2,dclick,isrclick2,invisibles,sumatorias,[],'Reporte Por Meses',"#modal"+modal_id);
+                $("#load").removeClass('spinner');
+
+})
