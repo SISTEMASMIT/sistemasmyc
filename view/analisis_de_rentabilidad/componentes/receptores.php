@@ -50,5 +50,5 @@
         </div> <!-- container-fluid -->
     </div>  <!--- page-content --->
 </div><!-- FIN CONTENIDO WEB -->
-<script type="module" src="<? $path;?>/public/js/<?php echo str_replace("-","_",$this->url[1])?>.js" ></script> 
+<script type="module" src="<? $path;?>/public/js/<?php echo str_replace("-","_",$this->url[1])?>_ana_rent.js" ></script> 
 <script src="<? $path;?>/public/js/sweetalert2.js"></script>
