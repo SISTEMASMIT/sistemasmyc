@@ -1,11 +1,21 @@
 var totalTime = 50;
+var sumados=[];
 export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,titulo,modal){
-   
+    
     let html=``;
     let head =``;
     head+=crear_head(parametro.head);
     let body =``
-    body = crear_body(parametro.data);
+    if(sum!=undefined){
+        if(sum.length>0){
+            sumados=sum;
+            body = crear_body_sum(parametro.data);
+        }else{
+            body = crear_body(parametro.data);
+        }
+    }else{
+        body = crear_body(parametro.data);
+    }
     await $(tb).DataTable().clear();    
     await $(tb).DataTable().destroy();
     let tf = tb + " tfoot";
@@ -228,8 +238,8 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,t
                 var colNumber = sum;
      
                 var intVal = function (i) {
+                    i = i.toString().replace(/[_$,\s]/g, '');
                     i = parseFloat(i);
-                    console.log(i+' es tipo '+typeof(i))
                     if(typeof(i)==='string'){
                         return 0;
                     }else if(typeof(i)==='number'){
@@ -238,6 +248,12 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,t
                 };
                 for (i = 0; i < colNumber.length; i++) {
                     var colNo = colNumber[i];
+                    var total3 = api
+                    .column(colNo)
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
                     var total2 = api
                             .column(colNo, {page: 'current'})
                             .data()
@@ -245,7 +261,8 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,t
                                 return intVal(a) + intVal(b);
                             }, 0);
                     const formato = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                    $(api.column(colNo).footer()).html('<h5 class="total">TOTAL '+ formato.format(total2)+' </h5>');
+                    $(api.column(colNo).footer()).html('<h5 class="total">Sum: '+ formato.format(total2)+' </h5>');
+                    $(api.column(colNo).footer()).append('<h5 class="total">Total: '+ formato.format(total3)+' </h5>');
                 }
             },
             
@@ -267,9 +284,6 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,t
                         // this.input.nativeElement.focus();
                     }, 200);
                 }
-                
-                
-                
             }
          });
          
@@ -294,18 +308,47 @@ function crear_head(data){
 }
 
 function crear_body(data){
+    const formato = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
     let body = ``;
     for(var i in data){
         body+=`<tr>`
-        for(var a in data[i]){
-            if(Number.isInteger(parseInt(data[i][a]))){
-                body+=`<td class="num_aling">`+data[i][a]+`</td>`;
-            }else{
-                body+=`<td>`+data[i][a]+`</td>`;
-            }
-             
+            for(var a in data[i]){
+                if(Number.isInteger(parseInt(data[i][a]))){
+                    body+=`<td class="num_aling">`+data[i][a]+`</td>`;
+                }else{
+                    body+=`<td>`+data[i][a]+`</td>`;
+                }
         }
         body+=`</tr>`
+    }
+    body+=``;
+
+    return body
+}
+
+function crear_body_sum(data){
+    const formato = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    let body = ``;
+    for(var i in data){
+       
+        for (let b = 0; b < sumados.length; b++) {
+            var idx=0;
+            body+=`<tr>`
+            for(var a in data[i]){
+                if(idx==sumados[b]){
+                    body+=`<td class="num_aling">`+formato.format(data[i][a])+`</td>`;
+                }else{
+                    if(Number.isInteger(parseInt(data[i][a]))){
+                        body+=`<td class="num_aling">`+data[i][a]+`</td>`;
+                    }else{
+                        body+=`<td>`+data[i][a]+`</td>`;
+                    }
+                }
+                idx++;
+            }
+            body+=`</tr>`
+        }
+        
     }
     body+=``;
 

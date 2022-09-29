@@ -1,5 +1,5 @@
 var totalTime = 50;
-export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,modal){
+export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,titulo,modal){
    
     let html=``;
     let head =``;
@@ -73,6 +73,9 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,m
                 footer: true,
                 className: 'btn-info btn-sm ', 
                 autoPrint: true,
+                title: function(){
+                    return titulo             
+                },
                 customize: function ( win ) {
         
 
@@ -191,9 +194,9 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,m
 function crear_head(data){
     
     let head = `<tr>`;
-    head += `<th>Premiar</th>`;
+    head += `<th >Premiar</th>`;
     for(var i in data){
-        head+=`<th>`+data[i]+`</th>`;
+        head+=`<th >`+data[i]+`</th>`;
     }
     head+=`</tr>`;
     return head;
@@ -203,7 +206,7 @@ function crear_body(data){
     let body = ``;
     for(var i in data){
         body+=`<tr>`
-        body+=`<td class="btn btn-sm btn-info"  id="editar"><i class="fa-solid fa-trophy"></i></td>`;
+        body+=`<td class="btn btn-sm btn-info premiar"  id="editar"><i class="fa-solid fa-trophy"></i></td>`;
         for(var a in data[i]){
             if(Number.isInteger(parseInt(data[i][a]))){
                 body+=`<td class="num_aling">`+data[i][a]+`</td>`;

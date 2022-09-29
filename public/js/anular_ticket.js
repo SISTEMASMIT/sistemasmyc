@@ -84,7 +84,7 @@ async function montar_tabla(){
    var w = document.getElementById("tabla_res").clientWidth;
    var h = document.getElementById("tabla_res").clientHeight;
    h = h+500;
-   $('#f').html('');
+//    $('#f').html('');
    $("#carga").addClass('carga');
    $("#carga").width( w );
    $("#carga").height( h );
@@ -178,12 +178,13 @@ async function modal_emergente(info){
     $(base).append(modal);
     $('#tabla'+modal_id).removeClass('invisible');
 
-    crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,false,0,false,[],[],string,"#modal"+modal_id);
-               
+    crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,false,0,false,[],[],string,titulo,"#modal"+modal_id);
+        
 }
 
 
-$(document).on('click', '.btn-danger', async function () { 
+$(document).on('click', '.btn-danger', async function () {
+    $("#load").addClass('spinner');
     let set = Object.values(JSON.parse(info2.settings.jsr));
     let btn = set[0].filter(function(x){
         return x.label == 'Anular';
@@ -206,10 +207,23 @@ $(document).on('click', '.btn-danger', async function () {
     string = string.slice(0, string.length - 1);
     string+="}";
     var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST"); 
-    Swal.fire({
-        title: 'Error!',
-        text: info.data.mensaje,
-        icon: 'error',
-        confirmButtonText: 'Aceptar'
-      })
+    if (typeof info.data.mensaje !== 'undefined') {
+        let mensaje = info.data.mensaje;
+        if(mensaje.includes("ya esta")){
+            Swal.fire({
+                title: '',
+                text: mensaje,
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+              });
+        }else{
+            Swal.fire({
+                title: '',
+                text: mensaje,
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+              });
+        }
+        $("#load").removeClass('spinner');
+      }
 });

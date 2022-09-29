@@ -20,12 +20,16 @@ table .selected{
     font-size: 20px;
 }
 
-
+.premiar{
+    text-align: center;
+}
 .dclick:hover{
     background-color: rgb(168, 203, 207);
+    cursor: -webkit-grab; cursor: grab;
 }
 
 .rclick:hover{
+    cursor: alias;
     color: rgb(255, 0, 0);
 }
 
@@ -103,8 +107,8 @@ table .selected{
 #passstrength,#passstrength2,#passstrengthN,#msgClave,#passstrengthN2,#msgClaveNueva{
     color:red;
 }
+/* css tabla */
 tbody {
-    cursor: pointer;
     border: 1px solid;
     color: black;
   }

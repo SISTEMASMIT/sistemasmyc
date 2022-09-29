@@ -182,7 +182,6 @@ async function montar_tabla(){
         isdclick=false;
         isrclick=false;
     }
-
     let labels = {"Receptores":receptores,"Loterias":loterias,"Signo":signo,"Cifras":cifras};
     crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels,'Monitoreo de Loterias');
 
