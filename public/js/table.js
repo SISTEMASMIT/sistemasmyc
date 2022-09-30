@@ -260,7 +260,7 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,t
                             .reduce(function (a, b) {
                                 return intVal(a) + intVal(b);
                             }, 0);
-                    const formato = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    const formato = new Intl.NumberFormat('en-US', { /*style: 'currency', currency: 'USD',*/ minimumFractionDigits: 2, maximumFractionDigits: 2 });
                     $(api.column(colNo).footer()).html('<h6 class="total">Sum: '+ formato.format(total2)+' </h6>');
                     $(api.column(colNo).footer()).append('<h6 class="total">Total: '+ formato.format(total3)+' </h6>');
                 }
@@ -333,7 +333,7 @@ function crear_body(data){
 }
 
 function crear_body_sum(data){
-    const formato = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const formato = new Intl.NumberFormat('en-US', { /*style: 'currency', currency: 'USD',*/ minimumFractionDigits: 2, maximumFractionDigits: 2 });
     let body = ``;
     data.forEach((elemento)=>{
         body+=`<tr>`
