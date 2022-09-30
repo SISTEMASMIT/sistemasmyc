@@ -156,11 +156,11 @@ $(document).on("click", "#graficos_analisis_de_rentabilidad", function () {
         })
         let lab=datos_finales.shift();
         let div_graficos=$("#graficos");
-        columnas_tipos.forEach((e,i)=>{
+        columnas_tipos.forEach(async (e,i)=>{
             div_graficos.append(`<div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4 grafo" ><canvas id='${e+i.toString()}'></canvas></div>`)
             let config={
                 "type":e,
-                "data":g[e](lab,datos_finales[i],title[i])
+                "data": await g[e](lab,datos_finales[i],title[i],title[i],e)
             }
             new Chart(
                 $("#graficos #"+e+i.toString()),

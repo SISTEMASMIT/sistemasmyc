@@ -1,33 +1,32 @@
-export function doughnut(labels,data,tittle){
+import { ajax_peticion } from "./Ajax-peticiones.js";
+
+export async function doughnut(labels,data,tittle,l,t){
+
+    let cdata = {"comando":"graficos_rgb","eti":l,"tip":t};
+    let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(cdata) }, "POST");
+    let colores= Object.values(info.data.data);
+    colores=colores.map(e => e.color);
     return {
         labels: labels,
         datasets: [{
           label: tittle ,
           data: data,
-          backgroundColor: [
-            'rgb(255, 99, 132)',
-            'rgb(54, 162, 235)',
-            'rgb(255, 205, 86)'
-          ],
+          backgroundColor: colores,
           hoverOffset: 4
         }]
       };
 }
-export function bar(labels,data,tittle){
+export async function bar(labels,data,tittle,l,t){
+    let cdata = { "comando":"graficos_rgb","eti":l,"tip":t};
+    let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(cdata) }, "POST");
+    let colores= Object.values(info.data.data);
+    colores=colores.map(e => e.color);
     return {
         labels: labels,
         datasets: [{
           label: tittle,
           data: data,
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(255, 159, 64, 0.2)',
-            'rgba(255, 205, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(201, 203, 207, 0.2)'
-          ],
+          backgroundColor: colores,
           borderColor: [
             'rgb(255, 99, 132)',
             'rgb(255, 159, 64)',
@@ -42,14 +41,18 @@ export function bar(labels,data,tittle){
       };
 }
 
-export function line(labels,data,tittle){
+export async function line(labels,data,tittle,l,t){
+    let cdata = { "comando":"graficos_rgb","eti":l,"tip":t};
+    let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(cdata) }, "POST");
+    let colores= Object.values(info.data.data);
+    colores=colores.map(e => e.color);
     return {
         labels: labels,
         datasets: [{
           label: tittle,
           data: data,
           fill: false,
-          borderColor: 'rgb(75, 192, 192)',
+          borderColor: colores,
           tension: 0.1
         }]
       };
