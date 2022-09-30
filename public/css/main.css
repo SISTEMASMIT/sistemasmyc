@@ -149,7 +149,9 @@ tbody {
 
 }
 
-
+.grafo{
+    margin-bottom: 20px;
+}
 
 #sidebar-menu{
     position: fixed;

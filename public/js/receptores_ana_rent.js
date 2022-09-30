@@ -8,8 +8,9 @@ var data_actual;
 var graficos;
 //
 var id = '';
-
+var graf_activo=false;
 var base = "#base";
+var modal_grafos = "#modal_graficos";
 var titulo = "";
 var base_html = "";
 var isdclick = false;
@@ -76,20 +77,37 @@ $(document).on('click', '#detener', async function () {
 
 //Ocultar El modal
 $(document).on('hidden.bs.modal', '#base', function () {
-    modal_id--;
-    $(base).children().last().remove();
-    if ($(base).children().length > 1) {
-        $('.modal-backdrop').addClass('show');
-        $(base).children().last().addClass("fade");
-        $(base).children().last().addClass("show");
-        // setTimeout(() => this.input.nativeElement.focus(), 0);
+    if(graf_activo){
+    }else{
+        modal_id--;
+        $(base).children().last().remove();
+        if ($(base).children().length > 1) {
+            $('.modal-backdrop').addClass('show');
+            $(base).children().last().addClass("fade");
+            $(base).children().last().addClass("show");
+            // setTimeout(() => this.input.nativeElement.focus(), 0);
+        }
+        vtn.pop();
+        etq.pop();
+        extra.pop();
+        let ss = have_set[have_set.length - 1];
+        if (ss) {
+            btns.pop();
+        }
     }
-    vtn.pop();
-    etq.pop();
-    extra.pop();
-    let ss = have_set[have_set.length - 1];
-    if (ss) {
-        btns.pop();
+
+});
+
+
+$(document).on('hidden.bs.modal', '#modal_graficos', function () {
+
+    $(modal_grafos).removeClass("show1");
+    graf_activo=false;
+    $('#graficos').html('');
+    if ($(base).children().length > 1) {
+        $(base).children().last().modal("show");
+        $('.modal-backdrop').addClass('show');
+        // setTimeout(() => this.input.nativeElement.focus(), 0);
     }
 });
 
@@ -103,6 +121,8 @@ $(document).on('click', '#receptores_analisis_de_rentabilidad', async function (
 });
 
 $(document).on("click", "#graficos_analisis_de_rentabilidad", function () {
+   
+
     if (data_actual != undefined && data_actual.length > 0) {
         let datos_graficos = data_actual.map(elemento => Object.values(elemento))
         let columnas_graficos = graficos.datos.c_graficos.split(",");
@@ -134,11 +154,10 @@ $(document).on("click", "#graficos_analisis_de_rentabilidad", function () {
        datos_finales=datos_finales.map((e,i) => {
             return datos_graficos.map(k => k[i])
         })
-        let div_graficos=$("#graficos");
         let lab=datos_finales.shift();
-        //modal
+        let div_graficos=$("#graficos");
         columnas_tipos.forEach((e,i)=>{
-            div_graficos.append(`<canvas id='${e+i.toString()}'></canvas>`)
+            div_graficos.append(`<div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4 grafo" ><canvas id='${e+i.toString()}'></canvas></div>`)
             let config={
                 "type":e,
                 "data":g[e](lab,datos_finales[i],title[i])
@@ -147,7 +166,13 @@ $(document).on("click", "#graficos_analisis_de_rentabilidad", function () {
                 $("#graficos #"+e+i.toString()),
                 config
               );
-        })
+        }) 
+        if ($(base).children().length > 1) {
+            $(base).children().last().modal("hide");
+        }
+        $(modal_grafos).modal("show");
+        $(modal_grafos).addClass("show1");
+        graf_activo=true;
     } else {
         Swal.fire({
             title: '',
@@ -168,7 +193,7 @@ async function montar_tabla() {
     $("#carga").height(h);
     $("#load").addClass('spinner');
     let data = [];
-    let receptores = $('#receptores').selectpicker('val');
+    let receptores = $('#receptor').selectpicker('val');
     let orden = $('#orden').selectpicker('val');
     let f1 = $('#f1f2').data('daterangepicker').startDate.format('YYYYMMDD');
     let f1V = $('#f1f2').data('daterangepicker').startDate.format('DD/MM/YYYY');
@@ -189,7 +214,7 @@ async function montar_tabla() {
         have_set.push(true);
 
         btns.push(set[0].filter(function (x) {
-            return x.label == 'Anular';
+            return x.tipo == 'button_emergente';
         }));
 
         graficos = set[0].find(function (x) {
@@ -405,7 +430,7 @@ $(document).on('dblclick', 'td', async function () {
                 have_set.push(true);
 
                 btns.push(set[0].filter(function (x) {
-                    return x.label == 'Anular';
+                    return x.tipo == 'button_emergente';
                 }));
 
                 invisibles = set[0].find(function (x) {
@@ -493,7 +518,7 @@ $(document).on('dblclick', 'td', async function () {
                 let button = ``;
                 if (btn != undefined) {
                     if (btn.datos.condicion == "1") {
-                        button += `<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><button type="button" class="btn btn-lg btn-danger" id="` + btn.datos.id + `">` + btn.label + `</button></div>`;
+                        button += `<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><button type="button" class="btn btn-lg btn-primary" id="` + btn.datos.id + `">` + btn.label + `</button></div>`;
                     }
                 }
                 if (labels_extra.length > 0) {

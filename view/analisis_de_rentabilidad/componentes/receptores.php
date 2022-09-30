@@ -1,15 +1,16 @@
 
 <div class="main-content">
     <div class="page-content">
-    <div id="graficos">
-       
-    </div>
         <div class="container-fluid">
         
         <?php
                 $pathlocal=$path.'/view'."/".$this->url[0]."/componentes"."/";
                 if(file_exists($pathlocal."modalbase.php")){
                     $modal=file_get_contents($pathlocal."modalbase.php");
+                    echo $modal;
+                }
+                if(file_exists($pathlocal."modalgraficos.php")){
+                    $modal=file_get_contents($pathlocal."modalgraficos.php");
                     echo $modal;
                 }
             ?>

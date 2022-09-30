@@ -5,6 +5,7 @@ import {crear_tabla} from "./editable.js";
 var col_act;
 var row_act;
 
+var edit_on=false;
 var id='';
 var base="#base";
 var titulo ="";
@@ -169,7 +170,7 @@ async function montar_tabla(){
 
    let labels = {"Fecha":f1V,"Estado":estado,"Loteria":loteria,"Productos":productos};
    crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels,'Cargar Números Premiados');
-
+   edit_on=true;
 }
 
 
@@ -253,6 +254,8 @@ $(document).on('click','#cargar_numeros_premiados_premiar', function(){
 });
 
 $(document).on('click','td', function(){
+    if(!edit_on){
+    }else{
     var column = $(this).parent().children().index(this);
     var currentRow = $(this).closest("tr");
     col_act = column;
@@ -288,7 +291,6 @@ $(document).on('click','td', function(){
             `
             html+=`</select>`;
         }
-        console.log($('#body_modal:last-child'));
         $("#body_modal").html(html);
         $('#signo').selectpicker('refresh');
         $("#modal_edit").modal('show');
@@ -296,6 +298,7 @@ $(document).on('click','td', function(){
         $("#load").removeClass('spinner');
        
     }
+}
 
     
 })
