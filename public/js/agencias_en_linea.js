@@ -225,12 +225,11 @@ $(document).on('dblclick', 'td', async function () {
     let cosas = [];
     let iscorrect = false;
     var column = $(this).parent().children().index(this);
-   if(isdclick){  
-    if(have_dclick.length>0){$("#load").addClass('spinner');}
-        
+   if(isdclick){          
         for (let a = 0; a < dclick[0].length; a++) {
            if(dclick[0][a].label!='98'){
                if (column==dclick[0][a].label){
+                if(have_dclick.length>0){$("#load").addClass('spinner');}
                    iscorrect=true;
                    parametros = dclick[0][a].datos["parametros"].split(",")
                    etiquetas = dclick[0][a].datos["etiquetas"].split(",")
@@ -276,6 +275,7 @@ $(document).on('dblclick', 'td', async function () {
                     }
                }
            }else{
+            if(have_dclick.length>0){$("#load").addClass('spinner');}
                iscorrect=true;
                parametros = dclick[0][a].datos["parametros"].split(",")
                emergente = dclick[0][a].datos["emergente"];
