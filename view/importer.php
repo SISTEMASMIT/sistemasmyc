@@ -48,8 +48,6 @@ class Importer
                 if ($key == 0) {
                     if($label=="Agencias"){
                         $html .= "<option value='Todas' selected>Todas</option>";
-                    }else{
-                        $html .= "<option value='Todos' selected>Todos</option>";
                     }
                     $html .= "<option value=" . $select->id . " title=" . $select->label . ">" . $select->label . "</option>";
                 } else {
