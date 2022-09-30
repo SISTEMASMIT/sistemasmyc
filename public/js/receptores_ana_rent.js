@@ -343,6 +343,7 @@ $(document).on('dblclick', 'td', async function () {
                 etiquetas = dclick[0][a].datos["etiquetas"].split(",")
                 comando = dclick[0][a].datos["id"];
                 titulo = dclick[0][a].datos["titulo_emergente"];
+                Object.assign(data, { "orden": dclick[0][a].datos["orden"] });
                 Object.assign(data, { "comando": dclick[0][a].datos["id"] });
                 for (let i = 0; i < parametros.length; i++) {
                     if (Number.isInteger(parseInt(parametros[i]))) {
