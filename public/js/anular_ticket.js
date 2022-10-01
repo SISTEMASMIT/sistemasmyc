@@ -73,10 +73,10 @@ $(document).on('hidden.bs.modal', '#base', function() {
 
 $(document).on('click', '#anular_ticket', async function() {
    $('#tabla1').removeClass('invisible');
-   if($('#numero_ticket').val()!=''){
+   if($('#nro_ticket').val()!=''){
         montar_tabla();
    }else{
-    $('#numero_ticket').attr("placeholder", "Ingrese un Número").placeholder();
+    $('#nro_ticket').attr("placeholder", "Ingrese un Número");
    }
 });
 

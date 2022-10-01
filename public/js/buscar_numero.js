@@ -87,7 +87,7 @@ $(document).on('click', '#buscar_numero', async function() {
    if($('#numero').val()!=''){
         montar_tabla();
    }else{
-    $('#numero').attr("placeholder", "Ingrese un Número").placeholder();
+    $('#numero').attr("placeholder", "Ingrese un Número");
    }
 });
 

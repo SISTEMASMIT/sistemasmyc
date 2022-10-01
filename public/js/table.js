@@ -313,6 +313,7 @@ function crear_body(data){
     for(var i in data){
         body+=`<tr>`
             for(var a in data[i]){
+                if(data[i][a]==null)data[i][a]='';
                 if(Number.isInteger(parseInt(data[i][a]))){
                     body+=`<td class="num_aling">`+data[i][a]+`</td>`;
                 }else{
@@ -340,6 +341,7 @@ function crear_body_sum(data){
         elemento=Object.values(elemento);
            elemento.forEach((row,i)=>{
                 if(sumados.find( e=> e==i)){
+                    if(row==null)row='';
                     row = row.toString();
                     row=row.replaceAll(',','');
                     body+=`<td class="num_aling">`+formato.format(row)+`</td>`;

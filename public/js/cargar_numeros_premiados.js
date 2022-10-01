@@ -287,7 +287,7 @@ $(document).on('click','td', function(){
             <option value='SAG' >Sagitario</option>
             <option value='CAP' >Capricornio</option>
             <option value='ACU' >Acuario</option>
-            <option value='PIS' >Piscis</option>
+            <option value='PIC' >Piscis</option>
             `
             html+=`</select>`;
         }

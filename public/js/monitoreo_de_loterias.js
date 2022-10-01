@@ -91,9 +91,9 @@ $(document).on('hidden.bs.modal', '#base', function() {
 
 $(document).on('click', '#monitoreo_de_loterias', async function() {
     $('#tabla1').removeClass('invisible');
-    // $('#aceptar').prop('disabled', true);
+    $('#aceptar').prop('disabled', true);
     montar_tabla();
-    // intervalo = setInterval(montar_tabla, 50000);
+    intervalo = setInterval(montar_tabla, 50000);
     
 });
 

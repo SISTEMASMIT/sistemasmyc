@@ -29,7 +29,7 @@ var modal_id=1;
 var row;
 
 $(document).ready(function () {
-
+   
     var columns = 6;
     var rows = 10;
     var head = crear_head(columns);

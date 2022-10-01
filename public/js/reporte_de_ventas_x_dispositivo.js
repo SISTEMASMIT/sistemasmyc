@@ -27,6 +27,8 @@ var have_set = [];
 var et;
 var modal_id=1;
 var row;
+var hay_f4=false;
+var hay_mes=false;
 
 $(document).ready(function () {
     rangeDate("#f1f2");
