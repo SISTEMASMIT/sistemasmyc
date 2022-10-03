@@ -48,6 +48,8 @@ class Control_topes_de_premiacion extends Controller
 
     function agencias(){
     } 
+    function receptores(){
+    } 
 
     
 
