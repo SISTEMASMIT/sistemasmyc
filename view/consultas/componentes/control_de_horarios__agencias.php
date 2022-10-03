@@ -17,14 +17,10 @@
                 <!-- Aqui van los receptores -->
                     <?php
                         if($this->filtros!=-1){
-                            $array=json_decode($this->filtros[0]["jsr"]);
-                            foreach($array->filtros as $filtro){
-                                if(method_exists($importer,$filtro->tipo)){
-                                    echo $importer->{$filtro->tipo}($filtro->label,$filtro->datos);
-                                }                        
-                            }
+                            $importer->crearFiltros($this->filtros[0]["jsr"]);
                         }
                     ?>
+                
                 
                 
                      

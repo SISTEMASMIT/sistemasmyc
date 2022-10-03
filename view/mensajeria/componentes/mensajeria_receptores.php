@@ -4,8 +4,7 @@
         <div class="container-fluid">
         <?php
                 $pathlocal=$path.'/view'."/".$this->url[0]."/componentes"."/";
-                $modal=file_get_contents($pathlocal."modalbase_formulario.php");
-                $modal2=file_get_contents($pathlocal."modalbase.php");
+                $modal=file_get_contents($pathlocal."modalbase.php");
                 echo $modal;
             ?>
             <div class="row">
