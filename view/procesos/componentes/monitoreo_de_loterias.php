@@ -23,7 +23,8 @@
                 </div><!-- div row  -->
                 
                 <div class="row">
-                    <div id="moneda"></div>
+                    <div id="moneda">
+                    </div>
                 </div>
             </div> <!-- Row general -->
         </div> <!-- container-fluid -->

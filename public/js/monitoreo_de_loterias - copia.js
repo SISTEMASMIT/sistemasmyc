@@ -94,7 +94,6 @@ $(document).on('click', '#monitoreo_de_loterias', async function() {
     $('#aceptar').prop('disabled', true);
     montar_tabla();
     intervalo = setInterval(montar_tabla, 50000);
-    
 });
 
 

@@ -17,9 +17,9 @@ function crear_base(id,monedas){
                 <nav class="tab-list">`;
     monedas.forEach((moneda,index)=> {
         if(index==0){
-            html+=`<a class="tab active" href="#tab-`+moneda+`">`+moneda+`</a>`;
+            html+=`<a class="tab active" id="`+moneda+`" href="#tab-`+moneda+`">`+moneda+`</a>`;
         }else{
-            html+=`<a class="tab" href="#tab-`+moneda+`">`+moneda+`</a>`;
+            html+=`<a class="tab" id="`+moneda+`" href="#tab-`+moneda+`">`+moneda+`</a>`;
         }
     });
     html+=`</nav>`;
@@ -33,11 +33,11 @@ function crear_base(id,monedas){
         html+=`<div id="carga_`+moneda+`"><div id="load_`+moneda+`"></div></div>
             <div id="tabla_res_`+moneda+`" class="espaciadoT">
                 <div id="f_`+moneda+`"><table id="tablaf_`+moneda+`" class="cell-border nowrap" style="width:100%"></table></div>
-                    <table id="tabla1_`+moneda+`" class="cell-border display nowrap invisible" style="width:100%">
-                        <thead class="thead" id="thead1_`+moneda+`">
+                    <table id="tabla_`+moneda+`" class="cell-border display nowrap invisible" style="width:100%">
+                        <thead class="thead" id="thead_`+moneda+`">
                             <tr><th></th></tr>
                         </thead>
-                        <tbody id="tbody1_`+moneda+`">
+                        <tbody id="tbody_`+moneda+`">
                             <tr><td></td></tr>
                         </tbody>
                     </table>
