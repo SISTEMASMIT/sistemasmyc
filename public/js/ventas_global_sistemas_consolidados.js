@@ -163,7 +163,7 @@ $(document).on('hidden.bs.modal', '#base', function() {
  });
 
 
-$(document).on('click', '#control_de_topes_premiacion', async function() {
+$(document).on('click', '#ventas_global_sistemas_consolodidados', async function() {
     $('#tabla1').removeClass('invisible');
     if($('#numero').val()!=''){
         montar_tabla();
@@ -185,11 +185,13 @@ async function montar_tabla(){
     $("#load").addClass('spinner');
     let data = [];
     let receptores = $('#receptor').selectpicker('val');
-    let grupos = $('#grupo_agencias').selectpicker('val');
-    let loteria_mix = $('#loterias').selectpicker('val');
+    let f1 = $('#f1f2').data('daterangepicker').startDate.format('YYYYMMDD');
+    let f1V = $('#f1f2').data('daterangepicker').startDate.format('DD/MM/YYYY');
+    let f2 = $('#f1f2').data('daterangepicker').endDate.format('YYYYMMDD');
+    let f2V = $('#f1f2').data('daterangepicker').endDate.format('DD/MM/YYYY');
 
  
-    data = {"receptor":receptores,"grupo_agencias":grupos,"loteria_mix":loteria_mix,"tope_premia":"agencias","comando":"control_de_topes_premiacion"};
+    data = {"receptor":receptores,"f1":f1,"f2":f2,"comando":"ventas_global_sistemas_consolodidados"};
 
 
     var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
@@ -261,7 +263,7 @@ async function montar_tabla(){
         isdclick=false;
         isrclick=false;
     }
-    let labels = {"Receptor":receptores,"Grupo":grupos,"Loteria ":loteria_mix};
+    let labels = {"Receptor":receptores};
     crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels,'Ticket');
 
 }
