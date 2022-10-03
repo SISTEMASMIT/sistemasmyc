@@ -11,16 +11,12 @@
                 <div class="row divFiltro">
                     <!-- Aqui debemos agregar un modal emergente para cuando estemos con loterias seleccionar --> 
                 <!-- Aqui van los receptores -->
-                    <?php
+                <?php
                         if($this->filtros!=-1){
-                            $array=json_decode($this->filtros[0]["jsr"]);
-                            foreach($array->filtros as $filtro){
-                                if(method_exists($importer,$filtro->tipo)){
-                                    echo $importer->{$filtro->tipo}($filtro->label,$filtro->datos);
-                                }                        
-                            }
+                            $importer->crearFiltros($this->filtros[0]["jsr"]);
                         }
                     ?>
+                
                 </div><!-- div row  -->              
                 <div class="row">
                     <div id="carga"><div id="load"></div></div>
