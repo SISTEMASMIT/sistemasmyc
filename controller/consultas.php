@@ -68,8 +68,10 @@ class Consultas extends Controller
     function control_de_horarios__agencias(){
     } 
     function ventas_global_sistemas_consolidados(){
-        
     }
+    function control_topes_de_premiacion(){
+    }
+    
     
     
 

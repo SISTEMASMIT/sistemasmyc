@@ -30,9 +30,9 @@ var modal_id=1;
 var row;
 var parametros_segundo_envio = [];
 var hay_f4=false;
+var receptor="Todos";
 
-
-$(document).ready(function(){
+$(document).ready( async function(){
     rangeDate("#f1f2");
    var columns = 6;
     var rows = 10;
@@ -41,7 +41,24 @@ $(document).ready(function(){
     var html=head+body;
     $('#tablaf').html(html);
     $('#tablaf').DataTable();
+    cargaAdicional()
+
+    // lo que traigo de grupos
+
+    pintarJstree("#folder_jstree");
+    //Jstree
 })
+
+function cargaAdicional(){
+    let loterias = $('#loteria');
+    loterias.prepend(`<option value="todas">Todas</option>`)
+    loterias.prepend(`<option value="">Seleccione una loteria</option>`)
+    loterias.selectpicker("refresh");
+    loterias.val("");
+    loterias.selectpicker("render")
+    
+ }
+
 
 function crear_head(data){
     let head = `<thead><tr>`;
@@ -54,6 +71,10 @@ function crear_head(data){
 
 
 
+ $(document).on('change', '#loteria', async function() {
+    let loteria =$('#loteria').selectpicker('val');
+    montar_tabla(receptor,loteria);
+});
 
 function crear_body(columns, rows){
    let body = `<tbody>`;
@@ -93,16 +114,7 @@ $(document).on('hidden.bs.modal', '#base', function() {
 
 
 
-$(document).on('click', '#ventas_global_sistemas_consolodidados', async function() {
-   $('#tabla1').removeClass('invisible');
-   if($('#numero').val()!=''){
-        montar_tabla();
-   }else{
-    $('#numero').attr("placeholder", "Ingrese un Número").placeholder();
-   }
-});
-
-async function montar_tabla(){
+async function montar_tabla(receptor,loteria){
    var w = document.getElementById("tabla_res").clientWidth;
    var h = document.getElementById("tabla_res").clientHeight;
    h = h+500;
@@ -111,13 +123,7 @@ async function montar_tabla(){
    $("#carga").width( w );
    $("#carga").height( h );
    $("#load").addClass('spinner');
-   let data = [];
-   let receptores = $('#receptor').selectpicker('val');
-   let f1 = $('#f1f2').data('daterangepicker').startDate.format('YYYYMMDD');
-   let f1V = $('#f1f2').data('daterangepicker').startDate.format('DD/MM/YYYY');
-   let f2 = $('#f1f2').data('daterangepicker').endDate.format('YYYYMMDD');
-   let f2V = $('#f1f2').data('daterangepicker').endDate.format('DD/MM/YYYY');
-   data = {"receptor":receptores,"f1":f1,"f2":f2,"comando":"ventas_global_sistemas_consolodidados"};
+   let data = {"receptor":receptor,"loteria":loteria,"comando":"cfg_topedina","orden":"no"};
    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
 
    let set = Object.values(JSON.parse(info.settings.jsr));
@@ -183,8 +189,9 @@ async function montar_tabla(){
        isdclick=false;
        isrclick=false;
    }
-
-   let labels = {"Receptor":receptores};
+   console.log(rclick)
+   $('#tabla1').removeClass('invisible');
+   let labels ={"Receptor":receptor,"Loteria":loteria};
    crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels,'ventas_global_sistemas_consolodidados');
 
 }
@@ -591,6 +598,73 @@ function abrirMenu (elemento){
     
 }
 
+///Agregar
+$(document).on("click","#agregrar",async function(){
+    let data={"comando":"","orden":"modalAgregarTope"};
+    let info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
+    let formulario=JSON.parse(info.settings["jsr"]);
+    let html=`<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>Receptor:</label><label class='form-label'>${receptor}</label></div>`;
+    modal_id++;
+    let modal = $(base).children().first().html().replaceAll("{}",modal_id);
+    let modalsplit=modal.split("*");
+    let titulo ='';
+    if(formulario.filtros!=undefined){
+        formulario.filtros.forEach((element,index)=>{
+            if(element.tipo!="titulo"){
+                if(imp[element.tipo]){
+                    html+=imp[element.tipo](element.label,element.datos)
+                }
+            }else{
+                titulo = element.datos.id;
+            }
+        })
+        modalsplit[1] = html;
+        modal=modalsplit.join("");
+        modal=modal.replaceAll("#",titulo);
+        $(base).append(modal);
+        $("#filtrado").selectpicker("refresh");
+        $("#aplica").selectpicker("refresh");
+        $("#loterias").selectpicker("refresh");
+        if($(base).children().length>1){
+            $('.modal-backdrop').addClass('show');
+            $(base).children().last().addClass("fade");
+            $(base).children().last().addClass("show1");
+            $(base).children().last().modal("show");
+        }
+    }
+});
+
+$(document).on('click', '#agregar_topes', async function() {
+
+    let aplica=$("#aplica").selectpicker("val");
+    let loterias=$("#loterias").selectpicker("val").join(",");
+    let disponible=$("#disponible").val()
+    let minutos=$("#minutos").val()
+    let data = {"filtrado":filtrado,"aplica":aplica,"loterias":loterias,"disponible":disponible,"minutos":minutos,"comando":"agregar_topes"};
+    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
+    // if(info.data.mensaje=="Mensaje creado Correctamente"){
+    //     Swal.fire({
+    //         title: '',
+    //         text: info.data.mensaje,
+    //         icon: 'success',
+    //         confirmButtonText: 'Aceptar'
+    //       });
+    // }else{
+    //     Swal.fire({
+    //         title: '',
+    //         text: 'Ocurrió un error inesperado, intente nuevamente',
+    //         icon: 'error',
+    //         confirmButtonText: 'Aceptar'
+    //       });
+    // }
+    // $("#modal2").modal('hide');
+    // $("#modal2").removeClass("show1");
+    // $('#tabla1').removeClass('invisible');
+    // montar_tabla();
+});
+
+//
+
 $(document).click(function() {
     var obj = $("#menuTabla");
     if (!obj.is(event.target) && !obj.has(event.target).length) {
@@ -636,7 +710,9 @@ $(document).on('click', '#rclick', async function () {
             let orden = elementos[i].orden;
             let parametros = elementos[i].parametros.split(",");
             let emergente = elementos[i].emergente;
-            let etiquetas = elementos[i].etiquetas.split(",");
+            if(elementos[i].etiquetas!=undefined && elementos[i].etiquetas.length>0){
+                let etiquetas = elementos[i].etiquetas.split(",");
+            }
             Object.assign(data,{"comando":comando,"orden":orden});
             for (let i = 0; i < parametros.length; i++) {
                 if(Number.isInteger(parseInt(parametros[i]))){
@@ -878,6 +954,13 @@ $(document).on('click', '#rclick', async function () {
                    $('#tabla'+modal_id).removeClass('invisible');
                    crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,isdclick2,dclick,isrclick2,invisibles,sumatorias,labels_modal,titulo,"#modal"+modal_id);
                    
+               }else{
+                Swal.fire({
+                    title: '',
+                    text: info.data.mensaje,
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
+                  });
                }
     
 
@@ -982,3 +1065,60 @@ $(document).on("change","#f3",async function(){
                 $("#load").removeClass('spinner');
 
 })
+
+
+
+
+///jstree 
+
+
+async function pintarJstree(id){
+    let data = {"comando":"get_rec_tree"};
+    let info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST"); 
+    info.data.data=JSON.parse(JSON.stringify(info.data.data).replaceAll("\"#\"","\"Todos\""));
+    info.data.data[0].parent="#"
+    $(id).jstree({
+        'core': {
+            'check_callback': true,
+            "themes": { "stripes": true },
+            'data': info.data.data,
+            'multiple': true
+        },
+        "types" : {
+            "root" : {
+              "icon" : "fa-regular fa-building-lock"
+            },
+            "child" : {
+                "icon" : "fa-regular fa-circle-user"
+            }
+        },
+        'search': {
+            'case_insensitive': true,
+            'show_only_matches' : true
+        },
+        'plugins': [ 'types' ,'search'],
+        'themes': {
+            'theme': 'apple',
+            "dots": true,
+            "icons": true
+        },
+        'plugins': [ 'search','types', 'html_data', 'themes', 'ui']
+    }).on('search.jstree', function (nodes, str, res) {
+        if (str.nodes.length===0) {
+            try{
+                $('#search').jstree(true).hide_all();
+            }catch(e){
+                Swal.fire({
+                    title: '',
+                    text: "No existen receptores con este nombre",
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                  });
+            }
+        }
+    }).on("select_node.jstree", function (e, data) {
+        $(id).jstree().close_node($("#Todos"));
+        receptor=data.node.id;
+         montar_tabla(data.node.id,$("#loteria").selectpicker("val"))
+         });
+}

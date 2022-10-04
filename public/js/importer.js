@@ -3,6 +3,14 @@ export function formulario_emergente_input_text(label,json){
     <input class='form-control form-control-lg' id='${json.id!=undefined?json.id:label}' type='numeric' placeholder='${label}' required>
     </div>`
 }
+
+export function formulario_emergente_input_int(label,json){
+    return `<div class='col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 filtros'><label class='form-label'>${label}</label>
+    <input class='form-control form-control-lg' id='${json.id!=undefined?json.id:label}' type='numeric' placeholder='${label}' required>
+    </div>`
+}
+
+
 export function formulario_emergente_date(label,json){
     return `<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>${label}</label>
     <input type='text' class='form-control form-control-lg' id='${json.id!=undefined?json.id:label}'>

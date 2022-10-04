@@ -93,7 +93,7 @@ $(document).on('hidden.bs.modal', '#base', function() {
 
 
 
-$(document).on('click', '#ventas_global_sistemas_consolodidados', async function() {
+$(document).on('click', '#agencias_agencias', async function() {
    $('#tabla1').removeClass('invisible');
    if($('#numero').val()!=''){
         montar_tabla();
@@ -112,12 +112,7 @@ async function montar_tabla(){
    $("#carga").height( h );
    $("#load").addClass('spinner');
    let data = [];
-   let receptores = $('#receptor').selectpicker('val');
-   let f1 = $('#f1f2').data('daterangepicker').startDate.format('YYYYMMDD');
-   let f1V = $('#f1f2').data('daterangepicker').startDate.format('DD/MM/YYYY');
-   let f2 = $('#f1f2').data('daterangepicker').endDate.format('YYYYMMDD');
-   let f2V = $('#f1f2').data('daterangepicker').endDate.format('DD/MM/YYYY');
-   data = {"receptor":receptores,"f1":f1,"f2":f2,"comando":"ventas_global_sistemas_consolodidados"};
+   data = {"comando":"agencias_agencias"};
    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
 
    let set = Object.values(JSON.parse(info.settings.jsr));
@@ -184,8 +179,8 @@ async function montar_tabla(){
        isrclick=false;
    }
 
-   let labels = {"Receptor":receptores};
-   crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels,'ventas_global_sistemas_consolodidados');
+   let labels = {"Comando":"Agencias"};
+   crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels,'Reporte de Ventas Global');
 
 }
 
@@ -636,7 +631,6 @@ $(document).on('click', '#rclick', async function () {
             let orden = elementos[i].orden;
             let parametros = elementos[i].parametros.split(",");
             let emergente = elementos[i].emergente;
-            let etiquetas = elementos[i].etiquetas.split(",");
             Object.assign(data,{"comando":comando,"orden":orden});
             for (let i = 0; i < parametros.length; i++) {
                 if(Number.isInteger(parseInt(parametros[i]))){
@@ -853,8 +847,8 @@ $(document).on('click', '#rclick', async function () {
                        string_divs+=`<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><p><label>${key}</label>:<label>${valores[index]}</label></p></div>`;
                    });
                    let button = ``;
-                   if(btn!=undefined){
-                        if(btn.datos.condicion=="1"){
+                   if(btn[0]!=undefined){
+                        if(btn[0].datos.condicion=="1"){
                             button += `<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><button type="button" class="btn btn-lg btn-danger" id="`+btn.datos.id+`">`+btn.label+`</button></div>`;
                         }
                    }
