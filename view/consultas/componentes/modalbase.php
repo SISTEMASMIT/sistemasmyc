@@ -9,13 +9,13 @@
             </div>
             <div class="modal-body mb2">
             <div class='row'>*<h5 class="" id="">#</h5>*</div>
-                <table id="tabla{}" class="cell-border display nowrap invisible" width="100%" style="width:100%">
-                    <thead class="thead" id="thead{}">
+                <table id="tabla_{}" class="cell-border display nowrap invisible" width="100%" style="width:100%">
+                    <thead class="thead" id="thead_{}">
                         <tr>
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody id="tbody{}">
+                    <tbody id="tbody_{}">
                         <tr>
                             <td></td>
                         </tr>

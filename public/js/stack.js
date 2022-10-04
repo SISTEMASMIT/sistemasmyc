@@ -1,7 +1,11 @@
 export class Stack {
-    constructor(){
+    constructor(moneda,modal){
         this.stack = [];
+        this.moneda = moneda;
+        this.modal=modal;
     }
+ 
+
     push(element){
         this.stack.push(element);
         return this.stack;
@@ -17,8 +21,16 @@ export class Stack {
         return this.stack.length;
     }
 
+    pos(){
+        return this.stack.length-1;
+    }
     print(){
         console.log(this.stack);
     }
-
+    setMoneda(moneda){
+        this.moneda;
+    }
+    setModal(modal){
+        this.modal=modal;
+    }
 }

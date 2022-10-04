@@ -57,11 +57,11 @@ export function crear_tabla(table){
             rowCallback: function(row, data, index){
                 
             if(isd){
-                for (let i = 0; i < dc[0].length; i++) {
-                    if(dc[0][i].label==98){
+                for (let i = 0; i < dc.length; i++) {
+                    if(dc[i].label==98){
                         $(row).addClass('dclick');
                     }else{
-                        $(row).find('td:eq('+dc[0][i].label+')').addClass('dclick');
+                        $(row).find('td:eq('+dc[i].label+')').addClass('dclick');
                     }         
                 }
                 
@@ -189,7 +189,7 @@ export function crear_tabla(table){
             },
             
             initComplete: function () {
-                if(modal!=undefined){
+                if(modal!="#modal1"){
                     $(modal).modal('show');
                     $(modal).addClass("show1");
                 }
