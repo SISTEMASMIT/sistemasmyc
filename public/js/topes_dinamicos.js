@@ -633,34 +633,64 @@ $(document).on("click","#agregrar",async function(){
         }
     }
 });
+$(document).on("change", "#filtrado",async function(){
+    let filtrado=$(this).selectpicker("val");
+    let data= {"tipo":filtrado,"comando":"loteria_x_tipo"}
+    let info= await ajax_peticion("/query/standard_query",{"data":JSON.stringify(data)},"POST");
+    let html = info && generarHtml(info.data.data);
+    if(html){
+        $("#loterias").html(html)
+        $("#loterias").selectpicker("refresh")
+    }else{
+        Swal.fire({
+                    title: '',
+                    text: "Error en la busqueda de loterias",
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                  });
+    }
+});
+
+function generarHtml(list){
+    let html=""
+    list.forEach(function(element,index){
+        if(index==0){
+            html+=`<option value="todas" selected>Todas</option>`;
+            html+=`<option value="${element.loteria}"> ${element.loteria}</option>`;
+        }else{
+            html+=`<option value="${element.loteria}">${element.loteria}</option>`;
+        }
+    });
+    return html;
+}
+
 
 $(document).on('click', '#agregar_topes', async function() {
-
     let aplica=$("#aplica").selectpicker("val");
     let loterias=$("#loterias").selectpicker("val").join(",");
     let disponible=$("#disponible").val()
     let minutos=$("#minutos").val()
-    let data = {"filtrado":filtrado,"aplica":aplica,"loterias":loterias,"disponible":disponible,"minutos":minutos,"comando":"agregar_topes"};
+    let data = {"aplica_para":aplica,"loterias":loterias,"disponible":disponible,"minutos":minutos,"comando":"agregar_topes"};
     var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
-    // if(info.data.mensaje=="Mensaje creado Correctamente"){
-    //     Swal.fire({
-    //         title: '',
-    //         text: info.data.mensaje,
-    //         icon: 'success',
-    //         confirmButtonText: 'Aceptar'
-    //       });
-    // }else{
-    //     Swal.fire({
-    //         title: '',
-    //         text: 'Ocurrió un error inesperado, intente nuevamente',
-    //         icon: 'error',
-    //         confirmButtonText: 'Aceptar'
-    //       });
-    // }
-    // $("#modal2").modal('hide');
-    // $("#modal2").removeClass("show1");
-    // $('#tabla1').removeClass('invisible');
-    // montar_tabla();
+    if(info.data.mensaje=="ok"){
+        Swal.fire({
+            title: '',
+            text: info.data.mensaje,
+            icon: 'success',
+            confirmButtonText: 'Aceptar'
+          });
+    }else{
+        Swal.fire({
+            title: '',
+            text: 'Ocurrió un error inesperado, intente nuevamente',
+            icon: 'error',
+            confirmButtonText: 'Aceptar'
+          });
+    }
+    $("#modal2").modal('hide');
+    $("#modal2").removeClass("show1");
+    $('#tabla1').removeClass('invisible');
+    montar_tabla();
 });
 
 //
