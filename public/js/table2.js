@@ -107,7 +107,7 @@ export function crear_tabla(table){
                     var html = `<div class="row" style="margin-left: 3%;">`;
                     let tam = Object.values(labels).length;
                     for (var label in labels) {
-                        html+=`<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><label>`+label+`</label>: <label>`+labels[label]+`</label></div>`;
+                        html+=`<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><label>`+label.charAt(0).toUpperCase()+label.slice(1)+`</label>: <label>`+labels[label]+`</label></div>`;
                     }
                     html+=`</div>`;
                         $(win.document.body)
@@ -193,9 +193,6 @@ export function crear_tabla(table){
                     $(modal).modal('show');
                     $(modal).addClass("show1");
                 }
-                $("#load_"+moneda).removeClass("spinner");
-                $("#carga_"+moneda).removeClass("carga");
-                $("#carga_"+moneda).removeAttr( 'style' );
                 
                 totalTime = 50;
                 // table.columns.adjust().draw();
@@ -206,6 +203,10 @@ export function crear_tabla(table){
                         // this.input.nativeElement.focus();
                     }, 200);
                 }
+                $("#load_"+moneda).removeClass("spinner");
+                $("#carga_"+moneda).removeClass("carga");
+                $("#carga_"+moneda).removeAttr( 'style' );
+                
             }
          });
          
@@ -223,7 +224,7 @@ export function crear_tabla(table){
 function crear_head(data){
     let head = `<tr>`;
     for(var i in data){
-        head+=`<th>`+data[i]+`</th>`;
+        head+=`<th>`+data[i].charAt(0).toUpperCase()+data[i].slice(1)+`</th>`;
     }
     head+=`</tr>`;
     return head;

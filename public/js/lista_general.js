@@ -1,499 +1,139 @@
-import {oneDate} from "./date.js";
+import * as fecha from "./date.js";
 import {ajax_peticion} from "./Ajax-peticiones.js";
-import {crear_tabla} from "./table.js";
+import {ini_tabla} from "./table_ini.js";
+import {Stack} from './stack.js';
+import * as gestor from "./gestor.js";
 
-var id='';
+var monedas=[];
+var moneda_actual;
+var stack = new Stack();
 var base="#base";
-var titulo ="";
-var base_html="";
-var isdclick = false;
-var isrclick = false;
-var isdclick2 = false;
-var isrclick2 = false;
-var dclick = [];
-var rclick = [];
-var emergente = '';
-var parametros = [];
-var etiquetas = [];
-var comando = '';
-var orden = '';
-var vtn = [];
-var etq = [];
-var extra = [];
-var btns = [];
-var have_set = [];
-var et;
-var modal_id=1;
+var modal_id = 1;
+var boton=false;
 var row;
+var id_menu;
 
 
-$(document).ready(function(){
-   oneDate("#f1");
-   var columns = 6;
-    var rows = 10;
-    var head = crear_head(columns);
-    var body = crear_body(columns,rows);
-    var html=head+body;
-    $('#tablaf').html(html);
-    $('#tablaf').DataTable();
-})
+$(document).ready(function () {
+    //Se realiza la generación de la tabla invisible, enviandose el ID de la table
+    monedas = gestor.consultar_monedas();
+    ini_tabla('#moneda',monedas);
+    moneda_actual = $("#moneda .tabs a.active").attr('id');
+    window[moneda_actual] = new Stack(moneda_actual,1);
+    
+    //Se inicializan las fechas
+    // fecha.rangeDate = f1f2 antiguos
+    // fecha.futuDate = f1f2 futuros
+    // fecha.oneDate = f1 unica
+    fecha.oneDate("#f1");
+});
 
 
-function crear_head(data){
-   let head = `<thead><tr>`;
-   for(var i=0; i<data;i++){
-       head+=`<th>-</th>`;
-   }
-   head+=`</tr></thead>`;
-   return head;
-}
+//Detectamos el cambio de moneda en el tab
+$(document).on("click", "#moneda .tabs .tab-list .tab", function(event) {
+	event.preventDefault();
 
-function crear_body(columns, rows){
-   let body = `<tbody>`;
-   for(var a =0; a< rows; a++){
-       body+=`<tr>`;
-       for(var i=0; i<columns;i++){
-           body+=`<td>-</td>`;
-       }
-       body+=`</tr>`
-   }
-   
-   
-   body+=`</tbody>`;
-   return body;
-}
+    boton=false;
+    $(".tab").removeClass("active");
+	$(".tab-content").removeClass("show");
+	$(this).addClass("active");
+	$($(this).attr('href')).addClass("show");
+    moneda_actual = $("#moneda .tabs a.active").attr('id');
+
+    var w = document.getElementById("tab-"+moneda_actual).clientWidth;
+    var h = document.getElementById("tab-"+moneda_actual).clientHeight;
+    h = h+500;
+    $("#carga_"+moneda_actual).addClass('carga');
+    $("#carga_"+moneda_actual).width( w );
+    $("#carga_"+moneda_actual).height( h );
+    $("#load_"+moneda_actual).addClass('spinner');
+
+    
+    //Este if es para comprobar si ya existe una pila de esa moneda
+    if (window[moneda_actual].moneda != undefined) { 
+    }else{
+        window[moneda_actual] =  new Stack(moneda_actual,1)
+    }
+    traer_data();
+
+    $("#carga_"+moneda_actual).removeClass('carga');
+    $("#load_"+moneda_actual).removeClass('spinner');
+});
+
+
+//Funcion para arrancar 
+$(document).on('click', '#listado_general', function() {
+    boton=true;
+    traer_data();
+});
 
 
 //Ocultar El modal
 $(document).on('hidden.bs.modal', '#base', function() {
-    modal_id--;
     $(base).children().last().remove();
     if($(base).children().length>1){
         $('.modal-backdrop').addClass('show');
         $(base).children().last().addClass("fade");
         $(base).children().last().addClass("show");
     }
-    vtn.pop();
-    etq.pop();
-    extra.pop();
-    let ss=have_set[have_set.length-1];
-    if(ss){
-        btns.pop();
-    }
+    window[moneda_actual].modal=window[moneda_actual].modal-1;
+    window[moneda_actual].pop();
  });
 
-$(document).on('click', '#listado_general', async function() {
-   $('#tabla1').removeClass('invisible');
-   if($('#numero').val()!=''){
-        montar_tabla();
-   }else{
-    $('#numero').attr("placeholder", "Ingrese un Número").placeholder();
-   }
-});
+ //Traemos la data necesaria, aqui es donde se le envian manualmente los datos que están en el DOM
 
-async function montar_tabla(){
-   var w = document.getElementById("tabla_res").clientWidth;
-   var h = document.getElementById("tabla_res").clientHeight;
-   h = h+500;
-   $('#f').html('');
-   $("#carga").addClass('carga');
-   $("#carga").width( w );
-   $("#carga").height( h );
-   $("#load").addClass('spinner');
-   let data = [];
-   let receptores = $('#receptores').selectpicker('val');
-   let loterias = $('#loterias').selectpicker('val');
-   let f1 = $('#f1').data('daterangepicker').startDate.format('YYYYMMDD');
-   let f1V = $('#f1').data('daterangepicker').startDate.format('DD/MM/YYYY');
-   let cifras = $('#cifras').selectpicker('val');
-   data = {"receptor":receptores,"loteria":loterias,"f1":f1,"cifras":cifras,"comando":"listado_general"};
-   var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
-   let set = Object.values(JSON.parse(info.settings.jsr));
-   etq.push(info.data.head);
-   vtn.push(set);
-   extra.push(info.datos_extra);
-   let invisibles = [];
-   let sumatorias = [];
-   if(set[0].length > 0){
-       have_set.push(true);
+async function traer_data(){
+    moneda_actual = $("#moneda .tabs a.active").attr('id');
+    $('#tabla1').removeClass('invisible');
+    $('#tabla_'+moneda_actual).removeClass('invisible');
+    $('#aceptar').prop('disabled', true);
+    //Se llama al método de crear la tabla, se le envían dos arreglos, parametros y etiquetas.
+    let parametros = ["receptor","loteria","cifras","f1"];
+    let extras = {};
+    //parametros,  extras, moneda, comando/id 
+    if(window[moneda_actual].size()<1 || boton==true){
+        window[moneda_actual].push(await gestor.consulta(parametros,extras, moneda_actual,"listado_general"));
+    }
 
-       btns.push(set[0].filter(function(x){
-           return x.label == 'Anular';
-       }));
-
-      invisibles = set[0].find(function(x){    
-           return x.label == '96';
-       });
-
-       sumatorias = set[0].find(function(x){    
-           return x.label == '97';
-       });
-
-       dclick.push(set[0].filter(function(x){ 
-           if(x.label!='98' && x.label!='99' && x.label!='97' && x.label != '96'){
-               return x;
-           }else if(x.label=='98'){
-               return x;
-           }
-           
-       }));
-
-       rclick.push(set[0].find(function(x){    
-           return x.label == '99';
-       }));
-
-       if(dclick[0]!=undefined){
-           isdclick=true;
-       }
-
-       if(rclick[0]!=undefined){
-           isrclick=true;
-       }
-
-       if(invisibles !=undefined){
-           invisibles=invisibles.datos.c_invisible.split(",");
-           invisibles = invisibles.map(function(x){    
-             return parseInt(x);
-           });   
-        }else{
-           invisibles = [];
-        }
-         
-  
-        if(sumatorias != undefined){
-           sumatorias=sumatorias.datos.c_sumatoria.split(",");
-           sumatorias = sumatorias.map(function(x){    
-             return parseInt(x);
-           });
-        }else{
-           sumatorias = [];
-        }
-   }else{
-       have_set.push(false);
-       isdclick=false;
-       isrclick=false;
-   }
-
-   let labels = {"Receptores":receptores,"Loterias_Mix":loterias,"Fecha":f1V,"Cifras":cifras};
-   crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels,'Lista General');
-
+    let tabla_info = {"stack":window[moneda_actual],
+        "parametros":parametros,
+        "moneda":moneda_actual,
+        "titulo":"Monitoreo de Loterias",
+        "modal_id":window[moneda_actual].modal
+    }
+    gestor.montar_tabla(tabla_info,window[moneda_actual]);
 }
 
-
-function getCurrentDate(formato){
-    const date = new Date();
-    let day = `${date.getDate()}`.padStart(2, "0")
-    let month = `${date.getMonth() + 1}`.padStart(2, "0")
-    let year = date.getFullYear();
-    if(formato==1){
-        let fe = [year, month, day].join("")
-        return fe;
-    }else{
-        let fe = [day, month, year].join("/");
-        return fe;
-    }   
-  
-}
-
-
-
-//Detectamos el Doble Click
+//Doble Click
 $(document).on('dblclick', 'td', async function () {
-
-    let have_dclick;
-    let dclick = vtn[vtn.length -1 ]; 
-
-    for (let i = 0; i < dclick.length; i++) {
-        have_dclick = dclick[i].filter(function(x){ 
-            if(x.tipo=='dclick'){
-                return x;
-            }  
-        });
-    }
-    
-    let data = [];
-    let etiq = [];
-    let key;
-    let value;
-    let cosas = [];
-    let iscorrect = false;
-    var column = $(this).parent().children().index(this);
-   if(isdclick){  
-    if(have_dclick.length>0){$("#load").addClass('spinner');}
-       for (let a = 0; a < dclick[0].length; a++) {
-           if(dclick[0][a].label!='98'){
-               if (column==dclick[0][a].label){
-                   iscorrect=true;
-                   parametros = dclick[0][a].datos["parametros"].split(",")
-                   etiquetas = dclick[0][a].datos["etiquetas"].split(",")
-                   emergente = dclick[0][a].datos["emergente"];
-                   comando = dclick[0][a].datos["id"];
-                   titulo = dclick[0][a].datos["titulo_emergente"];
-                   Object.assign(data,{"comando":dclick[0][a].datos["id"]});
-                   for (let i = 0; i < parametros.length; i++) {
-                       if(Number.isInteger(parseInt(parametros[i]))){
-                           key = `c`+parametros[i];
-                           value = $(this).parent().find("td").eq(parseInt(parametros[i])).text();
-                           Object.assign(data,{[key]:value});
-                       }
-                   }
-               }
-           }else{
-               iscorrect=true;
-               parametros = dclick[0][a].datos["parametros"].split(",")
-               emergente = dclick[0][a].datos["emergente"];
-               etiquetas = dclick[0][a].datos["etiquetas"].split(",")
-               comando = dclick[0][a].datos["id"];
-               titulo = dclick[0][a].datos["titulo_emergente"];
-               Object.assign(data,{"comando":dclick[0][a].datos["id"]});
-               for (let i = 0; i < parametros.length; i++) {
-                   if(Number.isInteger(parseInt(parametros[i]))){
-                       key = `c`+parametros[i];
-                       value = $(this).parent().find("td").eq(parseInt(parametros[i])).text();
-                       Object.assign(data,{[key]:value});
-                   }else{
-                       if(parametros[i]=="f1"){
-                           if($("#"+parametros[i]).length < 1){
-                               let f = getCurrentDate(1);
-                               Object.assign(data,{[parametros[i]]:f});
-                           }else{
-                               Object.assign(data,{[parametros[i]]:$('#'+parametros[i]).data('daterangepicker').startDate.format('YYYYMMDD')});
-                           }       
-                       }else if(parametros[i]=="f1f2"){
-                           if($("#"+parametros[i]).length < 1 ){
-                               let f = getCurrentDate(1);
-                               Object.assign(data,{[parametros[i]]:f});
-
-                           }else{
-                              Object.assign(data,{f1:$("#"+parametros[i]).data('daterangepicker').startDate.format('YYYYMMDD')});
-                              Object.assign(data,{f2:$("#"+parametros[i]).data('daterangepicker').endtDate.format('YYYYMMDD')});
-                           }
-                       }else{
-                           Object.assign(data,{[parametros[i]]:$('#'+parametros[i]).selectpicker('val')});
-                       } 
-                   }
-               }
-               //Saco las etiquetas
-               for (let i = 0; i < etiquetas.length; i++) {
-                   if(Number.isInteger(parseInt(etiquetas[i]))){
-                       // key = `c`+etiquetas[i];
-                       key = etq[etq.length-1][etiquetas[i]];
-                       value = $(this).parent().find("td").eq(parseInt(etiquetas[i])).text();
-                       Object.assign(etiq,{[key]:value});
-                   }else{
-                       if(etiquetas[i]=="f1"){
-                           if($("#"+etiquetas[i]).length < 1){
-                               let f = getCurrentDate(0);
-                               Object.assign(etiq,{Fecha :f});
-                           }else{
-                              Object.assign(etiq,{Fecha:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
-                           }       
-                       }else if(etiquetas[i]=="f1f2"){
-                           if($("#"+etiquetas[i]).length < 1 ){
-                               let f = getCurrentDate(0);
-                               Object.assign(etiq,{Fecha2 :f});
-                           }else{
-                              Object.assign(etiq,{Desde:$("#"+etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY')});
-                              Object.assign(etiq,{Hasta:$("#"+etiquetas[i]).data('daterangepicker').endtDate.format('DD/MM/YYYY')});
-                           }
-                       }else{
-                           let str = etiquetas[i];
-                           Object.assign(etiq,{[str.charAt(0).toUpperCase()+str.slice(1)]:$('#'+etiquetas[i]).selectpicker('val')});
-                       } 
-                   }
-               }
-           }
-       }
-       if(iscorrect){
-           //Convierto para que se envien los parametros
-           let algo=[];
-           algo[0]=data;
-           let keys = Object.getOwnPropertyNames(data).filter((x)=>{
-               return x!="length"?x:"";
-           });
-           let valores= Object.values(data);
-           let string="{";
-           keys.forEach((key,index)=>{
-               string+=`"${key}":"${valores[index]}",`;
-           })
-           string = string.slice(0, string.length - 1);
-           string+="}";
-           var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST");
-           let set = Object.values(JSON.parse(info.settings.jsr));
-           let invisibles = [];
-           let sumatorias = [];
-           etq.push(info.data.head);
-           vtn.push(set);
-           extra.push(info.datos_extra);
-           if(set[0].length > 0){
-               
-                have_set.push(true);
-
-                btns.push(set[0].filter(function(x){
-                    return x.label == 'Anular';
-                }));
-
-               invisibles = set[0].find(function(x){    
-                   return x.label == '96';
-               });
-
-               sumatorias = set[0].find(function(x){    
-                   return x.label == '97';
-               });
-               
-               dclick =[];
-               dclick.push(set[0].filter(function(x){ 
-                   if(x.label!='98' && x.label!='99' && x.label!='97' && x.label != '96'){
-                       return x;
-                   }else if(x.label=='98'){
-                       return x;
-                   }
-                   
-               }));
-               rclick=[];
-               rclick.push([0].find(function(x){    
-                   return x.label == '99';
-               }));
-
-               if(dclick[0]!=undefined){
-                   isdclick2=true;
-               }
-
-               if(rclick[0]!=undefined){
-                   isrclick2=true;
-               }
-
-               if(invisibles !=undefined){
-                  invisibles=invisibles.datos.c_invisible.split(",");
-                  invisibles = invisibles.map(function(x){    
-                    return parseInt(x);
-                  });   
-               }else{
-                  invisibles = [];
-               }
-                
-         
-               if(sumatorias != undefined){
-                  sumatorias=sumatorias.datos.c_sumatoria.split(",");
-                  sumatorias = sumatorias.map(function(x){    
-                    return parseInt(x);
-                  });
-               }else{
-                  sumatorias = [];
-               }
-
-           }else{
-                have_set.push(false);
-               isdclick2=false;
-               isrclick2=false;
-           }
-
-           if(emergente=="tabla"){
-            let btn = btns[btns.length -1][0];
-                
-             let labels_extra = extra[extra.length -1 ];
-               //Convierto para que se envien las etiquetas
-               let algo=[];
-               algo[0]=etiq;
-               et = etiq;
-               let keys = Object.getOwnPropertyNames(etiq).filter((x)=>{
-                   return x!="length"?x:"";
-               });
-               let valores= Object.values(etiq);
-               let string="{";
-               keys.forEach((key,index)=>{
-                   string+=`"${key}":"${valores[index]}",`;
-               })
-               string = string.slice(0, string.length - 1);
-               string+="}";
-               let labels_modal = JSON.parse(string);
-               if($(base).children().length>1){
-                   $(base).children().last().removeClass("show");
-               }
-               modal_id++;
-               let modal = $(base).children().first().html().replaceAll("{}",modal_id);
-               let modalsplit=modal.split("*");
-               let string_divs="";
-               keys.forEach((key,index)=>{
-                   string_divs+=`<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><p><label>${key}</label>:<label>${valores[index]}</label></p></div>`;
-               });
-               let button = ``;
-               if(btn!=undefined){
-                    if(btn.datos.condicion=="1"){
-                        button += `<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><button type="button" class="btn btn-lg btn-danger" id="`+btn.datos.id+`">`+btn.label+`</button></div>`;
-                    }
-               }
-               if(labels_extra.length > 0){
-                    let d=[];
-                    d[0]=labels_extra[0];
-                    let keys_extra = Object.getOwnPropertyNames(labels_extra[0]).filter((x)=>{
-                        return x!="length"?x:"";
-                    });
-                    let valores_extra= Object.values(labels_extra[0]);
-                    keys_extra.forEach((key,index)=>{
-                        string_divs+=`<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><p><label>${key}</label>:<label>${valores_extra[index]}</label></p></div>`;
-                    })
-                }
-               string_divs+=button;
-               modalsplit[1]=string_divs;
-               modal=modalsplit.join("");
-               modal=modal.replaceAll("#",titulo.charAt(0).toUpperCase()+titulo.slice(1).replaceAll("_"," "));
-               $(base).append(modal);
-
-               $('#tabla'+modal_id).removeClass('invisible');
-               crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,isdclick2,dclick,isrclick2,invisibles,sumatorias,labels_modal,titulo,"#modal"+modal_id);
-               
-           }
-
-
-       }
-  
-
-      
-   }
-   
-}
-);
-$(document).on('click', '.btn-danger', async function () { 
-    let btn = btns[btns.length -1 ];
-    let data = [];
-    let parametros = btn[0].datos.parametros.split(",");
-    let comando2 = btn[0].datos.id;
-    Object.assign(data,{"comando":comando2});
-    for (let i = 0; i < parametros.length; i++) {
-        Object.assign(data,{[parametros[i]]:et[parametros[i]]});
-    }
-    let keys = Object.getOwnPropertyNames(data).filter((x)=>{
-        return x!="length"?x:"";
-    });
-    let valores= Object.values(data);
-    let string="{";
-    keys.forEach((key,index)=>{
-        string+=`"${key}":"${valores[index]}",`;
-    })
-    string = string.slice(0, string.length - 1);
-    string+="}";
-    var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST"); 
-
+    let column=$(this).parent().children().index(this);
+    let row = $(this).closest("tr"); 
+    window[moneda_actual] = await gestor.event_dclick(window[moneda_actual],row,column,base);
 });
+
 //Click Derecho
 
 $(document).on('contextmenu', 'td', function (e) {
-    let rclick = vtn[vtn.length -1 ];
+    console.log(e.pageY);
+    console.log(e.pageX);
     row = $(this).closest("tr"); 
-    if(isrclick){
-        for (let a = 0; a < rclick[0].length; a++) {
-            if(rclick[0][a].label=='99'){
-                var elementos=rclick[0][a].datos.items;
-            }
-        }
+    let stack = window[moneda_actual].peek();
+    if(stack.settings.is_rclick){
+        let rclick = stack.settings.rclick;
+        let row = $(this).closest("tr"); 
+        var elementos=rclick[0].datos.items;
         let html = ``;
 
         for (let i = 0; i < elementos.length; i++) {
-           html+=abrirMenu(elementos[i]);
+           html+=gestor.abrirMenu(elementos[i]);
             
         }
-        $("#menuTabla").html(html);
+        if($(base).children().length>1){
+            id_menu=window[moneda_actual].modal;
+        }else{
+            id_menu=moneda_actual;
+        }
+        $("#menuTabla_"+id_menu).html(html);
         const bd = document.body.classList.contains(
             'sidebar-enable'
         );
@@ -506,104 +146,56 @@ $(document).on('contextmenu', 'td', function (e) {
             var top = e.pageY - 200;
             var left = e.pageX-50;
         }
+        if(window[moneda_actual].modal>1){
+            var top = e.pageY-100;
+            var left = e.pageX-200;
+        }
 
         $(this).css('box-shadow', 'inset 1px 1px 0px 0px red, inset -1px -1px 0px 0px red');
-        $("#menuTabla").css({
+        $("#menuTabla_"+id_menu).css({
             display: "block",
             top: top,
             left: left
         });
-
-   
-    
     }
-
     return false; 
-  
 });
 
-function abrirMenu (elemento){
-    let html = ``;
-    html+=`<a class="dropdown-item ritem" id="rclick" data-id="`+elemento.id+`">`+elemento.titulo+`</a>`;
-    return html;
-    
-}
-
-$("table").on("click", function() {
-	if ( $("#menuTabla").css('display') == 'block' ){
-  	    $("#menuTabla").hide();
+//Funcion para ocultar el menu cuando no se de click en el
+$(document).click(function() {
+    var obj = $("#menuTabla_"+id_menu);
+    if (!obj.is(event.target) && !obj.has(event.target).length) {
+        if ( $("#menuTabla_"+id_menu).css('display') == 'block' ){
+            $("#menuTabla_"+id_menu).hide();
+        }
+        $('td').css('box-shadow', 'none');
+    }else{
+        $("#menuTabla_"+id_menu).hide();
+        $('td').css('box-shadow', 'none');
     }
-    $('td').css('box-shadow', 'none');
 });
 
-$("#menuTabla a").on("click", function() {
-  $(this).parent().hide();
+//Funcion para ocultar el menu cuando se clickee en un elemento
+
+$("#menuTabla_"+id_menu+" a").on("click", function() {
+    $(this).parent().hide();
 });
 
 
+//Funcion para ejecutar el click derecho seleccionado
 $(document).on('click', '#rclick', async function () { 
-    let rclick = vtn[vtn.length -1 ];
-    let data = [];
-    let etiq = [];
-    let key;
-    let value;
-    for (let a = 0; a < rclick[0].length; a++) {
-        if(rclick[0][a].label=='99'){
-            var elementos=rclick[0][a].datos.items;
-        }
-    }
-    let data_id = $("#rclick").attr( "data-id" )
-    for (let i = 0; i < elementos.length; i++) {
-        if(elementos[i].id==data_id){
-            let comando = elementos[i].comando;
-            let orden = elementos[i].orden;
-            let parametros = elementos[i].parametros.split(",");
-            let emergente = elementos[i].emergente;
-            Object.assign(data,{"comando":comando});
-            for (let i = 0; i < parametros.length; i++) {
-                if(Number.isInteger(parseInt(parametros[i]))){
-                    key = `c`+parametros[i];
-                    value = row.find("td").eq(parseInt(parametros[i])).text();
-                    Object.assign(data,{[key]:value});
-                }else{
-                    if(parametros[i]=="f1"){
-                        if($("#"+parametros[i]).length < 1){
-                            let f = getCurrentDate(1);
-                            Object.assign(data,{[parametros[i]]:f});
-                        }else{
-                            Object.assign(data,{[parametros[i]]:$('#'+parametros[i]).data('daterangepicker').startDate.format('YYYYMMDD')});
-                        }       
-                    }else if(parametros[i]=="f1f2"){
-                        if($("#"+parametros[i]).length < 1 ){
-                            let f = getCurrentDate(1);
-                            Object.assign(data,{[parametros[i]]:f});
+    let data_id = $(this).attr("data-id");
+    $("#load_"+moneda_actual).addClass('spinner');
+    let column=$(this).parent().children().index(this);
+    window[moneda_actual] = await gestor.event_rclick(window[moneda_actual],row,column,base,data_id);
+});
 
-                        }else{
-                           Object.assign(data,{f1:$("#"+parametros[i]).data('daterangepicker').startDate.format('YYYYMMDD')});
-                           Object.assign(data,{f2:$("#"+parametros[i]).data('daterangepicker').endtDate.format('YYYYMMDD')});
-                        }
-                    }else{
-                        Object.assign(data,{[parametros[i]]:$('#'+parametros[i]).selectpicker('val')});
-                    } 
-                }
-            }
-            //Convierto para que se envien los parametros
-            let algo=[];
-            algo[0]=data;
-            let keys = Object.getOwnPropertyNames(data).filter((x)=>{
-                return x!="length"?x:"";
-            });
-            let valores= Object.values(data);
-            let string="{";
-            keys.forEach((key,index)=>{
-                string+=`"${key}":"${valores[index]}",`;
-            })
-            string = string.slice(0, string.length - 1);
-            string+="}";
-            var info =  await ajax_peticion("/query/standard_query", {'data': string}, "POST");
-            console.log(info);
-
-        }
-    }
+//Funcion para ejecutar el OnChange de F3 cuando sea por meses
+$(document).on("change","#f3",async function(){
+    let ano = $(this).selectpicker("val");
+    $("#load_"+moneda_actual).addClass('spinner');
+    window[moneda_actual] = await gestor.event_change(window[moneda_actual],base,ano);
 
 });
+
+

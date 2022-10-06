@@ -49,7 +49,7 @@ class Importer
     {   
         try {
             $html = "<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>" . $label . "</label>";
-            $html .= "<select class='selectpicker' data-live-search='true' id=".strtolower(str_replace(" ","_",$label))." data-type:'".$type."'>";
+            $html .= "<select class='selectpicker' data-live-search='true' id=".strtolower(str_replace(" ","_",$label))." data-type='".$type."'>";
             foreach ($json as $key => $select) {
                 if (!isset($select->id)) {
                     $select->id = $select->label;
