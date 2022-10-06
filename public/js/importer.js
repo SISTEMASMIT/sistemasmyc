@@ -6,7 +6,8 @@ export function formulario_emergente_input_text(label,json,clase,style){
 }
 
 export function formulario_emergente_input_int(label,json,clase,style){
-    return `<div class='col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 filtros'><label class='form-label'>${label}</label>
+    let c = clase!="1" && clase!=undefined ?clase:"col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12";
+    return `<div class='${c} filtros'><label class='form-label'>${label}</label>
     <input class='form-control form-control-lg' id='${json.id!=undefined?json.id:label}' type='numeric' placeholder='${label}' required>
     </div>`
 }
@@ -88,4 +89,14 @@ export function formulario_emergente_date_year(label,json,clase,style){
    }catch(e){
     console.log(e)
    }
+}
+
+export function formulario_checkbox(label,json,clase,style){
+    let c = clase!="1" && clase!=undefined ?clase:"col-6 col-sm-3 col-md-3 col-lg-2 col-xl-2";   
+    return `<div class="${c} form-check">
+    <input class="form-check-input" type="checkbox" value="" id="${json.id}">
+    <label class="form-check-label" for="flexCheckDefault">
+      ${label}
+    </label>
+  </div>`
 }

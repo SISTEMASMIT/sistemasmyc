@@ -30,7 +30,9 @@ var modal_id = 1;
 var row;
 var parametros_segundo_envio = [];
 var hay_f4 = false;
-var receptor = "Todos";
+window["receptor"] ="";
+var botones_emergente=Array();
+var parametros_emergentes=Array()
 
 $(document).ready(async function () {
     rangeDate("#f1f2");
@@ -589,6 +591,7 @@ function abrirMenu(elemento) {
 
 }
 
+var esmokita="algo";
 ///Agregar
 $(document).on("click", "#agregrar", async function () {
     let data = { "comando": "", "orden": $(this).attr("data-orden") };
@@ -600,15 +603,60 @@ $(document).on("click", "#agregrar", async function () {
     let modalsplit = modal.split("*");
     let titulo = '';
     let jstree = false;
+
+    if ($(base).children().length > 1) {
+        if(botones_emergente.length>0){
+            console.log(botones_emergente)
+                let formulario_parametros=botones_emergente[botones_emergente.lenght-1].datos.parametros.split(",");
+                let parametros_data=botones_emergente[botones_emergente.lenght-1].datos.parametros_data!=undefined?botones_emergente[botones_emergente.lenght-1].datos.parametros_data.split(","):[];
+                let param= new Object();
+                param.parametros=Array()
+                formulario_parametros.map((f)=>{
+                    let o= Object();    
+                    let data=f.split(":")
+                    if(data[1]=="select"){
+                        o.index=data[0];
+                        o.valor=$("#"+data[0]).selectpicker("val")    ;
+                    }else
+                    if(data[1]=="text" || data[1]=="int"){
+                        o.index=data[0];
+                        o.valor=$("#"+data[0]).val();
+                    }else
+                    if(data[1]=="check"){
+                        o.index=data[0];
+                        o.valor=$("#"+data[0]).prop('checked')?1:0;
+                    }
+                    param.parametros.push(o)
+                });
+                parametros_data.map((f)=>{
+                    let o= Object();
+                    o.valor=window[f]
+                    o.index=f
+                    param.parametros.push(o)
+                });
+                parametros_emergentes.push(param)
+            console.log(parametros_emergentes);
+        }
+        $(base).children().last().removeClass("show");
+    }
     if (formulario.filtros != undefined) {
         formulario.filtros.forEach((element, index) => {
             if (element.tipo != "titulo") {
                 if (imp[element.tipo]) {
                     if ($(this).attr("data-orden") == "modalAgregarAgencia" && element.tipo.includes("button") && jstree == false) {
                         jstree = true
-                        html += `<div class='col-6'><label>Arbol de Receptores</label><input id="search" class="espaciadoB form-control" type="text" placeholder="Buscar receptor"><br><div id="folder_jstree" class="col-6"></div></div>`
+                        html += `<div class='col-6'>
+                                <label>Arbol de Receptores</label>
+                                <input id="search" class="espaciadoB form-control" type="text" placeholder="Buscar receptor">
+                                <br>
+                                <div id="folder_jstree" class="col-6">
+                                </div>
+                            </div>`
                     }
                     html += imp[element.tipo](element.label, element.datos, element.clase, element.style)
+                }
+                if(element.tipo.includes("button")){
+                    botones_emergente.push(element)
                 }
             } else {
                 titulo = element.datos.id;
@@ -618,18 +666,19 @@ $(document).on("click", "#agregrar", async function () {
         modalsplit[1] = html;
         modal = modalsplit.join("");
         modal = modal.replaceAll("#", titulo);
-        if ($(base).children().length > 1) {
-            $(base).children().last().removeClass("show");
-        }
 
         $(base).append(modal);
         if (jstree) {
             pintarJstree("#base #modal" + modal_id + " #folder_jstree")
         }
-        $("#grupo").selectpicker("refresh");
-        $("#cobrador").selectpicker("refresh");
-        $("#anula_tickets").selectpicker("refresh");
-        $("#zona").selectpicker("refresh");
+
+        formulario.filtros.forEach((element, index) => {
+            if(element.tipo.includes("select")){
+                element.datos.id=element.datos.id==undefined?element.label.toLowerCase().replaceAll(" ","_"):element.datos.id;
+                $("#"+ element.datos.id).selectpicker("refresh");
+            }
+        })
+        
         if ($(base).children().length > 1) {
             $(base).children().last().modal("show");
             $(base).children().last().addClass("fade");
@@ -1105,6 +1154,7 @@ $(document).on("change", "#f3", async function () {
 async function pintarJstree(id) {
     let data = { "comando": "get_rec_treerojo" };
     let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(data) }, "POST");
+    info.data.data = JSON.parse(JSON.stringify(info.data.data).replaceAll(".","_"));
     $(id).jstree({
         'core': {
             'check_callback': true,
@@ -1126,6 +1176,14 @@ async function pintarJstree(id) {
             'show_only_matches': true
         },
         "conditionalselect": function (node, event) {
+            if(node.original.hijos==0){
+                Swal.fire({
+                    title: '',
+                    text: "Seleccione el icono para poder ver los receptores que pueden tener agencias directas RECEPTORES DE COLOR AZUL",
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                  });
+            }
             return node.original.hijos == 1;
         },
         'plugins': ['conditionalselect', 'types', 'search'],
@@ -1138,8 +1196,14 @@ async function pintarJstree(id) {
     }).bind("loaded.jstree", function (e) {
         for (var i in info.data.data) {
             if (info.data.data[i].hijos === "1") {
-                $("#" + info.data.data[i].id.replaceAll(".", "") + " >a").css("color", "blue")
-                $("#" + info.data.data[i].id.replaceAll(".", "") + " >a >i").css("display", "none")
+                if(info.data.data[i].id.endsWith(".")){
+                    info.data.data[i].id=info.data.data[i].id.substring(0,info.data.data[i].id.length-2);
+                    $("#" + info.data.data[i].id + " >a").css("color", "blue")
+                    $("#" + info.data.data[i].id + " >a >i").css("display", "none")
+                }else{
+                    $("#" + info.data.data[i].id + " >a").css("color", "blue")
+                    $("#" + info.data.data[i].id + " >a >i").css("display", "none")
+                }
             } else {
                 $("#" + info.data.data[i].id.replaceAll(".", "") + " >a").css("color", "red");
                 $("#" + info.data.data[i].id.replaceAll(".", "") + " >a >i").css("display", "none")
@@ -1170,8 +1234,8 @@ async function pintarJstree(id) {
         }
     }).on("select_node.jstree", function (e, data) {
         $(id).jstree().close_node($("#Todos"));
-        receptor = data.node.id;
-        console.log(receptor)
+        window["receptor"] = data.node.id.replaceAll("_",".");
+        
     });
     
 }
@@ -1179,7 +1243,6 @@ var to = false;
 $(document).on("keyup",id +"#search",function () {
     if(to) { clearTimeout(to); }
     to = setTimeout(function () {
-
       var v = $("#search").val();
       $("#base #modal2 #folder_jstree").jstree(true).search(v);
     }, 250);})
