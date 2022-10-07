@@ -113,7 +113,7 @@ function extraer_parametros(parametros){
                 Object.assign(data,{["f1"]:$("#"+parametro).data('daterangepicker').startDate.format('YYYYMMDD')});
                 Object.assign(data,{["f2"]:$("#"+parametro).data('daterangepicker').endDate.format('YYYYMMDD')});
             }
-        }else if(tipo=='input'){
+        }else if(tipo=='input_text'){
             Object.assign(data,{[parametro]:$.trim($("#"+parametro).val())});
         }else if(tipo=='input_int'){
             if($("#"+parametro).val()!=''){
