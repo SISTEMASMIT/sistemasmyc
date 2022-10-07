@@ -45,7 +45,8 @@ class Agencias extends Controller
         }
      }
     function agencias(){}
-
+    function autorizar_agencias(){}
+    function desautorizar_agencias(){}
 }
 
  ?>

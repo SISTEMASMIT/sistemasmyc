@@ -35,7 +35,7 @@ class QueryModel{
         $datos_extra=[];
         $usuario = json_decode($_SESSION["usuario"]);
         $data_inicial = json_decode($_POST["data"]);
-        $comando =$data_inicial->comando;
+        $comando = $data_inicial->comando;
         $data_inicial->usuario = $usuario->user;
         $data_inicial->banca= $usuario->banca;
         $data_inicial->token = $usuario->token;
@@ -177,6 +177,7 @@ class QueryModel{
     public function comando_orden(&$data_inicial,&$comando,&$orden){
         if(isset($_SESSION[$comando]->comando)){
             $data_inicial->comando = $_SESSION[$comando]->comando;
+            $data_inicial->orden = $_SESSION[$comando]->orden;
             $orden=$_SESSION[$comando]->orden;
             $comando=$_SESSION[$comando]->comando;
         }else{

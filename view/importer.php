@@ -14,11 +14,11 @@ class Importer
         $array=json_decode($filtros);
         foreach($array->filtros as $filtro){
             if(method_exists($this,$filtro->tipo)){
-                echo $this->{$filtro->tipo}($filtro->label,$filtro->datos,$filtro->tipo);
+                echo $this->{$filtro->tipo}($filtro->label,$filtro->datos,$filtro->tipo,$filtro->clase,$filtro->style);
             }                        
         }
     }
-    function select_search_shadow($label, $json, $type)
+    function select_search_shadow($label, $json, $type,$clase,$style)
     {   
         try {
             $html = "<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>" . $label . "</label>";
@@ -45,7 +45,7 @@ class Importer
         }
     }
 
-    function select_search($label, $json, $type)
+    function select_search($label, $json, $type,$clase,$style)
     {   
         try {
             $html = "<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>" . $label . "</label>";
@@ -71,7 +71,7 @@ class Importer
     }
 
 
-    function select_multiple($label, $json, $type)
+    function select_multiple($label, $json, $type,$clase,$style)
     {
         try {
             $html = "<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>" . $label . "</label>";
@@ -93,7 +93,7 @@ class Importer
             echo $e;
         }
     }
-    function select($label, $json, $type)
+    function select($label, $json, $type,$clase,$style)
     {
         try {
             $html = "<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label' >" . $label . "</label>";
@@ -115,7 +115,7 @@ class Importer
         }
     }
 
-    function button($label, $json, $type)
+    function button($label, $json, $type,$clase,$style)
     {   
         if(!isset($json->id)){
             $json->id=$label;
@@ -134,7 +134,7 @@ class Importer
         }
     }
 
-    function input_int($label, $json, $type)
+    function input_int($label, $json, $type,$clase,$style)
     {
     try {   if (!isset($json->id)) {
                     $json->id = $label;
@@ -147,11 +147,26 @@ class Importer
             echo $e;
         }
     }
-    
-    function date($label, $json, $type)
+
+    function input_text($label, $json, $type,$clase,$style)
     {
+        $clase=$clase="1"?$clase:"col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12";
+    try {   if (!isset($json->id)) {
+                    $json->id = $label;
+                }
+            $html = "<div class='".$clase." filtros'><label class='form-label'>" . $label . "</label>";
+            $html .="<input class='form-control form-control-lg' id='".strtolower(str_replace(" ","_",$json->id))."' data-type='".$type."' type='text' placeholder='".$label."' required>";
+            $html .= "</div>";
+            return $html;
+        } catch (Exception $e) {
+            echo $e;
+        }
+    }
+    function date($label, $json, $type,$clase,$style)
+    {
+        $clase=$clase="1"?$clase:"col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3";
     try {
-            $html = "<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>" . $label . "</label>";
+            $html = "<div class='".$clase." filtros'><label class='form-label'>" . $label . "</label>";
             $html .="<input type='text' class='form-control form-control-lg' id='".strtolower(str_replace(" ","_",$json->id))."' data-type='".$type."'>";
             $html .= "</div>";
             return $html;
