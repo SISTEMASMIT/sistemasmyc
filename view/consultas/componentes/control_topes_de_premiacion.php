@@ -15,7 +15,7 @@
                     <!-- Aqui debemos agregar un modal emergente para cuando estemos con loterias seleccionar -->
                     
                 <!-- Aqui van los receptores -->
-                <?php
+                    <?php
                         if($this->filtros!=-1){
                             $importer->crearFiltros($this->filtros[0]["jsr"]);
                         }
@@ -46,5 +46,5 @@
         </div> <!-- container-fluid -->
     </div>  <!--- page-content --->
 </div><!-- FIN CONTENIDO WEB -->
-<script type="module" src="<? $path;?>/public/js/<?php echo str_replace("-","_",$this->url[1])?>_age.js" ></script> 
+<script type="module" src="<? $path;?>/public/js/<?php echo str_replace("-","_",$this->url[1])?>.js" ></script> 
 <script src="<? $path;?>/public/js/sweetalert2.js"></script>

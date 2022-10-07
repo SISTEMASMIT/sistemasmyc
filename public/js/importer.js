@@ -1,14 +1,24 @@
-export function formulario_emergente_input_text(label,json){
-    return `<div class='col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 filtros'><label class='form-label'>${label}</label>
+export function formulario_emergente_input_text(label,json,clase,style){
+    let c = clase!="1" && clase!=undefined ?clase:"col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12";
+    return `<div class='${c} filtros'><label class='form-label'>${label}</label>
     <input class='form-control form-control-lg' id='${json.id!=undefined?json.id:label}' type='numeric' placeholder='${label}' required>
     </div>`
 }
-export function formulario_emergente_date(label,json){
+
+export function formulario_emergente_input_int(label,json,clase,style){
+    let c = clase!="1" && clase!=undefined ?clase:"col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12";
+    return `<div class='${c} filtros'><label class='form-label'>${label}</label>
+    <input class='form-control form-control-lg' id='${json.id!=undefined?json.id:label}' type='numeric' placeholder='${label}' required>
+    </div>`
+}
+
+
+export function formulario_emergente_date(label,json,clase,style){
     return `<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>${label}</label>
     <input type='text' class='form-control form-control-lg' id='${json.id!=undefined?json.id:label}'>
     </div>`
 }
-export function formulario_emergente_select(label,json){
+export function formulario_emergente_select(label,json,clase,style){
    try{
         let html=`<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>${label}</label>
         <select class='selectpicker' id='${label.toLowerCase().replaceAll(" ", "_")}'>`
@@ -29,7 +39,7 @@ export function formulario_emergente_select(label,json){
     console.log(e)
    }
 }
-export function formulario_emergente_select_multiple(label,json){
+export function formulario_emergente_select_multiple(label,json,clase,style){
     try{
          let html=`<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>${label}</label>
          <select class='selectpicker' id='${label.toLowerCase().replaceAll(" ", "_")}' data-live-search='true' data-selected-text-format='count' multiple>`
@@ -50,13 +60,14 @@ export function formulario_emergente_select_multiple(label,json){
      console.log(e)
     }
  }
-export function button_emergente(label,json){
+export function button_emergente(label,json,clase,style){
+    let orden = json.orden!="" && json.orden!= undefined && json.orden
     return `<div class='col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 filtros'>
-    <button type='button' id='${json.id}' class='btn-lg btn-block btn-success'>${label}</button>
+    <button type='button' id='${json.id}' class='btn-lg btn-block btn-success' data-orden="${orden}">${label}</button>
     </div>`
 }
 
-export function formulario_emergente_date_year(label,json){
+export function formulario_emergente_date_year(label,json,clase,style){
     try{
         let html=`<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>${label}</label>
         <select class='selectpicker' id='${json.id}'>`
@@ -78,4 +89,14 @@ export function formulario_emergente_date_year(label,json){
    }catch(e){
     console.log(e)
    }
+}
+
+export function formulario_checkbox(label,json,clase,style){
+    let c = clase!="1" && clase!=undefined ?clase:"col-6 col-sm-3 col-md-3 col-lg-2 col-xl-2";   
+    return `<div class="${c} form-check">
+    <input class="form-check-input" type="checkbox" value="" id="${json.id}">
+    <label class="form-check-label" for="flexCheckDefault">
+      ${label}
+    </label>
+  </div>`
 }

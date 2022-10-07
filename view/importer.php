@@ -125,7 +125,8 @@ class Importer
         }
         try {
             $html = "<div class='col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 filtros'>";
-            $html .= "<button type='button' id='".strtolower(str_replace(" ","_",$json->id))."' class='".$this->colores[$label]." btn-lg btn-block'>".$label."</button>";
+            $orden=isset($json->orden)?$json->orden:"";
+            $html .= "<button type='button' id='".strtolower(str_replace(" ","_",$json->id))."' class='".$this->colores[$label]." btn-lg btn-block' data-orden=".$orden.">".$label."</button>";
             $html .= "</div>";
             return $html;
         } catch (Exception $e) {

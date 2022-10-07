@@ -122,9 +122,6 @@ $( document ).ready(async function() {
     $("#grupo").html(html2);
 
     //Jstree
-
-    
-    
 });
 
 
@@ -242,14 +239,13 @@ function pintarJstree(id){
                         'case_insensitive': true,
                         'show_only_matches' : true
                     },
-                    'checkbox': { 'keep_selected_style': false },
-                    'plugins': ['checkbox', 'types' ,'search'],
+                    'plugins': ['types' ,'search'],
                     'themes': {
                         'theme': 'apple',
                         "dots": true,
                         "icons": true
                     },
-                    'plugins': ['checkbox', 'search','types', 'html_data', 'themes', 'ui']
+                    'plugins': [ 'search','types', 'html_data', 'themes', 'ui']
                 }).on('search.jstree', function (nodes, str, res) {
                     if (str.nodes.length===0) {
                         $('#search').jstree(true).hide_all();
