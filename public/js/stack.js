@@ -16,6 +16,10 @@ export class Stack {
     peek(){
         return this.stack[this.stack.length-1];
     }
+    
+    previous(){
+        return this.stack[this.stack.length-2];
+    }
 
     size(){
         return this.stack.length;

@@ -1,6 +1,6 @@
 var totalTime = 50;
 var sumados=[];
-export function crear_tabla(table){
+export function crear_tabla_editable(table){
     let parametro = table["parametro"];
     let tb = table["tb"];
     let hd = table["hd"];
@@ -223,6 +223,7 @@ export function crear_tabla(table){
 
 function crear_head(data){
     let head = `<tr>`;
+    head += `<th >Premiar</th>`;
     for(var i in data){
         head+=`<th>`+data[i].charAt(0).toUpperCase()+data[i].slice(1)+`</th>`;
     }
@@ -235,6 +236,7 @@ function crear_body(data){
     let body = ``;
     for(var i in data){
         body+=`<tr>`
+        body+=`<td class="btn btn-sm btn-info premiar"  id="editar"><i class="fa-solid fa-trophy"></i></td>`;
             for(var a in data[i]){
                 if(data[i][a]==null)data[i][a]='';
                 if(Number.isInteger(parseInt(data[i][a]))){

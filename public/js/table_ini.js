@@ -33,7 +33,7 @@ function crear_base(id,monedas){
         html+=`<div id="carga_`+moneda+`"><div id="load_`+moneda+`"></div></div>
             <div id="tabla_res_`+moneda+`" class="espaciadoT">
                 <div id="f_`+moneda+`"><table id="tablaf_`+moneda+`" class="cell-border nowrap" style="width:100%"></table></div>
-                    <table id="tabla_`+moneda+`" class="cell-border display nowrap invisible" style="width:100%">
+                    <table id="tabla_`+moneda+`" class="cell-border display nowrap invisible" style="width:100%; user-select="none";">
                         <thead class="thead" id="thead_`+moneda+`">
                             <tr><th></th></tr>
                         </thead>

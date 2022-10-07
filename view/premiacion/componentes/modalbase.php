@@ -1,7 +1,7 @@
 <div id="base">
 <div>
 <div class="modal fade" id="modal{}" tabindex="-1" aria-labelledby="exampleModalLabel" style="display: none;" aria-hidden="true">
-    <div class="modal-dialog modal-fullscreen" style="max-width: 95%;">
+    <div class="modal-dialog modal-fullscreen" style="max-width: 100%;">
         <div class="modal-content">
             <div class="modal-header">
             <h5 class="modal-title" id="">#</h5>
@@ -9,13 +9,13 @@
             </div>
             <div class="modal-body mb2">
             <div class='row'>*<h5 class="" id="">#</h5>*</div>
-                <table id="tabla{}" class="cell-border display nowrap invisible" width="100%" style="width:100%">
-                    <thead class="thead" id="thead{}">
+                <table id="tabla_{}" class="cell-border display nowrap invisible" width="100%" style="width:100%; user-select: none;">
+                    <thead class="thead" id="thead_{}">
                         <tr>
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody id="tbody{}">
+                    <tbody id="tbody_{}">
                         <tr>
                             <td></td>
                         </tr>

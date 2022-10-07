@@ -1,6 +1,9 @@
 table .selected{
     background-color: #2196F3 !important;
 }
+table{
+    user-select: none !important;
+}
 .niveles{
     text-align: left;
 }

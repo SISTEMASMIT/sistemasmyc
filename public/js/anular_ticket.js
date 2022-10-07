@@ -1,150 +1,138 @@
-import {oneDate} from "./date.js";
+import * as fecha from "./date.js";
 import {ajax_peticion} from "./Ajax-peticiones.js";
-import {crear_tabla} from "./table.js";
+import {ini_tabla} from "./table_ini.js";
+import {Stack} from './stack.js';
+import * as gestor from "./gestor.js";
+import {crear_tabla} from "./table2.js";
 
-var id='';
+var monedas=[];
+var moneda_actual;
+var stack = new Stack();
 var base="#base";
-var titulo ="";
-var tck = [];
-var vtn = [];
-var etq = [];
-var extra = [];
-var btns = [];
-var have_set = [];
-var et;
-var modal_id=1;
+var modal_id = 1;
+var boton=false;
 var row;
-var info2;
+var id_menu;
+var prev_data=[];
 
-$(document).ready(function(){
-   oneDate("#f1");
-   var columns = 6;
-    var rows = 10;
-    var head = crear_head(columns);
-    var body = crear_body(columns,rows);
-    var html=head+body;
-    $('#tablaf').html(html);
-    $('#tablaf').DataTable();
-})
+$(document).ready(function () {
+    
+    //Se realiza la generación de la tabla invisible, enviandose el ID de la table
+    monedas = gestor.consultar_monedas();
+    ini_tabla('#moneda',monedas);
+    moneda_actual = $("#moneda .tabs a.active").attr('id');
+    window[moneda_actual] = new Stack(moneda_actual,1);
+    
+    //Se inicializan las fechas
+    // fecha.rangeDate = f1f2 antiguos
+    // fecha.futuDate = f1f2 futuros
+    // fecha.oneDate = f1 unica
+
+    fecha.oneDate('#f1');
+});
 
 
-function crear_head(data){
-   let head = `<thead><tr>`;
-   for(var i=0; i<data;i++){
-       head+=`<th>-</th>`;
-   }
-   head+=`</tr></thead>`;
-   return head;
-}
+//Detectamos el cambio de moneda en el tab
+$(document).on("click", "#moneda .tabs .tab-list .tab", function(event) {
+	event.preventDefault();
 
-function crear_body(columns, rows){
-   let body = `<tbody>`;
-   for(var a =0; a< rows; a++){
-       body+=`<tr>`;
-       for(var i=0; i<columns;i++){
-           body+=`<td>-</td>`;
-       }
-       body+=`</tr>`
-   }
-   
-   
-   body+=`</tbody>`;
-   return body;
-}
+    boton=false;
+    $(".tab").removeClass("active");
+	$(".tab-content").removeClass("show");
+	$(this).addClass("active");
+	$($(this).attr('href')).addClass("show");
+    moneda_actual = $("#moneda .tabs a.active").attr('id');
+
+    var w = document.getElementById("tab-"+moneda_actual).clientWidth;
+    var h = document.getElementById("tab-"+moneda_actual).clientHeight;
+    h = h+500;
+    
+    
+    //Este if es para comprobar si ya existe una pila de esa moneda
+    if (window[moneda_actual].moneda != undefined) { 
+    }else{
+        window[moneda_actual] =  new Stack(moneda_actual,1)
+    }
+    if($('#nro_ticket').val()!=''){
+
+        if($('#cod_agencia').selectpicker('val')!='Todos'){
+            $("#carga_"+moneda_actual).addClass('carga');
+            $("#carga_"+moneda_actual).width( w );
+            $("#carga_"+moneda_actual).height( h );
+            $("#load_"+moneda_actual).addClass('spinner');
+
+            traer_data();
+
+            $("#carga_"+moneda_actual).removeClass('carga');
+            $("#load_"+moneda_actual).removeClass('spinner');
+        }else{
+            gestor.alerta('Seleccione una agencia','warning');
+        }   
+    }else{
+        gestor.alerta('Introduzca un número','warning');
+    }
+});
+
+
+
+$(document).on('click', '#anular_ticket', function() {
+    if($('#nro_ticket').val()!=''){
+        if($('#cod_agencia').selectpicker('val')!='Todos'){
+            boton=true;
+            traer_data();
+        }else{
+            gestor.alerta('Seleccione una agencia','warning');
+        }
+    }else{
+        gestor.alerta('Introduzca un número','warning');
+    }
+});
 
 
 //Ocultar El modal
 $(document).on('hidden.bs.modal', '#base', function() {
-    modal_id--;
     $(base).children().last().remove();
     if($(base).children().length>1){
         $('.modal-backdrop').addClass('show');
         $(base).children().last().addClass("fade");
         $(base).children().last().addClass("show");
     }
-    vtn.pop();
-    etq.pop();
-    extra.pop();
-    let ss=have_set[have_set.length-1];
-    if(ss){
-        btns.pop();
-    }
+    window[moneda_actual].modal=window[moneda_actual].modal-1;
+    window[moneda_actual].pop();
  });
 
-$(document).on('click', '#anular_ticket', async function() {
-   $('#tabla1').removeClass('invisible');
-   if($('#nro_ticket').val()!=''){
-        montar_tabla();
-   }else{
-    $('#nro_ticket').attr("placeholder", "Ingrese un Número");
-   }
-});
-
-async function montar_tabla(){
-   var w = document.getElementById("tabla_res").clientWidth;
-   var h = document.getElementById("tabla_res").clientHeight;
-   h = h+500;
-//    $('#f').html('');
-   $("#carga").addClass('carga');
-   $("#carga").width( w );
-   $("#carga").height( h );
-   $("#load").addClass('spinner');
-   let data = [];
-   let numero_ticket =$.trim($('#nro_ticket').val());
-   let agencias = $('#cod_agencia').selectpicker('val');
-   data = {"c2":numero_ticket,"c1":agencias,"comando":"anular_ticket"};
-   var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
-   info2=info;
-   let set = Object.values(JSON.parse(info.settings.jsr));
-   if(info.data.data<1){
-    Swal.fire({
-        title: 'Error!',
-        text: 'Ticket o Agencia Erroneos',
-        icon: 'error',
-        confirmButtonText: 'Aceptar'
-      })
-        $("#carga").removeClass('carga');
-        $("#load").removeClass('spinner');
-   }else{
-    let labels = {"Numero Ticket":numero_ticket,"Agencias":agencias};
-    modal_emergente(info);
-   
+ //Trae la data de acuerdo a los parametros iniciales
+async function traer_data(){
+    moneda_actual = $("#moneda .tabs a.active").attr('id');
+    $('#tabla1').removeClass('invisible');
+    $('#tabla_'+moneda_actual).removeClass('invisible');
+    //Se llama al método de crear la tabla, se le envían dos arreglos, parametros y etiquetas.
+    let parametros = ["cod_agencia","nro_ticket"];
+    let extras = {};
+    let datos_manuales = ['c1','c2'];
+    //parametros,  extras, moneda, comando/id 
+    if(window[moneda_actual].size()<1 || boton==true){
+        window[moneda_actual].push(await gestor.consulta(parametros,extras, moneda_actual,"anular_ticket",datos_manuales));
+    }
+    //Caso único para Anular Ticket
+    modal_emergente(window[moneda_actual]);
 }
 
-}
-
-
-function getCurrentDate(formato){
-    const date = new Date();
-    let day = `${date.getDate()}`.padStart(2, "0")
-    let month = `${date.getMonth() + 1}`.padStart(2, "0")
-    let year = date.getFullYear();
-    if(formato==1){
-        let fe = [year, month, day].join("")
-        return fe;
-    }else{
-        let fe = [day, month, year].join("/");
-        return fe;
-    }   
-  
-}
-
-
-async function modal_emergente(info){
-    tck.push($('#cod_agencia').selectpicker('val'));
-    tck.push($.trim($('#nro_ticket').val()));
+function modal_emergente(stack_global){
+    let titulo='Anular Ticket';
+    let stack = stack_global.peek();
+    prev_data.push($('#cod_agencia').selectpicker('val'));
+    prev_data.push($.trim($('#nro_ticket').val()));
     let labels = {"Agencia":$('#cod_agencia').selectpicker('val'),"Ticket":$.trim($('#nro_ticket').val())}
-    let set = Object.values(JSON.parse(info.settings.jsr));
-    let btn = set[0].filter(function(x){
-        return x.label == 'Anular';
-    });
-    let extra = info.datos_extra;
+    
+    let btn = stack.settings.botones;
+    let extra = stack.datos_extra;
     let keys = Object.getOwnPropertyNames(extra[0]).filter((x)=>{
         return x!="length"?x:"";
     });
     let valores= Object.values(extra[0]);
-    modal_id++;
-    let modal = $(base).children().first().html().replaceAll("{}",modal_id);
+    stack_global.modal = stack_global.modal+1;
+    let modal = $(base).children().first().html().replaceAll("{}",stack_global.modal);
     let modalsplit=modal.split("*");
     let string_divs="";
     keys.forEach((key,index)=>{
@@ -176,25 +164,42 @@ async function modal_emergente(info){
     modal=modalsplit.join("");
     modal=modal.replaceAll("#",titulo.charAt(0).toUpperCase()+titulo.slice(1).replaceAll("_"," "));
     $(base).append(modal);
-    $('#tabla'+modal_id).removeClass('invisible');
+    $('#tabla_'+stack_global.modal).removeClass('invisible');
+    stack_global.push(stack);
+    let stack2=gestor.extraer_settings(stack.settings);
 
-    crear_tabla(info.data,"#tabla"+modal_id,"#thead"+modal_id,"#tbody"+modal_id,false,0,false,[],[],string,titulo,"#modal"+modal_id);
+    let table = {
+        "parametro":stack.data,
+        "tb":"#tabla_"+stack_global.modal,
+        "hd":"#thead_"+stack_global.modal,
+        "bd":"#tbody_"+stack_global.modal,
+        "isd":stack2.is_dclick,
+        "dc":stack2.dclick,
+        "isr":stack2.is_rclick,
+        "inv":[4],
+        "sum":[2],
+        "labels":[],
+        "titulo":titulo,
+        "modal":"#modal"+stack_global.modal,
+        "moneda":stack_global.moneda
+    }
+
+    crear_tabla(table);
         
 }
 
-
 $(document).on('click', '.btn-danger', async function () {
-    $("#load").addClass('spinner');
-    let set = Object.values(JSON.parse(info2.settings.jsr));
-    let btn = set[0].filter(function(x){
-        return x.label == 'Anular';
-    });
+    let stack_global = window[moneda_actual];
+    let stack = stack_global.previous();
+    $("#load_"+stack_global.moneda).addClass('spinner');
+    let btn = stack.settings.botones;
+
     let data = [];
     let parametros = btn[0].datos.parametros.split(",");
     let comando2 = btn[0].datos.id;
     Object.assign(data,{"comando":comando2});
     for (let i = 0; i < parametros.length; i++) {
-        Object.assign(data,{[parametros[i]]:tck[i]});
+        Object.assign(data,{[parametros[i]]:prev_data[i]});
     }
     let keys = Object.getOwnPropertyNames(data).filter((x)=>{
         return x!="length"?x:"";
@@ -210,20 +215,108 @@ $(document).on('click', '.btn-danger', async function () {
     if (typeof info.data.mensaje !== 'undefined') {
         let mensaje = info.data.mensaje;
         if(mensaje.includes("ya esta")){
-            Swal.fire({
-                title: '',
-                text: mensaje,
-                icon: 'error',
-                confirmButtonText: 'Aceptar'
-              });
+            gestor.alerta(mensaje,'error');
         }else{
-            Swal.fire({
-                title: '',
-                text: mensaje,
-                icon: 'success',
-                confirmButtonText: 'Aceptar'
-              });
+            gestor.alerta(mensaje,'success');
         }
-        $("#load").removeClass('spinner');
+        $("#load_"+stack_global.moneda).removeClass('spinner');
       }
 });
+
+
+//Doble Click
+$(document).on('dblclick', 'td', async function () {
+    let column=$(this).parent().children().index(this);
+    row = $(this).closest("tr"); 
+    window[moneda_actual] = await gestor.event_dclick(window[moneda_actual],row,column,base);
+});
+
+
+//Click Derecho
+
+$(document).on('contextmenu', 'td', function (e) {
+    console.log(e.pageY);
+    console.log(e.pageX);
+    row = $(this).closest("tr"); 
+    let stack = window[moneda_actual].peek();
+    if(stack.settings.is_rclick){
+        let rclick = stack.settings.rclick;
+        let row = $(this).closest("tr"); 
+        var elementos=rclick[0].datos.items;
+        let html = ``;
+
+        for (let i = 0; i < elementos.length; i++) {
+           html+=gestor.abrirMenu(elementos[i]);
+            
+        }
+        if($(base).children().length>1){
+            id_menu=window[moneda_actual].modal;
+        }else{
+            id_menu=moneda_actual;
+        }
+        $("#menuTabla_"+id_menu).html(html);
+        const bd = document.body.classList.contains(
+            'sidebar-enable'
+        );
+
+        $('td').css('box-shadow', 'none');
+        if(!bd){
+            var top = e.pageY;
+            var left = e.pageX;
+        }else{
+            var top = e.pageY - 200;
+            var left = e.pageX-50;
+        }
+        if(window[moneda_actual].modal>1){
+            var top = e.pageY-100;
+            var left = e.pageX-200;
+        }
+
+        $(this).css('box-shadow', 'inset 1px 1px 0px 0px red, inset -1px -1px 0px 0px red');
+        $("#menuTabla_"+id_menu).css({
+            display: "block",
+            top: top,
+            left: left
+        });
+    }
+    return false; 
+});
+
+//Funcion para ocultar el menu cuando no se de click en el
+$(document).click(function() {
+    var obj = $("#menuTabla_"+id_menu);
+    if (!obj.is(event.target) && !obj.has(event.target).length) {
+        if ( $("#menuTabla_"+id_menu).css('display') == 'block' ){
+            $("#menuTabla_"+id_menu).hide();
+        }
+        $('td').css('box-shadow', 'none');
+    }else{
+        $("#menuTabla_"+id_menu).hide();
+        $('td').css('box-shadow', 'none');
+    }
+});
+
+//Funcion para ocultar el menu cuando se clickee en un elemento
+
+$("#menuTabla_"+id_menu+" a").on("click", function() {
+    $(this).parent().hide();
+});
+
+
+//Funcion para ejecutar el click derecho seleccionado
+$(document).on('click', '#rclick', async function () { 
+    let data_id = $(this).attr("data-id");
+    $("#load_"+moneda_actual).addClass('spinner');
+    let column=$(this).parent().children().index(this);
+    window[moneda_actual] = await gestor.event_rclick(window[moneda_actual],row,column,base,data_id);
+});
+
+//Funcion para ejecutar el OnChange de F3 cuando sea por meses
+$(document).on("change","#f3",async function(){
+    let ano = $(this).selectpicker("val");
+    $("#load_"+moneda_actual).addClass('spinner');
+    window[moneda_actual] = await gestor.event_change(window[moneda_actual],base,ano);
+
+});
+
+
