@@ -289,7 +289,7 @@ $(document).on('click', '.btn-danger', async function () {
         let mensaje = info.data.mensaje;
         if(mensaje.includes("ya esta")){
             gestor.alerta(mensaje,'error');
-        }else if(mensaje.includes("no puede")){
+        }else if(mensaje.includes("No Puede")){
             gestor.alerta(mensaje,'error');
         }else{
             igestor.alerta(mensaje,'success');

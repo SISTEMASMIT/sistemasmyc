@@ -6,7 +6,7 @@ export function crear_tabla(table){
     let hd = table["hd"];
     let bd = table["bd"];
     let isd = table["isd"];
-    let dc = table["dc"];
+    let dc = table["dc"][0];
     let isr = table["isr"];
     let inv = table["inv"];
     let sum = table["sum"];
