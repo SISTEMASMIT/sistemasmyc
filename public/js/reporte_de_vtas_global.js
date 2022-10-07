@@ -16,7 +16,7 @@ var id_menu;
 $(document).ready(function () {
     
     //Se realiza la generación de la tabla invisible, enviandose el ID de la table
-    monedas = ["COP","BS","USD","REA"];
+    monedas = gestor.consultar_monedas();
     ini_tabla('#moneda',monedas);
     moneda_actual = $("#moneda .tabs a.active").attr('id');
     window[moneda_actual] = new Stack(moneda_actual,1);

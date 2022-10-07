@@ -1,5 +1,6 @@
 import {ajax_peticion} from "./Ajax-peticiones.js";
 import {crear_tabla} from "./table2.js";
+import {crear_tabla_editable} from "./editable2.js";
 import {Stack} from './stack.js';
 import * as imp from "./importer.js";
 
@@ -54,7 +55,7 @@ export async function consulta(parametros,extras,moneda,comando,manual){
 
 }
 
-export function montar_tabla(tabla_info,stack_global){
+export function montar_tabla(tabla_info,stack_global,tipo_tabla){
 
     let stack=stack_global.peek();
     let set=stack.settings;
@@ -88,7 +89,13 @@ export function montar_tabla(tabla_info,stack_global){
         "modal":"#modal"+tabla_info["modal_id"],
         "moneda":tabla_info["moneda"]
     }
+    if(tipo_tabla!=undefined){
+        if(tipo_tabla=="editable"){
+            crear_tabla_editable(table);
+        }
+    }else{
         crear_tabla(table);
+    }
 }
 
 function extraer_parametros(parametros){
@@ -555,6 +562,12 @@ export function mostrar_modal(stack_global,base){
     let moneda = stack_global.moneda;
     let stack = stack_global.peek();
     let botones = stack.settings.botones[0];
+    let button=``;
+    if(botones!=undefined){
+        if(botones.datos.condicion=="1"){
+            button += `<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><button type="button" class="btn btn-lg btn-danger" id="`+botones.datos.id+`">`+botones.label+`</button></div>`;
+        }
+    }
     let labels_modal = $.extend({}, stack.datos_extra[0], stack.labels);
     let labels_print = generar_string(labels_modal);
     labels_print = JSON.parse(labels_print);
@@ -567,7 +580,7 @@ export function mostrar_modal(stack_global,base){
     let modalsplit=modal.split("*");
 
     if(stack.emergente=="tabla"){
-        let html=labels_modal;
+        let html=labels_modal+button;
         modalsplit[1] = html;
         modal=modalsplit.join("");
         modal=modal.replaceAll("#",stack.titulo.charAt(0).toUpperCase()+stack.titulo.slice(1).replaceAll("_"," "));
