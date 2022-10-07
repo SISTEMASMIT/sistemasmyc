@@ -1,6 +1,7 @@
 import { rangeDate } from "./date.js";
 import { ajax_peticion } from "./Ajax-peticiones.js";
 import { crear_tabla } from "./table.js";
+import { contruir } from "./contruir_peticion_formularios_emergentes.js";   
 import * as imp from "./importer.js";
 
 let hay_mes = false;
@@ -33,7 +34,7 @@ var hay_f4 = false;
 window["receptor"] ="";
 var botones_emergente=Array();
 var parametros_emergentes=Array()
-
+var titulo_ventana="";
 $(document).ready(async function () {
     rangeDate("#f1f2");
     var columns = 6;
@@ -606,36 +607,23 @@ $(document).on("click", "#agregrar", async function () {
 
     if ($(base).children().length > 1) {
         if(botones_emergente.length>0){
-            console.log(botones_emergente)
-                let formulario_parametros=botones_emergente[botones_emergente.lenght-1].datos.parametros.split(",");
-                let parametros_data=botones_emergente[botones_emergente.lenght-1].datos.parametros_data!=undefined?botones_emergente[botones_emergente.lenght-1].datos.parametros_data.split(","):[];
-                let param= new Object();
-                param.parametros=Array()
-                formulario_parametros.map((f)=>{
-                    let o= Object();    
-                    let data=f.split(":")
-                    if(data[1]=="select"){
-                        o.index=data[0];
-                        o.valor=$("#"+data[0]).selectpicker("val")    ;
-                    }else
-                    if(data[1]=="text" || data[1]=="int"){
-                        o.index=data[0];
-                        o.valor=$("#"+data[0]).val();
-                    }else
-                    if(data[1]=="check"){
-                        o.index=data[0];
-                        o.valor=$("#"+data[0]).prop('checked')?1:0;
-                    }
-                    param.parametros.push(o)
-                });
-                parametros_data.map((f)=>{
-                    let o= Object();
-                    o.valor=window[f]
-                    o.index=f
-                    param.parametros.push(o)
-                });
-                parametros_emergentes.push(param)
-            console.log(parametros_emergentes);
+                let info = await ajax_peticion("/query/standard_query", { 'data': contruir(botones_emergente) }, "POST");
+                if(info.data.mensaje=="ok"){
+                    Swal.fire({
+                        title: titulo_ventana,
+                        text: info.data.mensaje,
+                        icon: 'success',
+                        confirmButtonText: 'Aceptar'
+                      });
+                }else{
+                    Swal.fire({
+                        title: titulo_ventana,
+                        text: info.data.mensaje,
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                      });
+                }
+                
         }
         $(base).children().last().removeClass("show");
     }
@@ -659,6 +647,7 @@ $(document).on("click", "#agregrar", async function () {
                     botones_emergente.push(element)
                 }
             } else {
+                titulo_ventana=element.datos.id;
                 titulo = element.datos.id;
             }
         })
@@ -1235,7 +1224,6 @@ async function pintarJstree(id) {
     }).on("select_node.jstree", function (e, data) {
         $(id).jstree().close_node($("#Todos"));
         window["receptor"] = data.node.id.replaceAll("_",".");
-        
     });
     
 }
