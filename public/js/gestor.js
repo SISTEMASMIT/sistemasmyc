@@ -6,45 +6,54 @@ import * as imp from "./importer.js";
 
 var previous_data=[];
 export async function consulta(parametros,extras,moneda,comando,manual){
-    if(comando!="anular_ticket"){
-        var w = document.getElementById("tabla_res_"+moneda).clientWidth;
-        var h = document.getElementById("tabla_res_"+moneda).clientHeight;
-        h = h+500;
-        $('#f_'+moneda).html('');
-        $("#carga_"+moneda).addClass('carga');
-        $("#carga_"+moneda).width( w );
-        $("#carga_"+moneda).height( h );
-    }
-    $("#load_"+moneda).addClass('spinner');
-    
-    let data = [];
+    let data=[];
+    if(manual==0){
 
-    //Recorrremos los Id's que se encuentran en el DOM para sacar su data
-    
-    data = extraer_parametros(parametros);
-    
-    if(manual!=undefined){
-        let val_manual= Object.values(data);
-        manual.forEach((param,i)=>{
-            Object.assign(data,{[param]:val_manual[i]})
+        //Recorrremos los Id's que se encuentran en el DOM para sacar su data
+        
+        data = extraer_parametros(parametros);
+        //Agregamos el Comando
+        Object.assign(data,{comando:comando})
+
+    }else{
+        if(comando!="anular_ticket"){
+            var w = document.getElementById("tabla_res_"+moneda).clientWidth;
+            var h = document.getElementById("tabla_res_"+moneda).clientHeight;
+            h = h+500;
+            $('#f_'+moneda).html('');
+            $("#carga_"+moneda).addClass('carga');
+            $("#carga_"+moneda).width( w );
+            $("#carga_"+moneda).height( h );
+        }
+        $("#load_"+moneda).addClass('spinner');
+        
+
+        //Recorrremos los Id's que se encuentran en el DOM para sacar su data
+        
+        data = extraer_parametros(parametros);
+        
+        if(manual!=undefined){
+            let val_manual= Object.values(data);
+            manual.forEach((param,i)=>{
+                Object.assign(data,{[param]:val_manual[i]})
+            })
+        }
+   
+        //Sacamos Datos Extras Si hay
+        let keys = Object.getOwnPropertyNames(extras).filter((x)=>{
+            return x!="length"?x:"";
+        });
+        let valores= Object.values(extras);
+        keys.forEach((key,i)=>{
+            Object.assign(data,{[key]:valores[i]})
         })
+
+        //Agregamos el Comando
+        Object.assign(data,{comando:comando})
+
+        //Agregamos la moneda
+        Object.assign(data,{moneda:moneda})
     }
-
-    //Sacamos Datos Extras Si hay
-    let keys = Object.getOwnPropertyNames(extras).filter((x)=>{
-        return x!="length"?x:"";
-    });
-    let valores= Object.values(extras);
-    keys.forEach((key,i)=>{
-        Object.assign(data,{[key]:valores[i]})
-    })
-
-    //Agregamos el Comando
-    Object.assign(data,{comando:comando})
-
-    //Agregamos la moneda
-    Object.assign(data,{moneda:moneda})
-
     //Procesamos los datos para que puedan ser enviados
     let consulta_query = generar_string(data);
     
@@ -180,8 +189,7 @@ export function extraer_settings(settings){
         btns.push(settings.find(function(x){
             return x.label == 'Anular';
         }));
-
-        dclick.push(settings.find(function(x){ 
+        dclick.push(settings.filter(function(x){ 
             return x.tipo == 'dclick';
         }));
 
@@ -373,7 +381,7 @@ function getCurrentDate(formato){
   
 }
 //Metodo del Doble Click
-export async function event_dclick(stack_global,row,column,base){
+export async function event_dclick(stack_global,row,column,base,estado){
     let parametros;
     let emergente;
     let etiquetas;
@@ -386,18 +394,19 @@ export async function event_dclick(stack_global,row,column,base){
     let moneda = stack_global.moneda;
     if(stack.settings.is_dclick){
         if(stack.data.data.length>0){
-            $("#load_"+moneda).addClass('spinner');
+            
             //Recorremos Dclick para comprobar si es en varios click o toda la row
             for (let a = 0; a < stack.settings.dclick.length; a++) {
                 //Si es alguna otra columna
-                if(stack.settings.dclick[a].label!='98'){
-                    if(column==stack.settings.dclick[a].label){
+                if(stack.settings.dclick[0][a].label!='98'){
+                    if(column==stack.settings.dclick[0][a].label){
+                        $("#load_"+moneda).addClass('spinner');
                         is_correct=true;
-                        parametros = stack.settings.dclick[a].datos["parametros"].split(",")
-                        emergente = stack.settings.dclick[a].datos["emergente"];
-                        etiquetas = stack.settings.dclick[a].datos["etiquetas"].split(",")
-                        comando = stack.settings.dclick[a].datos["id"];
-                        titulo = stack.settings.dclick[a].datos["titulo_emergente"];
+                        parametros = stack.settings.dclick[0][a].datos["parametros"].split(",")
+                        emergente = stack.settings.dclick[0][a].datos["emergente"];
+                        etiquetas = stack.settings.dclick[0][a].datos["etiquetas"].split(",")
+                        comando = stack.settings.dclick[0][a].datos["id"];
+                        titulo = stack.settings.dclick[0][a].datos["titulo_emergente"];
 
                         //Recorremos los parametros para sacar la data
                         if(stack.settings.formulario_emergente[0]!=undefined){
@@ -405,8 +414,14 @@ export async function event_dclick(stack_global,row,column,base){
                         }else{
                             data=tabla_parametros(parametros,row,emergente);
                         }
-
-                        Object.assign(data,{"comando":stack.settings.dclick[a].datos["id"]});
+                        if(estado=="estado"){
+                            if(column=='3'){
+                                Object.assign(data,{"estado":"n"});
+                            }else if(column=='5'){
+                                Object.assign(data,{"estado":"c"});
+                            }
+                        }
+                        Object.assign(data,{"comando":stack.settings.dclick[0][a].datos["id"]});
                         
                         //La moneda que se está usando
 
@@ -418,11 +433,12 @@ export async function event_dclick(stack_global,row,column,base){
                 }else{
                     //Es el dclick en toda la row
                     is_correct=true;
-                    parametros = stack.settings.dclick[a].datos["parametros"].split(",")
-                    emergente = stack.settings.dclick[a].datos["emergente"];
-                    etiquetas = stack.settings.dclick[a].datos["etiquetas"].split(",")
-                    comando = stack.settings.dclick[a].datos["id"];
-                    titulo = stack.settings.dclick[a].datos["titulo_emergente"];
+                    $("#load_"+moneda).addClass('spinner');
+                    parametros = stack.settings.dclick[0][a].datos["parametros"].split(",")
+                    emergente = stack.settings.dclick[0][a].datos["emergente"];
+                    etiquetas = stack.settings.dclick[0][a].datos["etiquetas"].split(",")
+                    comando = stack.settings.dclick[0][a].datos["id"];
+                    titulo = stack.settings.dclick[0][a].datos["titulo_emergente"];
                    
                     //Recorremos los parametros para sacar la data
                     if(stack.settings.formulario_emergente[0]!=undefined){
@@ -431,7 +447,7 @@ export async function event_dclick(stack_global,row,column,base){
                         data=tabla_parametros(parametros,row,emergente);
                     }
 
-                    Object.assign(data,{"comando":stack.settings.dclick[a].datos["id"]});
+                    Object.assign(data,{"comando":stack.settings.dclick[0][a].datos["id"]});
                     
                     //La moneda que se está usando
 
@@ -463,6 +479,8 @@ export async function event_dclick(stack_global,row,column,base){
                 Object.assign(info,{"correcto":1})
                 stack_global.push(info);
                 mostrar_modal(stack_global,base);
+                return stack_global;
+            }else{
                 return stack_global;
             }
         }else{
