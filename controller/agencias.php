@@ -47,6 +47,8 @@ class Agencias extends Controller
     function agencias(){}
     function autorizar_agencias(){}
     function desautorizar_agencias(){}
+    function usuarios_agencias(){}
+    function activar_desactivar_multiple(){}
 }
 
  ?>

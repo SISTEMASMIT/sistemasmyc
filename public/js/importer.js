@@ -27,10 +27,10 @@ export function formulario_emergente_select(label,json,clase,style){
                 elemento.id=elemento.label
             }
             if(index==0){
-                html+=`<option value='${elemento.id}' selected>${elemento.label}</option>`
+                html+=`<option value='${elemento.id}'  selected>${elemento.label}</option>`
             }
              else {
-                html+=`<option value='${elemento.id}'>${elemento.label}</option>`
+                html+=`<option value='${elemento.id}' >${elemento.label}</option>`
             }
         })
         html+=`</select></div>`;
@@ -39,6 +39,50 @@ export function formulario_emergente_select(label,json,clase,style){
     console.log(e)
    }
 }
+
+export function formulario_emergente_select_search(label,json,clase,style){
+    try{
+         let html=`<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>${label}</label>
+         <select class='selectpicker'data-live-search='true' id='${label.toLowerCase().replaceAll(" ", "_")}'>`
+         json.forEach((elemento,index)=>{
+             if(elemento.id==undefined){
+                 elemento.id=elemento.label
+             }
+             if(index==0){
+                 html+=`<option value='${elemento.id}'  selected>${elemento.label}</option>`
+             }
+              else {
+                 html+=`<option value='${elemento.id}' >${elemento.label}</option>`
+             }
+         })
+         html+=`</select></div>`;
+         return html;
+    }catch(e){
+     console.log(e)
+    }
+ }
+
+export function formulario_emergente_select_search_shadow(label,json,clase,style){
+    try{
+         let html=`<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>${label}</label>
+         <select class='selectpicker' data-live-search='true' id='${label.toLowerCase().replaceAll(" ", "_")}'>`
+         json.forEach((elemento,index)=>{
+             if(elemento.id==undefined){
+                 elemento.id=elemento.label
+             }
+             if(index==0){
+                 html+=`<option value='${elemento.id}'  data-subtext="${elemento.id}" selected>${elemento.label}</option>`
+             }
+              else {
+                 html+=`<option value='${elemento.id}'  data-subtext="${elemento.id}">${elemento.label}</option>`
+             }
+         })
+         html+=`</select></div>`;
+         return html;
+    }catch(e){
+     console.log(e)
+    }
+ }
 export function formulario_emergente_select_multiple(label,json,clase,style){
     try{
          let html=`<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>${label}</label>
