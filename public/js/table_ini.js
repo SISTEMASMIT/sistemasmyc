@@ -1,14 +1,16 @@
-export function ini_tabla(id,monedas){
-    crear_base(id,monedas);
-    var columns = 6;
-    var rows = 10;
-    var head = crear_head(columns);
-    var body = crear_body(columns,rows);
-    var html=head+body;
-    monedas.forEach(moneda => {
-        $(`#tablaf_`+moneda).html(html);
-        $(`#tablaf_`+moneda).DataTable();
-    });
+export function ini_tabla(id,monedas,tabla){
+    if(tabla==1){
+        crear_base(id,monedas);
+        var columns = 6;
+        var rows = 10;
+        var head = crear_head(columns);
+        var body = crear_body(columns,rows);
+        var html=head+body;
+        monedas.forEach(moneda => {
+            $(`#tablaf_`+moneda).html(html);
+            $(`#tablaf_`+moneda).DataTable();
+        });
+    }
     
 }
 

@@ -6,45 +6,54 @@ import * as imp from "./importer.js";
 
 var previous_data=[];
 export async function consulta(parametros,extras,moneda,comando,manual){
-    if(comando!="anular_ticket"){
-        var w = document.getElementById("tabla_res_"+moneda).clientWidth;
-        var h = document.getElementById("tabla_res_"+moneda).clientHeight;
-        h = h+500;
-        $('#f_'+moneda).html('');
-        $("#carga_"+moneda).addClass('carga');
-        $("#carga_"+moneda).width( w );
-        $("#carga_"+moneda).height( h );
-    }
-    $("#load_"+moneda).addClass('spinner');
-    
-    let data = [];
+    let data=[];
+    if(manual==0){
 
-    //Recorrremos los Id's que se encuentran en el DOM para sacar su data
-    
-    data = extraer_parametros(parametros);
-    
-    if(manual!=undefined){
-        let val_manual= Object.values(data);
-        manual.forEach((param,i)=>{
-            Object.assign(data,{[param]:val_manual[i]})
+        //Recorrremos los Id's que se encuentran en el DOM para sacar su data
+        
+        data = extraer_parametros(parametros);
+        //Agregamos el Comando
+        Object.assign(data,{comando:comando})
+
+    }else{
+        if(comando!="anular_ticket"){
+            var w = document.getElementById("tabla_res_"+moneda).clientWidth;
+            var h = document.getElementById("tabla_res_"+moneda).clientHeight;
+            h = h+500;
+            $('#f_'+moneda).html('');
+            $("#carga_"+moneda).addClass('carga');
+            $("#carga_"+moneda).width( w );
+            $("#carga_"+moneda).height( h );
+        }
+        $("#load_"+moneda).addClass('spinner');
+        
+
+        //Recorrremos los Id's que se encuentran en el DOM para sacar su data
+        
+        data = extraer_parametros(parametros);
+        
+        if(manual!=undefined){
+            let val_manual= Object.values(data);
+            manual.forEach((param,i)=>{
+                Object.assign(data,{[param]:val_manual[i]})
+            })
+        }
+   
+        //Sacamos Datos Extras Si hay
+        let keys = Object.getOwnPropertyNames(extras).filter((x)=>{
+            return x!="length"?x:"";
+        });
+        let valores= Object.values(extras);
+        keys.forEach((key,i)=>{
+            Object.assign(data,{[key]:valores[i]})
         })
+
+        //Agregamos el Comando
+        Object.assign(data,{comando:comando})
+
+        //Agregamos la moneda
+        Object.assign(data,{moneda:moneda})
     }
-
-    //Sacamos Datos Extras Si hay
-    let keys = Object.getOwnPropertyNames(extras).filter((x)=>{
-        return x!="length"?x:"";
-    });
-    let valores= Object.values(extras);
-    keys.forEach((key,i)=>{
-        Object.assign(data,{[key]:valores[i]})
-    })
-
-    //Agregamos el Comando
-    Object.assign(data,{comando:comando})
-
-    //Agregamos la moneda
-    Object.assign(data,{moneda:moneda})
-
     //Procesamos los datos para que puedan ser enviados
     let consulta_query = generar_string(data);
     
