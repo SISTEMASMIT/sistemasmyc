@@ -1,10 +1,9 @@
-import * as fecha from "./date.js";
-import {ajax_peticion} from "./Ajax-peticiones.js";
+
 import {ini_tabla} from "./table_ini.js";
 import {Stack} from './stack.js';
-import * as gestor from "./gestor.js";
-import { construir_modal,crear } from "./contruir_peticion_formularios_emergentes.js";   
-
+import * as gestor from "./gestor.js";  
+import { construir_modal,crear } from "./contruir_peticion_formularios_emergentes.js";
+import {ajax_peticion} from "./Ajax-peticiones.js";
 var monedas=[];
 var moneda_actual;
 var stack = new Stack();
@@ -31,8 +30,6 @@ $(document).ready(function () {
     // fecha.rangeDate = f1f2 antiguos
     // fecha.futuDate = f1f2 futuros
     // fecha.oneDate = f1 unica
-
-    fecha.rangeDate("#f1f2");
 });
 //Detectamos el cambio de moneda en el tab
 $(document).on("click", "#moneda .tabs .tab-list .tab", function(event) {
@@ -67,7 +64,7 @@ $(document).on("click", "#moneda .tabs .tab-list .tab", function(event) {
 
 
 
-$(document).on('click', '#listar_usuarios_agencia_age', function() {
+$(document).on('click', '#configurar_grupos_agencias', function() {
     boton=true;
     traer_data();
 });
@@ -96,7 +93,7 @@ async function traer_data(){
     let extras = {};
     //parametros,  extras, moneda, comando/id 
     if(window[moneda_actual].size()<1 || boton==true){
-        window[moneda_actual].push(await gestor.consulta(parametros,extras, moneda_actual,"listar_usuarios_agencia_age"));
+        window[moneda_actual].push(await gestor.consulta(parametros,extras, moneda_actual,"configurar_grupos_agencias"));
     }
     let tabla_info = {"stack":window[moneda_actual],
         "parametros":parametros,
@@ -207,7 +204,7 @@ $(document).on("change","#f3",async function(){
 /// modificaciones
 
 //agregar
-$(document).on("click", "#agregrar", async function () {
+$(document).on("click", "#agregar", async function () {
     let data = { "comando": "", "orden": $(this).attr("data-orden") };
     let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(data) }, "POST");
     let formulario = JSON.parse(info.settings["jsr"]);
@@ -264,7 +261,6 @@ $(document).on("click", "#agregrar", async function () {
     }
 });
 
-$(document).on("click","#agregar_usuario", function(){
+$(document).on("click","#agregar_grupo", function(){
     crear(botones_emergente,titulo_ventana);
 });
-

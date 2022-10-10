@@ -33,7 +33,7 @@ var parametros_segundo_envio = [];
 var hay_f4 = false;
 window["receptor"] ="";
 var botones_emergente=Array();
-var parametros_emergentes=Array()
+    var parametros_emergentes=Array()
 var titulo_ventana="";
 $(document).ready(async function () {
     rangeDate("#f1f2");
@@ -592,7 +592,7 @@ function abrirMenu(elemento) {
 
 }
 
-var esmokita="algo";
+
 ///Agregar
 $(document).on("click", "#agregrar", async function () {
     let data = { "comando": "", "orden": $(this).attr("data-orden") };
@@ -675,6 +675,8 @@ $(document).on("click", "#agregrar", async function () {
         }
     }
 });
+
+
 $(document).on("change", "#filtrado", async function () {
     let filtrado = $(this).selectpicker("val");
     let data = { "tipo": filtrado, "comando": "loteria_x_tipo" }

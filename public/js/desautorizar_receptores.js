@@ -1,10 +1,7 @@
-import * as fecha from "./date.js";
-import {ajax_peticion} from "./Ajax-peticiones.js";
 import {ini_tabla} from "./table_ini.js";
 import {Stack} from './stack.js';
-import * as gestor from "./gestor.js";
-import { construir_modal,crear } from "./contruir_peticion_formularios_emergentes.js";   
-
+import * as gestor from "./gestor.js";  
+import {ajax_peticion} from "./Ajax-peticiones.js";
 var monedas=[];
 var moneda_actual;
 var stack = new Stack();
@@ -13,12 +10,8 @@ var modal_id = 1;
 var boton=false;
 var row;
 var id_menu;
-
-window["receptor"] ="";
-var botones_emergente=[];
-var parametros_emergentes=[];
-var titulo_ventana="";
-
+// this var it's for the jstree
+var receptor;
 $(document).ready(function () {
     
     //Se realiza la generación de la tabla invisible, enviandose el ID de la table
@@ -31,8 +24,12 @@ $(document).ready(function () {
     // fecha.rangeDate = f1f2 antiguos
     // fecha.futuDate = f1f2 futuros
     // fecha.oneDate = f1 unica
+    // fecha.rangeDate("#f1f2");
 
-    fecha.rangeDate("#f1f2");
+    //Jstree
+    pintarJstree("#folder_jstree");
+
+
 });
 //Detectamos el cambio de moneda en el tab
 $(document).on("click", "#moneda .tabs .tab-list .tab", function(event) {
@@ -67,7 +64,7 @@ $(document).on("click", "#moneda .tabs .tab-list .tab", function(event) {
 
 
 
-$(document).on('click', '#listar_usuarios_agencia_age', function() {
+$(document).on('click', '#desact_receptor', function() {
     boton=true;
     traer_data();
 });
@@ -92,11 +89,11 @@ async function traer_data(){
     $('#tabla_'+moneda_actual).removeClass('invisible');
     $('#aceptar').prop('disabled', true);
     //Se llama al método de crear la tabla, se le envían dos arreglos, parametros y etiquetas.
-    let parametros = ["receptor","f1f2","ventas_a_mostrar"];
-    let extras = {};
+    let parametros = ["serial_rec"];
+    let extras = {"receptor":receptor};
     //parametros,  extras, moneda, comando/id 
     if(window[moneda_actual].size()<1 || boton==true){
-        window[moneda_actual].push(await gestor.consulta(parametros,extras, moneda_actual,"listar_usuarios_agencia_age"));
+        window[moneda_actual].push(await gestor.consulta(parametros,extras, moneda_actual,"desact_receptor"));
     }
     let tabla_info = {"stack":window[moneda_actual],
         "parametros":parametros,
@@ -206,65 +203,90 @@ $(document).on("change","#f3",async function(){
 
 /// modificaciones
 
-//agregar
-$(document).on("click", "#agregrar", async function () {
-    let data = { "comando": "", "orden": $(this).attr("data-orden") };
-    let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(data) }, "POST");
-    let formulario = JSON.parse(info.settings["jsr"]);
-    let html="";
-    modal_id++;
-    let modal = $(base).children().first().html().replaceAll("{}", modal_id);
-    let modalsplit = modal.split("*");
-    let titulo = '';
-    let jstree = false;
-//modales anidados
-    // if ($(base).children().length > 1) {
-    //     if(botones_emergente.length>0){
-    //             let info = await ajax_peticion("/query/standard_query", { 'data': contruir(botones_emergente) }, "POST");
-    //             if(info.data.mensaje=="ok"){
-    //                 Swal.fire({
-    //                     title: titulo_ventana,
-    //                     text: info.data.mensaje,
-    //                     icon: 'success',
-    //                     confirmButtonText: 'Aceptar'
-    //                   });
-    //             }else{
-    //                 Swal.fire({
-    //                     title: titulo_ventana,
-    //                     text: info.data.mensaje,
-    //                     icon: 'error',
-    //                     confirmButtonText: 'Aceptar'
-    //                   });
-    //             }
-                
-    //     }
-    //     $(base).children().last().removeClass("show");
-    // }
-    if (formulario.filtros != undefined) {
-        ({html,botones_emergente,titulo_ventana,titulo} =await construir_modal(formulario,botones_emergente,titulo_ventana,titulo));
-        modalsplit[1] = html
-        modal = modalsplit.join("");
-        modal = modal.replaceAll("#", titulo);
-        $(base).append(modal);
-        if (jstree) {
-            pintarJstree("#base #modal" + modal_id + " #folder_jstree")
-        }
-        formulario.filtros.forEach((element, index) => {
-            if(element.tipo.includes("select")){
-                element.datos.id=element.datos.id==undefined?element.label.toLowerCase().replaceAll(" ","_"):element.datos.id;
-                $("#"+ element.datos.id).selectpicker("refresh");
+
+///jstree 
+
+
+async function pintarJstree(id){
+    let data = {"comando":"get_rec_tree"};
+    let info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST"); 
+    info.data.data=JSON.parse(JSON.stringify(info.data.data).replaceAll("\"#\"","\"Todos\""));
+    info.data.data[0].parent="#"
+    $(id).jstree({
+        'core': {
+            'check_callback': true,
+            "themes": { "stripes": true },
+            'data': info.data.data,
+            'multiple': true
+        },
+        "types" : {
+            "root" : {
+              "icon" : "fa-regular fa-building-lock"
+            },
+            "child" : {
+                "icon" : "fa-regular fa-circle-user"
             }
-        })
-        
-        if ($(base).children().length > 1) {
-            $(base).children().last().modal("show");
-            $(base).children().last().addClass("fade");
-            $(base).children().last().addClass("show1");
+        },
+        'search': {
+            'case_insensitive': true,
+            'show_only_matches' : true
+        },
+        'plugins': [ 'types' ,'search'],
+        'themes': {
+            'theme': 'apple',
+            "dots": true,
+            "icons": true
+        },
+        'plugins': [ 'search','types', 'html_data', 'themes', 'ui']
+    }).on('search.jstree', function (nodes, str, res) {
+        if (str.nodes.length===0) {
+            try{
+                $('#search').jstree(true).hide_all();
+            }catch(e){
+                Swal.fire({
+                    title: '',
+                    text: "No existen receptores con este nombre",
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                  });
+            }
         }
+    }).on("select_node.jstree", function (e, data) {
+        $(id).jstree().close_node($("#Todos"));
+        receptor=data.node.id;
+        pintarOnChangeAnidado(receptor,"#serial_rec")
+         });
+}
+
+
+async function pintarOnChangeAnidado(r,selector){
+    let data={"receptor":r,"comando":"get_seriales_rec"};
+    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
+    if(info.data.data.length ==  0){
+        Swal.fire({
+            title: '',
+            text: "Este receptor no tiene Seriales",
+            icon: 'warning',
+            confirmButtonText: 'Aceptar'
+          });
+        let agencias=$(selector);
+        agencias.html("");
+        agencias.selectpicker("refresh");
+    }else{
+        let agencias=$(selector);
+        agencias.selectpicker({noneSelectedText: 'Seleccione una serial'});
+        agencias.html(generarHtml(info.data.data));
+        agencias.selectpicker("refresh");
     }
-});
-
-$(document).on("click","#agregar_usuario", function(){
-    crear(botones_emergente,titulo_ventana);
-});
-
+}
+function generarHtml(list){
+    let html=""
+    list.forEach(function(element,index){
+        if(index==0){
+            html+=`<option value="${element.label}" data-subtext='${element.id}' > ${element.label}</option>`;
+        }else{
+            html+=`<option value="${element.label}" data-subtext='${element.id}' >${element.label}</option>`;
+        }
+    });
+    return html;
+}

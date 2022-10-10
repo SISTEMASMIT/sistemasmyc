@@ -1,9 +1,7 @@
 import * as fecha from "./date.js";
-import {ajax_peticion} from "./Ajax-peticiones.js";
 import {ini_tabla} from "./table_ini.js";
 import {Stack} from './stack.js';
-import * as gestor from "./gestor.js";
-import { construir_modal,crear } from "./contruir_peticion_formularios_emergentes.js";   
+import * as gestor from "./gestor.js";  
 
 var monedas=[];
 var moneda_actual;
@@ -67,7 +65,7 @@ $(document).on("click", "#moneda .tabs .tab-list .tab", function(event) {
 
 
 
-$(document).on('click', '#listar_usuarios_agencia_age', function() {
+$(document).on('click', '#act-desc-multiple', function() {
     boton=true;
     traer_data();
 });
@@ -96,7 +94,7 @@ async function traer_data(){
     let extras = {};
     //parametros,  extras, moneda, comando/id 
     if(window[moneda_actual].size()<1 || boton==true){
-        window[moneda_actual].push(await gestor.consulta(parametros,extras, moneda_actual,"listar_usuarios_agencia_age"));
+        window[moneda_actual].push(await gestor.consulta(parametros,extras, moneda_actual,"act-desc-multiple"));
     }
     let tabla_info = {"stack":window[moneda_actual],
         "parametros":parametros,
@@ -205,66 +203,3 @@ $(document).on("change","#f3",async function(){
 
 
 /// modificaciones
-
-//agregar
-$(document).on("click", "#agregrar", async function () {
-    let data = { "comando": "", "orden": $(this).attr("data-orden") };
-    let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(data) }, "POST");
-    let formulario = JSON.parse(info.settings["jsr"]);
-    let html="";
-    modal_id++;
-    let modal = $(base).children().first().html().replaceAll("{}", modal_id);
-    let modalsplit = modal.split("*");
-    let titulo = '';
-    let jstree = false;
-//modales anidados
-    // if ($(base).children().length > 1) {
-    //     if(botones_emergente.length>0){
-    //             let info = await ajax_peticion("/query/standard_query", { 'data': contruir(botones_emergente) }, "POST");
-    //             if(info.data.mensaje=="ok"){
-    //                 Swal.fire({
-    //                     title: titulo_ventana,
-    //                     text: info.data.mensaje,
-    //                     icon: 'success',
-    //                     confirmButtonText: 'Aceptar'
-    //                   });
-    //             }else{
-    //                 Swal.fire({
-    //                     title: titulo_ventana,
-    //                     text: info.data.mensaje,
-    //                     icon: 'error',
-    //                     confirmButtonText: 'Aceptar'
-    //                   });
-    //             }
-                
-    //     }
-    //     $(base).children().last().removeClass("show");
-    // }
-    if (formulario.filtros != undefined) {
-        ({html,botones_emergente,titulo_ventana,titulo} =await construir_modal(formulario,botones_emergente,titulo_ventana,titulo));
-        modalsplit[1] = html
-        modal = modalsplit.join("");
-        modal = modal.replaceAll("#", titulo);
-        $(base).append(modal);
-        if (jstree) {
-            pintarJstree("#base #modal" + modal_id + " #folder_jstree")
-        }
-        formulario.filtros.forEach((element, index) => {
-            if(element.tipo.includes("select")){
-                element.datos.id=element.datos.id==undefined?element.label.toLowerCase().replaceAll(" ","_"):element.datos.id;
-                $("#"+ element.datos.id).selectpicker("refresh");
-            }
-        })
-        
-        if ($(base).children().length > 1) {
-            $(base).children().last().modal("show");
-            $(base).children().last().addClass("fade");
-            $(base).children().last().addClass("show1");
-        }
-    }
-});
-
-$(document).on("click","#agregar_usuario", function(){
-    crear(botones_emergente,titulo_ventana);
-});
-

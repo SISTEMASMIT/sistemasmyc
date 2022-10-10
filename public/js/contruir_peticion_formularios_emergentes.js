@@ -1,3 +1,6 @@
+import * as imp from "./importer.js";
+import {ajax_peticion} from "./Ajax-peticiones.js";
+import * as gestor from "./gestor.js";
 export function contruir(botones_emergente){
                 let formulario_parametros=botones_emergente[(botones_emergente.length)-1].datos.parametros.split(",");
                 let parametros_data=botones_emergente[(botones_emergente.length)-1].datos.parametros_data!=undefined?botones_emergente[(botones_emergente.length)-1].datos.parametros_data.split(","):[];
@@ -37,4 +40,46 @@ export function contruir(botones_emergente){
                 peticion+="}";
                 botones_emergente.pop()
                 return peticion
+}
+export async function construir_modal(formulario,botones_emergente,titulo_ventana,titulo){
+    let html="";
+    formulario.filtros.forEach((element) => {
+        if (element.tipo != "titulo") {
+            if (imp[element.tipo]) {
+                if ($(this).attr("data-orden") == "modalAgregarAgencia" && element.tipo.includes("button") && jstree == false) {
+                    jstree = true
+                    html += `<div class='col-6'>
+                            <label>Arbol de Receptores</label>
+                            <input id="search" class="espaciadoB form-control" type="text" placeholder="Buscar receptor">
+                            <br>
+                            <div id="folder_jstree" class="col-6">
+                            </div>
+                        </div>`
+                }
+                html += imp[element.tipo](element.label, element.datos, element.clase, element.style)
+            }
+            if(element.tipo.includes("button")){
+                botones_emergente.push(element)
+            }
+        } else {
+            titulo_ventana=element.datos.id;
+            titulo = element.datos.id;
+        }
+    });
+    
+    return {html,botones_emergente,titulo_ventana,titulo};
+}
+
+export async function crear(botones_emergente,titulo_ventana){
+    console.log(botones_emergente);
+    try{
+        let info = await ajax_peticion("/query/standard_query", { 'data': contruir(botones_emergente) }, "POST");
+                    if(info.data.mensaje=="ok"){
+                        gestor.alerta(info.data.mensaje,"success");
+                    }else{
+                        gestor.alerta(info.data.mensaje,"error");
+                    }
+    }catch(e){
+        gestor.alerta("El usuario ya existe","error");
+    }
 }
