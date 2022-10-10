@@ -15,6 +15,16 @@ export async function consulta(parametros,extras,moneda,comando,manual){
         //Agregamos el Comando
         Object.assign(data,{comando:comando})
 
+        //Sacamos Datos Extras Si hay
+        let keys = Object.getOwnPropertyNames(extras).filter((x)=>{
+            return x!="length"?x:"";
+        });
+        let valores= Object.values(extras);
+        keys.forEach((key,i)=>{
+            Object.assign(data,{[key]:valores[i]})
+        })
+
+
     }else{
         if(comando!="anular_ticket"){
             var w = document.getElementById("tabla_res_"+moneda).clientWidth;
@@ -167,6 +177,7 @@ function extraer_labels(labels){
 }
 
 export function extraer_settings(settings){
+    let graficos = [];
     let invisibles = [];
     let sumatorias = [];
     let dclick = [];
@@ -177,6 +188,10 @@ export function extraer_settings(settings){
     let is_rclick=false;
 
     if(settings.length > 0){
+
+        graficos = settings.find(function(x){
+            return x.label=='94';
+        })
 
         invisibles = settings.find(function(x){    
             return x.label == '96';
@@ -227,6 +242,7 @@ export function extraer_settings(settings){
             sumatorias=[];
         }
     return {
+        "graficos":graficos,
         "invisibles":invisibles,
         "sumatorias":sumatorias,
         "botones":btns,

@@ -9,19 +9,19 @@
             </div>
             <div class="modal-body mb2">
             <div class='row'>*<h5 class="" id="">#</h5>*</div>
-                <table id="tabla{}" class="cell-border display nowrap invisible" width="100%" style="width:100%">
-                    <thead class="thead" id="thead{}">
+                <table id="tabla_{}" class="cell-border display nowrap invisible" width="100%" style="width:100%; user-select:none;">
+                    <thead class="thead" id="thead_{}">
                         <tr>
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody id="tbody{}">
+                    <tbody id="tbody_{}">
                         <tr>
                             <td></td>
                         </tr>
                     </tbody>
                 </table>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="menuTabla{}"></div>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="menuTabla_{}"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" id="close_modal" data-dismiss="modal">Cerrar</button>
