@@ -44,6 +44,8 @@ class Grupos extends Controller
         }
      }
      function configurar_grupos(){}
+     function topes_grupos(){}
+     function agencias_grupos(){}
 
 }
 

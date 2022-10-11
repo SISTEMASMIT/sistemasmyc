@@ -541,7 +541,17 @@ export async function event_rclick(stack_global,row,column,base,data_id){
             Object.assign(info,{"emergente":emergente})
             Object.assign(info,{"correcto":1})
             stack_global.push(info);
-            mostrar_modal(stack_global,base);
+            let ultStack=stack_global.peek();
+            if(ultStack.emergente=="mensaje"){
+                if(ultStack.data.mensaje=="ok"){
+                    alerta(ultStack.data.mensaje,"success")
+                }else{
+                    alerta(ultStack.data.mensaje,"error")
+                }
+                $("#load_"+stack_global.moneda).removeClass('spinner');
+            }else{
+                mostrar_modal(stack_global,base);
+            }
         }
     }
 
@@ -630,6 +640,8 @@ export function mostrar_modal(stack_global,base){
         "modal_id":stack_global.modal
         };
         montar_tabla(tabla_info,stack_global);
+    }else if(stack.emergente=="mensaje"){
+        console.log(stack_global);
     }
     
 }

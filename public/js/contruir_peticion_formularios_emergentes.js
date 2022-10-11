@@ -20,6 +20,10 @@ export function contruir(botones_emergente){
                     if(data[1]=="check"){
                         o.index=data[0];
                         o.valor=$("#"+data[0]).prop('checked')?1:0;
+                    }else
+                    if(data[1]=="select_multiple"){
+                        o.index=data[0];
+                        o.valor=$("#"+data[0]).selectpicker("val").join(",");
                     }
                     param.parametros.push(o)
                 });
@@ -71,7 +75,7 @@ export async function construir_modal(formulario,botones_emergente,titulo_ventan
 }
 
 export async function crear(botones_emergente,titulo_ventana){
-    console.log(botones_emergente);
+
     try{
         let info = await ajax_peticion("/query/standard_query", { 'data': contruir(botones_emergente) }, "POST");
                     if(info.data.mensaje=="ok"){
@@ -79,7 +83,9 @@ export async function crear(botones_emergente,titulo_ventana){
                     }else{
                         gestor.alerta(info.data.mensaje,"error");
                     }
+    $("#modal2").modal('hide');
+    $("#modal2").removeClass("show1"); 
     }catch(e){
-        gestor.alerta("El usuario ya existe","error");
+        gestor.alerta("El componente ya fue creado","error");
     }
 }
