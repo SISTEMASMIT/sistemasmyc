@@ -252,8 +252,6 @@ $(document).on('click', '.btn-danger', async function () {
     }
 });
 
-{"id":"guardar","comando":"cfg_topedina_agr","parametros":"eliminar_age:check,cobrador_age:select","parametros_data":"codigo_age"}
-{"id":"agregrar","comando":"cfg_topedina_agr","parametros":"nombre:text,agencia:text,direccion:text,telefono:text,nombre2:text,cobrador:select,estado:select,elimina:check,max_permuta:int,mensaje:text,grupo_agencia:select,codigo2:int,zona:select,maxdeuda:int,dias:int,tope_padre:check,wasapt:check,print_logo:check","parametros_data":"receptor","orden":"modalAgregarUsuario","condicion":""}
 
 //Click Derecho
 $(document).on('contextmenu', 'td', function (e) {
@@ -320,18 +318,18 @@ function abrirMenu(elemento) {
 $(document).on( "click","#guardar", async function(){
 
     if ($(base).children().length > 1) {
-        if(botones_emergente.length>0){
-                let info = await ajax_peticion("/query/standard_query", { 'data': contruir(botones_emergente) }, "POST");
+        if(parametros_emergente.length>0){
+                let info = await ajax_peticion("/query/standard_query", { 'data': contruir(parametros_emergente) }, "POST");
                 if(info.data.mensaje=="ok"){
                     Swal.fire({
-                        title: titulo_ventana,
+                        title: '',
                         text: info.data.mensaje,
                         icon: 'success',
                         confirmButtonText: 'Aceptar'
                       });
                 }else{
                     Swal.fire({
-                        title: titulo_ventana,
+                        title: '',
                         text: info.data.mensaje,
                         icon: 'error',
                         confirmButtonText: 'Aceptar'

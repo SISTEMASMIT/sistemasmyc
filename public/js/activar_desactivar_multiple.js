@@ -3,6 +3,8 @@ import {ini_tabla} from "./table_ini.js";
 import {Stack} from './stack.js';
 import * as gestor from "./gestor.js";  
 
+import {ajax_peticion} from "./Ajax-peticiones.js";
+
 var monedas=[];
 var moneda_actual;
 var stack = new Stack();
@@ -65,10 +67,6 @@ $(document).on("click", "#moneda .tabs .tab-list .tab", function(event) {
 
 
 
-$(document).on('click', '#act-desc-multiple', function() {
-    boton=true;
-    traer_data();
-});
 
 
 //Ocultar El modal
@@ -81,29 +79,35 @@ $(document).on('hidden.bs.modal', '#base', function() {
     }
     window[moneda_actual].modal=window[moneda_actual].modal-1;
     window[moneda_actual].pop();
- });
+});
+
+
+// $(document).on('click', '#act-desc-multiple_acepta', function() {
+//     boton=true;
+//     traer_data();
+// });
 
  //Trae la data de acuerdo a los parametros iniciales
-async function traer_data(){
-    moneda_actual = $("#moneda .tabs a.active").attr('id');
-    $('#tabla1').removeClass('invisible');
-    $('#tabla_'+moneda_actual).removeClass('invisible');
-    $('#aceptar').prop('disabled', true);
-    //Se llama al método de crear la tabla, se le envían dos arreglos, parametros y etiquetas.
-    let parametros = ["receptor","f1f2","ventas_a_mostrar"];
-    let extras = {};
-    //parametros,  extras, moneda, comando/id 
-    if(window[moneda_actual].size()<1 || boton==true){
-        window[moneda_actual].push(await gestor.consulta(parametros,extras, moneda_actual,"act-desc-multiple"));
-    }
-    let tabla_info = {"stack":window[moneda_actual],
-        "parametros":parametros,
-        "moneda":moneda_actual,
-        "titulo":"Reporte de Ventas Global",
-        "modal_id":window[moneda_actual].modal_id
-    }
-    gestor.montar_tabla(tabla_info,window[moneda_actual]);
-}
+// async function traer_data(){
+//     moneda_actual = $("#moneda .tabs a.active").attr('id');
+//     $('#tabla1').removeClass('invisible');
+//     $('#tabla_'+moneda_actual).removeClass('invisible');
+//     $('#aceptar').prop('disabled', true);
+//     Se llama al método de crear la tabla, se le envían dos arreglos, parametros y etiquetas.
+//     let parametros = ["receptor","f1f2","ventas_a_mostrar"];
+//     let extras = {};
+//     //parametros,  extras, moneda, comando/id 
+//     if(window[moneda_actual].size()<1 || boton==true){
+//         window[moneda_actual].push(await gestor.consulta(parametros,extras, moneda_actual,"act-desc-multiple_acepta"));
+//     }
+//     let tabla_info = {"stack":window[moneda_actual],
+//         "parametros":parametros,
+//         "moneda":moneda_actual,
+//         "titulo":"Reporte de Ventas Global",
+//         "modal_id":window[moneda_actual].modal_id
+//     }
+//     gestor.montar_tabla(tabla_info,window[moneda_actual]);
+// }
 
 
 //Doble Click
@@ -203,3 +207,42 @@ $(document).on("change","#f3",async function(){
 
 
 /// modificaciones
+$(document).on("change","#operacion",function(){
+    if($(this).selectpicker("val")=="max_deu"){
+        $("#monto").attr("style","display:block")
+    }else{
+        $("#monto").attr("style","display:none")
+    }
+})
+$(document).on("change","#receptor",async function(){
+    let receptores=$(this).selectpicker().val();
+    let data={"receptor":receptores,"comando":"get_age_multi"};
+    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
+    if(info.data.data.length ==  0){
+        Swal.fire({
+            title: '',
+            text: "Este receptor no tiene Agencias",
+            icon: 'warning',
+            confirmButtonText: 'Aceptar'
+          });
+    }else{
+
+    moneda_actual = $("#moneda .tabs a.active").attr('id');
+    $('#tabla1').removeClass('invisible');
+    $('#tabla_'+moneda_actual).removeClass('invisible');
+    $('#aceptar').prop('disabled', true);
+    let parametros = ["receptor"];
+    let extras = {};
+    //parametros,  extras, moneda, comando/id 
+    if(window[moneda_actual].size()<1 || boton==true){
+        window[moneda_actual].push(await gestor.consulta(parametros,extras, moneda_actual,"get_age_multi"));
+    }
+    let tabla_info = {"stack":window[moneda_actual],
+        "parametros":parametros,
+        "moneda":moneda_actual,
+        "titulo":"Reporte de Ventas Global",
+        "modal_id":window[moneda_actual].modal_id
+    }
+    gestor.montar_tabla(tabla_info,window[moneda_actual]);
+    }
+});

@@ -1,9 +1,12 @@
-
+import * as fecha from "./date.js";
+import {ajax_peticion} from "./Ajax-peticiones.js";
 import {ini_tabla} from "./table_ini.js";
 import {Stack} from './stack.js';
-import * as gestor from "./gestor.js";  
-import { construir_modal,crear } from "./contruir_peticion_formularios_emergentes.js";
-import {ajax_peticion} from "./Ajax-peticiones.js";
+import * as gestor from "./gestor.js";
+//modificaciones
+import { construir_modal,crear } from "./contruir_peticion_formularios_emergentes.js"; 
+
+//
 var monedas=[];
 var moneda_actual;
 var stack = new Stack();
@@ -12,11 +15,12 @@ var modal_id = 1;
 var boton=false;
 var row;
 var id_menu;
-
+// modificaciones
 window["receptor"] ="";
 var botones_emergente=[];
 var parametros_emergentes=[];
 var titulo_ventana="";
+//
 
 $(document).ready(function () {
     
@@ -30,7 +34,24 @@ $(document).ready(function () {
     // fecha.rangeDate = f1f2 antiguos
     // fecha.futuDate = f1f2 futuros
     // fecha.oneDate = f1 unica
+    // fecha.rangeDate("#f1f2");
+    cargaAdicional();
 });
+function cargaAdicional(){
+    let grupo = $('#grupo');
+    grupo.prepend(`<option value="todos">Todos</option>`)
+    grupo.selectpicker("refresh");
+    grupo.val("todos");
+    grupo.selectpicker("render")
+
+    let loteria = $('#loteria');
+    loteria.prepend(`<option value="todas">Todas</option>`);
+    loteria.selectpicker("refresh");
+    loteria.val("todas");
+    loteria.selectpicker("render")
+    
+ }
+
 //Detectamos el cambio de moneda en el tab
 $(document).on("click", "#moneda .tabs .tab-list .tab", function(event) {
 	event.preventDefault();
@@ -64,7 +85,7 @@ $(document).on("click", "#moneda .tabs .tab-list .tab", function(event) {
 
 
 
-$(document).on('click', '#configurar_grupos_agencias', function() {
+$(document).on('click', '#grupo_topes_grupos', function() {
     boton=true;
     traer_data();
 });
@@ -72,14 +93,14 @@ $(document).on('click', '#configurar_grupos_agencias', function() {
 
 //Ocultar El modal
 $(document).on('hidden.bs.modal', '#base', function() {
+
     $(base).children().last().remove();
     if($(base).children().length>1){
         $('.modal-backdrop').addClass('show');
         $(base).children().last().addClass("fade");
         $(base).children().last().addClass("show");
     }
-    window[moneda_actual].modal=window[moneda_actual].modal-1;
-    window[moneda_actual].pop();
+   
  });
 
  //Trae la data de acuerdo a los parametros iniciales
@@ -89,11 +110,21 @@ async function traer_data(){
     $('#tabla_'+moneda_actual).removeClass('invisible');
     $('#aceptar').prop('disabled', true);
     //Se llama al método de crear la tabla, se le envían dos arreglos, parametros y etiquetas.
-    let parametros = [];
+    let parametros = ['grupo','loteria'];
     let extras = {};
+    let peticionValidada=true;
+    parametros.forEach((elemento)=>{
+        if($("#"+elemento).selectpicker("val")=="title="){
+            peticionValidada=false;
+        }
+    })
     //parametros,  extras, moneda, comando/id 
     if(window[moneda_actual].size()<1 || boton==true){
-        window[moneda_actual].push(await gestor.consulta(parametros,extras, moneda_actual,"configurar_grupos_agencias"));
+        if(peticionValidada){
+            window[moneda_actual].push(await gestor.consulta(parametros,extras, moneda_actual,"grupo_topes_grupos"));
+        }else{
+            gestor.alerta("Se debe seleccionar algun valor en las listas","error")
+        }
     }
     let tabla_info = {"stack":window[moneda_actual],
         "parametros":parametros,
@@ -101,7 +132,7 @@ async function traer_data(){
         "titulo":"Reporte de Ventas Global",
         "modal_id":window[moneda_actual].modal_id
     }
-    gestor.montar_tabla(tabla_info,window[moneda_actual],"elimitable");
+    gestor.montar_tabla(tabla_info,window[moneda_actual]);
 }
 
 
@@ -200,8 +231,7 @@ $(document).on("change","#f3",async function(){
 
 });
 
-
-/// modificaciones
+//modificar
 
 //agregar
 $(document).on("click", "#agregar", async function () {
@@ -261,101 +291,8 @@ $(document).on("click", "#agregar", async function () {
     }
 });
 
-$(document).on("click","#agregar_grupo", function(){
+$(document).on("click","#agregar_topos_grupo", function(){
     crear(botones_emergente,titulo_ventana);
 });
-
-
-//Botones
-
-$(document).on('click','td',async function(){
-  
-    var column = $(this).parent().children().index(this);
-    var currentRow = $(this).closest("tr");
-    let col_act = column;
-    let row_act = $('#tabla_'+moneda_actual).DataTable().row( this ).index();
-    let grupo= $('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[2];
-    let grupos_list=window[moneda_actual].peek();
-    grupos_list=grupos_list.data.data;
-    let html_select = `<div style="height: 300px;"><select class='selectpicker' id='n_grupo'>`
-    grupos_list.forEach((grupo,i)=>{
-        html_select+=`<option value='`+grupo.grupo+`' >`+grupo.grupo+`</option>`;
-    })
-    html_select+=`</select></div>`;
-    if(column=="0"){
-        Swal.fire({
-            title: '<strong>Grupo: '+grupo+'</strong>',
-            icon: 'info',
-            html:
-              `Seleccione un grupo para reemplazar en las agencias que pertenecían a `+grupo+` <br>`+html_select,
-            showCloseButton: true,
-            showCancelButton: true,
-            focusConfirm: false,
-            confirmButtonText:
-              ' Eliminar',
-            cancelButtonText:
-              '<i class="fa fa-thumbs-down">Cancelar</i>',
-          }).then(async (result)  =>{
-            let grupo_new = $('#n_grupo').selectpicker('val');
-            if (result.isConfirmed) {
-                let data = {"comando":"cfg_grup_eli","c0":grupo,"grupo":grupo_new}
-                let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(data) }, "POST");
-                if(info.data.mensaje=='ok'){
-                    Swal.fire('Eliminado!', '', 'success')
-                    traer_data();
-                }
-            }
-
-          })
-          $('#n_grupo').selectpicker({noneSelectedText : 'Seleccione'});
-
-          
-
-    }else if(column==1){
-        let data = { "comando": "", "orden": $(this).attr("data-orden") };
-        let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(data) }, "POST");
-        let grupo = $('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[2];
-        let rec = $('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[4];
-        let detalle = $('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[3];
-        let html=""
-        html+=`
-        <div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3'><label class='form-label'>Grupo</label>
-    <input type='text' class='form-control form-control-lg' id='grupo_input' value='`+grupo+`'>
-    </div>`;
-    html+=`<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3'><label class='form-label'>Detalle</label>
-    <input type='text' class='form-control-lg' id='detalle_input' value='`+detalle+`'>
-    </div>
-    `;
-    Swal.fire({
-        title: '<strong>Receptor: '+rec+'</strong>',
-        icon: 'info',
-        html: html,
-        showCloseButton: true,
-        showCancelButton: true,
-        focusConfirm: false,
-        confirmButtonText:
-          ' Guardar',
-        cancelButtonText:
-          '<i class="fa fa-thumbs-down">Cancelar</i>',
-      }).then(async (result)  =>{
-        let grupo_new = $('#grupo_input').val();
-        let detalle = $('#detalle_input').val();
-        if (result.isConfirmed) {
-            let data = {"comando":"cfg_grup_modi","c0":grupo,"grupo":grupo_new,"c1":detalle,"c2":rec}
-            let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(data) }, "POST");
-            if(info.data.mensaje=='Datos Actualizados'){
-                Swal.fire('Editado!', '', 'success')
-                traer_data();
-            }
-        }
-
-      })
-      
-        
-
-    
-}
-    
-})
 
 
