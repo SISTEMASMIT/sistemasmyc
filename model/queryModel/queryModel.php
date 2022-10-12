@@ -39,7 +39,11 @@ class QueryModel{
         $data_inicial->usuario = $usuario->user;
         $data_inicial->banca= $usuario->banca;
         $data_inicial->token = $usuario->token;
-        $orden="";
+        if(!isset($data_inicial->orden)){
+            $orden="";
+        }else{
+            $orden=$data_inicial->orden;
+        }
         if(isset($_SESSION[$comando])){
             $this->comando_orden($data_inicial,$comando,$orden);
         }else{
@@ -177,8 +181,10 @@ class QueryModel{
     public function comando_orden(&$data_inicial,&$comando,&$orden){
         if(isset($_SESSION[$comando]->comando)){
             $data_inicial->comando = $_SESSION[$comando]->comando;
-            $data_inicial->orden = $_SESSION[$comando]->orden;
-            $orden=$_SESSION[$comando]->orden;
+            if($orden==""){
+                $data_inicial->orden = $_SESSION[$comando]->orden;
+                $orden=$_SESSION[$comando]->orden;
+            }
             $comando=$_SESSION[$comando]->comando;
         }else{
             $data_inicial->comando = $_SESSION[$comando]->datos->comando;

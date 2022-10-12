@@ -263,8 +263,8 @@ function crear_body_sum(data){
         body+=`<tr>`
         elemento=Object.values(elemento);
            elemento.forEach((row,i)=>{
+               if(row==null)row='';
                 if(sumados.find( e=> e==i)){
-                    if(row==null)row='';
                     row = row.toString();
                     row=row.replaceAll(',','');
                     body+=`<td class="num_aling">`+formato.format(row)+`</td>`;

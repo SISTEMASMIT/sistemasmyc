@@ -73,7 +73,7 @@ $(document).on('click', '#agencias_agencias', function() {
 async function traer_data(){
   
     //Se llama al método de crear la tabla, se le envían dos arreglos, parametros y etiquetas.
-    let parametros = ["agencia","cod_serial"];
+    let parametros = ["agencia","codigo_secu"];
     let extras = {};
     //parametros,  extras, moneda, comando/id 
 
