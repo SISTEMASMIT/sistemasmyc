@@ -136,11 +136,12 @@ class Importer
 
     function input_int($label, $json, $type,$clase,$style)
     {
+        $clase=$clase="1"?$clase:"col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12";
     try {   if (!isset($json->id)) {
                     $json->id = $label;
                 }
-            $html = "<div class='col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 filtros'><label class='form-label'>" . $label . "</label>";
-            $html .="<input class='form-control form-control-lg' id='".strtolower(str_replace(" ","_",$json->id))."' data-type='".$type."' type='numeric' placeholder='".$label."' required>";
+            $html = "<div class='".$clase." filtros' style = '".$style."' id='".strtolower(str_replace(" ","_",$json->id))."' ><label class='form-label'>" . $label . "</label>";
+            $html .="<input class='form-control form-control-lg' id='".strtolower(str_replace(" ","_",$json->id))."' data-type='".$type."' type='numeric' placeholder='".$label."' ".$style!==''?"style=".$style:""." required>";
             $html .= "</div>";
             return $html;
         } catch (Exception $e) {
@@ -154,7 +155,7 @@ class Importer
     try {   if (!isset($json->id)) {
                     $json->id = $label;
                 }
-            $html = "<div class='".$clase." filtros'><label class='form-label'>" . $label . "</label>";
+            $html = "<div class='".$clase." filtros' style = '".$style."' id='".strtolower(str_replace(" ","_",$json->id))."'><label class='form-label'>" . $label . "</label>";
             $html .="<input class='form-control form-control-lg' id='".strtolower(str_replace(" ","_",$json->id))."' data-type='".$type."' type='text' placeholder='".$label."' required>";
             $html .= "</div>";
             return $html;
