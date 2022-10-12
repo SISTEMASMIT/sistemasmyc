@@ -1,6 +1,6 @@
 import { rangeDate } from "./date.js";
 import { ajax_peticion } from "./Ajax-peticiones.js";
-import { crear_tabla } from "./table.js";
+import {crear_tabla} from "./elimitable.js";
 import { contruir } from "./contruir_peticion_formularios_emergentes.js";   
 import * as imp from "./importer.js";
 
@@ -32,7 +32,9 @@ var row;
 var parametros_segundo_envio = [];
 var hay_f4 = false;
 window["receptor"] ="";
+window["agencia"] ="";
 var botones_emergente=Array();
+var parametros_emergente = Array();
     var parametros_emergentes=Array()
 var titulo_ventana="";
 $(document).ready(async function () {
@@ -57,7 +59,11 @@ function crear_head(data) {
     return head;
 }
 
-
+//Ocultar El modal
+$(document).on('hidden.bs.modal', '#modal_edit', function() {
+    $("#modal_edit").removeClass("show1");
+  
+});
 
 
 function crear_body(columns, rows) {
@@ -209,289 +215,6 @@ function getCurrentDate(formato) {
 
 
 
-
-//Detectamos el Doble Click
-$(document).on('dblclick', 'td', async function () {
-
-    let have_dclick;
-    let dclick = vtn[vtn.length - 1];
-
-    for (let i = 0; i < dclick.length; i++) {
-        have_dclick = dclick[i].filter(function (x) {
-            if (x.tipo == 'dclick') {
-                return x;
-            }
-        });
-    }
-
-    let data = [];
-    let etiq = [];
-    let key;
-    let value;
-    let cosas = [];
-    let iscorrect = false;
-    var column = $(this).parent().children().index(this);
-    if (isdclick) {
-        if (have_dclick.length > 0) { $("#load").addClass('spinner'); }
-        for (let a = 0; a < dclick[0].length; a++) {
-            if (dclick[0][a].label != '98') {
-                if (column == dclick[0][a].label) {
-                    iscorrect = true;
-                    parametros = dclick[0][a].datos["parametros"].split(",")
-                    etiquetas = dclick[0][a].datos["etiquetas"].split(",")
-                    emergente = dclick[0][a].datos["emergente"];
-                    comando = dclick[0][a].datos["id"];
-                    titulo = dclick[0][a].datos["titulo_emergente"];
-                    Object.assign(data, { "comando": dclick[0][a].datos["id"] });
-                    for (let i = 0; i < parametros.length; i++) {
-                        if (Number.isInteger(parseInt(parametros[i]))) {
-                            key = `c` + parametros[i];
-                            value = $(this).parent().find("td").eq(parseInt(parametros[i])).text();
-                            Object.assign(data, { [key]: value });
-                        }
-                    }
-                }
-            } else {
-                iscorrect = true;
-                parametros = dclick[0][a].datos["parametros"].split(",")
-
-                if (parametros.find(e => e == 'mes')) {
-                    hay_mes = true;
-                }
-                emergente = dclick[0][a].datos["emergente"];
-                etiquetas = dclick[0][a].datos["etiquetas"].split(",")
-                comando = dclick[0][a].datos["id"];
-                titulo = dclick[0][a].datos["titulo_emergente"];
-                Object.assign(data, { "comando": dclick[0][a].datos["id"] });
-                for (let i = 0; i < parametros.length; i++) {
-                    if (Number.isInteger(parseInt(parametros[i]))) {
-                        if (hay_mes) {
-                            key = 'c' + parametros[i];
-                            value = Object.values(parametros_segundo_envio);
-                            Object.assign(data, { [key]: value });
-                            Object.assign(data, { 'mes': $(this).parent().find("td").eq(parseInt(parametros[i])).text() });
-                        } else {
-                            key = `c` + parametros[i];
-                            value = $(this).parent().find("td").eq(parseInt(parametros[i])).text();
-                            Object.assign(data, { [key]: value });
-                        }
-
-                    } else {
-                        if (parametros[i] == "f1") {
-                            if ($("#" + parametros[i]).length < 1) {
-                                let f = getCurrentDate(1);
-                                Object.assign(data, { [parametros[i]]: f });
-                            } else {
-                                Object.assign(data, { [parametros[i]]: $('#' + parametros[i]).data('daterangepicker').startDate.format('YYYYMMDD') });
-                            }
-                        } else if (parametros[i] == "f1f2") {
-                            if ($("#" + parametros[i]).length < 1) {
-                                let f = getCurrentDate(1);
-                                Object.assign(data, { [parametros[i]]: f });
-
-                            } else {
-                                Object.assign(data, { f1: $("#" + parametros[i]).data('daterangepicker').startDate.format('YYYYMMDD') });
-                                Object.assign(data, { f2: $("#" + parametros[i]).data('daterangepicker').endDate.format('YYYYMMDD') });
-                            }
-                        } else {
-                            if (!hay_mes) {
-                                Object.assign(data, { [parametros[i]]: $('#' + parametros[i]).selectpicker('val') });
-                            }
-                        }
-                    }
-                }
-                //Saco las etiquetas
-                for (let i = 0; i < etiquetas.length; i++) {
-                    if (Number.isInteger(parseInt(etiquetas[i]))) {
-                        // key = `c`+etiquetas[i];
-                        key = etq[etq.length - 1][etiquetas[i]];
-                        value = $(this).parent().find("td").eq(parseInt(etiquetas[i])).text();
-                        Object.assign(etiq, { [key]: value });
-                    } else {
-                        if (etiquetas[i] == "f1") {
-                            if ($("#" + etiquetas[i]).length < 1) {
-                                let f = getCurrentDate();
-                                Object.assign(etiq, { Fecha: f });
-                            } else {
-                                Object.assign(etiq, { Fecha: $("#" + etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY') });
-                            }
-                        } else if (etiquetas[i] == "f1f2") {
-                            if ($("#" + etiquetas[i]).length < 1) {
-                                let f = getCurrentDate();
-                                Object.assign(etiq, { Fecha2: f });
-                            } else {
-                                Object.assign(etiq, { Desde: $("#" + etiquetas[i]).data('daterangepicker').startDate.format('DD/MM/YYYY') });
-                                Object.assign(etiq, { Hasta: $("#" + etiquetas[i]).data('daterangepicker').endDate.format('DD/MM/YYYY') });
-                            }
-                        } else {
-                            let str = etiquetas[i];
-                            Object.assign(etiq, { [str.charAt(0).toUpperCase() + str.slice(1)]: $('#' + etiquetas[i]).selectpicker('val') });
-                        }
-                    }
-                }
-            }
-        }
-        if (iscorrect) {
-            //Convierto para que se envien los parametros
-            //valido si es receptor o agencia, si es receptor cambio el comando
-            let codigo_rec = $(this).parent().find("td").eq(0);
-            if (codigo_rec.css('background-color') == 'rgb(139, 202, 66)') {
-                Object.assign(data, { "comando": "csl_vtas_globales2" });
-                Object.assign(data, { "orden": "list" });
-            }
-
-
-            let keys = Object.getOwnPropertyNames(data).filter((x) => {
-                return x != "length" ? x : "";
-            });
-            let valores = Object.values(data);
-            let string = "{";
-            keys.forEach((key, index) => {
-                string += `"${key}":"${valores[index]}",`;
-            })
-            string = string.slice(0, string.length - 1);
-            string += "}";
-            var info = await ajax_peticion("/query/standard_query", { 'data': string }, "POST");
-            let set = Object.values(JSON.parse(info.settings.jsr));
-            let invisibles = [];
-            let sumatorias = [];
-            etq.push(info.data.head);
-            vtn.push(set);
-            extra.push(info.datos_extra);
-            if (set[0].length > 0) {
-                have_set.push(true);
-
-                btns.push(set[0].filter(function (x) {
-                    return x.label == 'Anular';
-                }));
-
-                invisibles = set[0].find(function (x) {
-                    return x.label == '96';
-                });
-
-                sumatorias = set[0].find(function (x) {
-                    return x.label == '97';
-                });
-
-                dclick = [];
-                dclick.push(set[0].filter(function (x) {
-                    if (x.label != '98' && x.label != '99' && x.label != '97' && x.label != '96') {
-                        return x;
-                    } else if (x.label == '98') {
-                        return x;
-                    }
-
-                }));
-                rclick = [];
-                rclick.push(set[0].find(function (x) {
-                    return x.label == '99';
-                }));
-
-                if (dclick[0] != undefined) {
-                    isdclick2 = true;
-                } else {
-                    isdclick2 = false;
-                }
-
-                if (rclick[0] != undefined) {
-                    isrclick2 = true;
-                } else {
-                    isrclick2 = false;
-                }
-
-                if (invisibles != undefined) {
-                    invisibles = invisibles.datos.c_invisible.split(",");
-                    invisibles = invisibles.map(function (x) {
-                        return parseInt(x);
-                    });
-                } else {
-                    invisibles = [];
-                }
-
-
-                if (sumatorias != undefined) {
-                    sumatorias = sumatorias.datos.c_sumatoria.split(",");
-                    sumatorias = sumatorias.map(function (x) {
-                        return parseInt(x);
-                    });
-                } else {
-                    sumatorias = [];
-                }
-
-            } else {
-                btns.push();
-                have_set.push(false);
-                isdclick2 = false;
-                isrclick2 = false;
-            }
-
-            if (emergente == "tabla") {
-                let btn = btns[btns.length - 1][0];
-
-                let labels_extra = extra[extra.length - 1];
-                //Convierto para que se envien las etiquetas
-                let algo = [];
-                algo[0] = etiq;
-                et = etiq;
-                let keys = Object.getOwnPropertyNames(etiq).filter((x) => {
-                    return x != "length" ? x : "";
-                });
-                let valores = Object.values(etiq);
-                let string = "{";
-                keys.forEach((key, index) => {
-                    string += `"${key}":"${valores[index]}",`;
-                })
-                string = string.slice(0, string.length - 1);
-                string += "}";
-                let labels_modal = JSON.parse(string);
-                if ($(base).children().length > 1) {
-                    $(base).children().last().removeClass("show");
-                }
-                modal_id++;
-                let modal = $(base).children().first().html().replaceAll("{}", modal_id);
-                let modalsplit = modal.split("*");
-                let string_divs = "";
-                keys.forEach((key, index) => {
-                    string_divs += `<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><p><label>${key}</label>:<label>${valores[index]}</label></p></div>`;
-                });
-                let button = ``;
-                if (btn != undefined) {
-                    if (btn.datos.condicion == "1") {
-                        button += `<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><button type="button" class="btn btn-lg btn-danger" id="` + btn.datos.id + `">` + btn.label + `</button></div>`;
-                    }
-                }
-                if (labels_extra.length > 0) {
-                    let d = [];
-                    d[0] = labels_extra[0];
-                    let keys_extra = Object.getOwnPropertyNames(labels_extra[0]).filter((x) => {
-                        return x != "length" ? x : "";
-                    });
-                    let valores_extra = Object.values(labels_extra[0]);
-                    keys_extra.forEach((key, index) => {
-                        string_divs += `<div class='col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6'><p><label>${key}</label>:<label>${valores_extra[index]}</label></p></div>`;
-                    })
-                }
-                string_divs += button;
-                modalsplit[1] = string_divs;
-                modal = modalsplit.join("");
-                modal = modal.replaceAll("#", titulo.charAt(0).toUpperCase() + titulo.slice(1).replaceAll("_", " "));
-                $(base).append(modal);
-
-                $('#tabla' + modal_id).removeClass('invisible');
-                crear_tabla(info.data, "#tabla" + modal_id, "#thead" + modal_id, "#tbody" + modal_id, isdclick2, dclick, isrclick2, invisibles, sumatorias, labels_modal, titulo, "#modal" + modal_id);
-
-            }
-
-
-        }
-
-
-
-    }
-
-}
-);
-
 $(document).on('click', '.btn-danger', async function () {
     let btn = btns[btns.length - 1];
     let data = [];
@@ -529,8 +252,10 @@ $(document).on('click', '.btn-danger', async function () {
     }
 });
 
-//Click Derecho
+{"id":"guardar","comando":"cfg_topedina_agr","parametros":"eliminar_age:check,cobrador_age:select","parametros_data":"codigo_age"}
+{"id":"agregrar","comando":"cfg_topedina_agr","parametros":"nombre:text,agencia:text,direccion:text,telefono:text,nombre2:text,cobrador:select,estado:select,elimina:check,max_permuta:int,mensaje:text,grupo_agencia:select,codigo2:int,zona:select,maxdeuda:int,dias:int,tope_padre:check,wasapt:check,print_logo:check","parametros_data":"receptor","orden":"modalAgregarUsuario","condicion":""}
 
+//Click Derecho
 $(document).on('contextmenu', 'td', function (e) {
     let rclick = vtn[vtn.length - 1];
     let have_rclick;
@@ -592,6 +317,33 @@ function abrirMenu(elemento) {
 
 }
 
+$(document).on( "click","#guardar", async function(){
+
+    if ($(base).children().length > 1) {
+        if(botones_emergente.length>0){
+                let info = await ajax_peticion("/query/standard_query", { 'data': contruir(botones_emergente) }, "POST");
+                if(info.data.mensaje=="ok"){
+                    Swal.fire({
+                        title: titulo_ventana,
+                        text: info.data.mensaje,
+                        icon: 'success',
+                        confirmButtonText: 'Aceptar'
+                      });
+                }else{
+                    Swal.fire({
+                        title: titulo_ventana,
+                        text: info.data.mensaje,
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                      });
+                }
+                
+        }
+        $(base).children().last().removeClass("show");
+    }
+
+})
+
 
 ///Agregar
 $(document).on("click", "#agregrar", async function () {
@@ -607,7 +359,7 @@ $(document).on("click", "#agregrar", async function () {
 
     if ($(base).children().length > 1) {
         if(botones_emergente.length>0){
-                let info = await ajax_peticion("/query/standard_query", { 'data': contruir(botones_emergente) }, "POST");
+                let info = await ajax_peticion("/query/standard_query", { 'data': contruir(botones_emergente,window) }, "POST");
                 if(info.data.mensaje=="ok"){
                     Swal.fire({
                         title: titulo_ventana,
@@ -1043,102 +795,6 @@ $(document).on('click', '#rclick', async function () {
 
 });
 
-$(document).on("change", "#f3", async function () {
-
-    let data = parametros_segundo_envio;
-    Object.assign(data, { "ano": $(this).selectpicker("val") });
-    Object.assign(data, { "comando": "csl_vtas_globalesf4a" });
-    let keys = Object.getOwnPropertyNames(data).filter((x) => {
-        return x != "length" ? x : "";
-    });
-    let valores = Object.values(data);
-    let string = "{";
-    keys.forEach((key, index) => {
-        string += `"${key}":"${valores[index]}",`;
-    })
-    string = string.slice(0, string.length - 1);
-    string += "}";
-    var info = await ajax_peticion("/query/standard_query", { 'data': string }, "POST");
-    let set = Object.values(JSON.parse(info.settings.jsr));
-    let invisibles = [];
-    let sumatorias = [];
-    etq.push(info.data.head);
-    vtn.push(set);
-    extra.push(info.datos_extra);
-    if (set[0].length > 0) {
-
-        have_set.push(true);
-
-        formulario_emergente = set[0].find(function (x) {
-            return x.tipo == 'formulario_emergente_date_year';
-        });
-
-        btns.push(set[0].filter(function (x) {
-            return x.label == 'Anular';
-        }));
-
-        invisibles = set[0].find(function (x) {
-            return x.label == '96';
-        });
-
-        sumatorias = set[0].find(function (x) {
-            return x.label == '97';
-        });
-
-        dclick = [];
-        dclick.push(set[0].filter(function (x) {
-            if (x.tipo == 'dclick') {
-                return x;
-            }
-
-        }));
-        rclick = [];
-        rclick.push([0].find(function (x) {
-            return x.tipo == 'rclick';
-        }));
-
-        if (dclick[0] != undefined) {
-            isdclick2 = true;
-        }
-
-        if (rclick[0] != undefined) {
-            isrclick2 = true;
-        } else {
-            isrclick2 = false;
-        }
-
-        if (invisibles != undefined) {
-            invisibles = invisibles.datos.c_invisible.split(",");
-            invisibles = invisibles.map(function (x) {
-                return parseInt(x);
-            });
-        } else {
-            invisibles = [];
-        }
-
-
-        if (sumatorias != undefined) {
-            sumatorias = sumatorias.datos.c_sumatoria.split(",");
-            sumatorias = sumatorias.map(function (x) {
-                return parseInt(x);
-            });
-        } else {
-            sumatorias = [];
-        }
-
-    } else {
-        have_set.push(false);
-        isdclick2 = false;
-        isrclick2 = false;
-    }
-
-    $("#f3").selectpicker("refresh");
-    $("#load").addClass('spinner');
-
-    crear_tabla(info.data, "#tabla" + modal_id, "#thead" + modal_id, "#tbody" + modal_id, isdclick2, dclick, isrclick2, invisibles, sumatorias, [], 'Reporte Por Meses', "#modal" + modal_id);
-    $("#load").removeClass('spinner');
-
-})
 
 
 
@@ -1236,3 +892,128 @@ $(document).on("keyup",id +"#search",function () {
       var v = $("#search").val();
       $("#base #modal2 #folder_jstree").jstree(true).search(v);
     }, 250);})
+
+
+
+
+//Botones
+
+$(document).on('click','td',async function(){
+  
+    var column = $(this).parent().children().index(this);
+    var currentRow = $(this).closest("tr");
+    let col_act = column;
+    let row_act = $('#tabla1').DataTable().row( this ).index();
+    
+    if(column=="0"){
+          alert("eliminar");   
+    }else if(column==1){
+        let data = { "comando": "", "orden": $(this).attr("data-orden") };
+        let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(data) }, "POST");
+        let formulario = JSON.parse(info.settings["jsr"]);
+        let age = $('#tabla1').DataTable().row(currentRow).data()[5];
+        data = { "comando": "cfg_agen_btnmo","c1":age};
+        info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(data) }, "POST");
+        
+        modal_id++;
+        let modal = $(base).children().first().html().replaceAll("{}", modal_id);
+        let modalsplit = modal.split("*");
+        let titulo = '';
+        let html=""
+        if (formulario.filtros != undefined) {
+            formulario.filtros.forEach((element, index) => {
+                if (element.tipo != "titulo") {
+                    if (imp[element.tipo]) {
+                        if ($(this).attr("data-orden") == "modalAgregarAgencia" && element.tipo.includes("button") && jstree == false) {
+                            jstree = true
+                            html += `<div class='col-6'>
+                                    <label>Arbol de Receptores</label>
+                                    <input id="search" class="espaciadoB form-control" type="text" placeholder="Buscar receptor">
+                                    <br>
+                                    <div id="folder_jstree" class="col-6">
+                                    </div>
+                                </div>`
+                        }
+                        if(element.tipo.includes("_value")){
+                            let datos = info.data.data[0];
+                            let keys = Object.getOwnPropertyNames(datos).filter((x)=>{
+                                return x!="length"?x:"";
+                            });
+                            let valores= Object.values(datos);
+                            
+
+                            keys.forEach((key,i)=>{
+                                    if(element.datos.id!=undefined){
+                                        if(key==element.datos.id){
+                                            element.datos.value=valores[i]
+                                        }
+                                    }else if(element.label!=undefined){
+                                        if(key==element.label.toLowerCase().replaceAll(" ","_")){
+                                            element.datos.value= valores[i]
+                                    }
+                                 }
+                            })
+                            
+                        }
+                        html += imp[element.tipo](element.label, element.datos, element.clase, element.style)
+                    }
+                    if(element.tipo.includes("button")){
+                        parametros_emergente.push(element)
+                    }
+                } else {
+                    titulo_ventana=element.datos.id;
+                    titulo = element.datos.id;
+                }
+            })
+       
+            modalsplit[1] = html;
+            modal = modalsplit.join("");
+            modal = modal.replaceAll("#", titulo);
+    
+            $(base).append(modal);
+            // if (jstree) {
+            //     pintarJstree("#base #modal" + modal_id + " #folder_jstree")
+            // }
+    
+            formulario.filtros.forEach((element, index) => {
+                if(element.tipo.includes("select")){
+                    if(element.tipo.includes("multi")){
+                        let multi;
+                        if(element.datos.value.startsWith('/')){
+                            if(element.datos.value.endsWith('/')){
+                                element.datos.value=element.datos.value.slice(1);
+                                element.datos.value=element.datos.value.substr(0,element.datos.value.length - 1);
+                                multi = element.datos.value.split('/');
+                            }
+                        }else{
+                            multi = element.datos.value.split('/');
+                        }
+                        $("#"+element.label.toLowerCase().replaceAll(" ", "_")).selectpicker('val',multi);
+                        $("#"+ element.label).selectpicker("refresh");
+                    }
+                    element.datos.id=element.datos.id==undefined?element.label.toLowerCase().replaceAll(" ","_"):element.datos.id;
+                    $("#"+ element.datos.id).selectpicker("refresh");
+                }else if(element.tipo.includes('check')){
+                    if(element.datos.value==1){
+                        $("#"+ element.datos.id).prop('checked', true);
+                    }else if(element.datos.value=='S'){
+                        $("#"+ element.datos.id).prop('checked', true);
+                    }
+                }   
+            })
+            
+            if ($(base).children().length > 1) {
+                $(base).children().last().modal("show");
+                $(base).children().last().addClass("fade");
+                $(base).children().last().addClass("show1");
+            }
+
+        
+    
+        
+    }
+}
+    
+})
+
+
