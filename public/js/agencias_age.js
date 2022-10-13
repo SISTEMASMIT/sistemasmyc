@@ -4,6 +4,7 @@ import {crear_tabla} from "./elimitable.js";
 import { contruir } from "./contruir_peticion_formularios_emergentes.js";   
 import * as imp from "./importer.js";
 
+var global;
 let hay_mes = false;
 var id = '';
 var base = "#base";
@@ -348,35 +349,16 @@ $(document).on("click", "#agregrar", async function () {
     let data = { "comando": "", "orden": $(this).attr("data-orden") };
     let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(data) }, "POST");
     let formulario = JSON.parse(info.settings["jsr"]);
-    let html = ``;
-    modal_id++;
-    let modal = $(base).children().first().html().replaceAll("{}", modal_id);
-    let modalsplit = modal.split("*");
-    let titulo = '';
     let jstree = false;
-
-    if ($(base).children().length > 1) {
-        if(botones_emergente.length>0){
-                let info = await ajax_peticion("/query/standard_query", { 'data': contruir(botones_emergente,window) }, "POST");
-                if(info.data.mensaje=="ok"){
-                    Swal.fire({
-                        title: titulo_ventana,
-                        text: info.data.mensaje,
-                        icon: 'success',
-                        confirmButtonText: 'Aceptar'
-                      });
-                }else{
-                    Swal.fire({
-                        title: titulo_ventana,
-                        text: info.data.mensaje,
-                        icon: 'error',
-                        confirmButtonText: 'Aceptar'
-                      });
-                }
-                
-        }
-        $(base).children().last().removeClass("show");
-    }
+    const steps = ['1', '2', '3']
+    const Queue = Swal.mixin({
+    progressSteps: steps,
+    confirmButtonText: 'Siguiente >',
+    // optional classes to avoid backdrop blinking between steps
+    showClass: { backdrop: 'swal2-noanimation' },
+    hideClass: { backdrop: 'swal2-noanimation' }
+    })
+    let html=`<div class="row">`;
     if (formulario.filtros != undefined) {
         formulario.filtros.forEach((element, index) => {
             if (element.tipo != "titulo") {
@@ -386,6 +368,7 @@ $(document).on("click", "#agregrar", async function () {
                         html += `<div class='col-6'>
                                 <label>Arbol de Receptores</label>
                                 <input id="search" class="espaciadoB form-control" type="text" placeholder="Buscar receptor">
+                                <label id="mensaje_busqueda"></label>
                                 <br>
                                 <div id="folder_jstree" class="col-6">
                                 </div>
@@ -402,28 +385,131 @@ $(document).on("click", "#agregrar", async function () {
             }
         })
 
-        modalsplit[1] = html;
-        modal = modalsplit.join("");
-        modal = modal.replaceAll("#", titulo);
+        
 
-        $(base).append(modal);
+    }
+    html+=`</div>`;
+    await Queue.fire({   
+    title: titulo,
+    html : html,
+    willOpen:()=>{
         if (jstree) {
-            pintarJstree("#base #modal" + modal_id + " #folder_jstree")
+            pintarJstree("#folder_jstree")
         }
 
         formulario.filtros.forEach((element, index) => {
             if(element.tipo.includes("select")){
                 element.datos.id=element.datos.id==undefined?element.label.toLowerCase().replaceAll(" ","_"):element.datos.id;
-                $("#"+ element.datos.id).selectpicker("refresh");
+                $("#"+ element.datos.id).selectpicker("refresh",{noneSelectedText: 'Seleccione...'});
             }
         })
-        
-        if ($(base).children().length > 1) {
-            $(base).children().last().modal("show");
-            $(base).children().last().addClass("fade");
-            $(base).children().last().addClass("show1");
-        }
+    },
+    currentProgressStep: 0,
+    // optional class to show fade-in backdrop animation which was disabled in Queue mixin
+    showClass: { backdrop: 'swal2-noanimation' },
+    }).then(async()=>{
+        if(botones_emergente.length>0){
+            let info = await ajax_peticion("/query/standard_query", { 'data': contruir(botones_emergente,window) }, "POST");
+            if(info.data.mensaje=="ok"){
+                Swal.fire({
+                    title: titulo_ventana,
+                    text: info.data.mensaje,
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
+                  });
+            }else{
+                Swal.fire({
+                    title: titulo_ventana,
+                    text: info.data.mensaje,
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                  });
+            }
     }
+    })
+
+    data = { "comando": "", "orden": "modalAgregarUsuario" };
+    info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(data) }, "POST");
+    formulario = JSON.parse(info.settings["jsr"]);
+    jstree = false;
+
+    html=`<div class="row">`;
+    if (formulario.filtros != undefined) {
+        formulario.filtros.forEach((element, index) => {
+            if (element.tipo != "titulo") {
+                if (imp[element.tipo]) {
+                    if ($(this).attr("data-orden") == "modalAgregarAgencia" && element.tipo.includes("button") && jstree == false) {
+                        jstree = true
+                        html += `<div class='col-6'>
+                                <label>Arbol de Receptores</label>
+                                <input id="search" class="espaciadoB form-control" type="text" placeholder="Buscar receptor">
+                                <label id="mensaje_busqueda"></label>
+                                <br>
+                                <div id="folder_jstree" class="col-6">
+                                </div>
+                            </div>`
+                    }
+                    html += imp[element.tipo](element.label, element.datos, element.clase, element.style)
+                }
+                if(element.tipo.includes("button")){
+                    botones_emergente.push(element)
+                }
+            } else {
+                titulo_ventana=element.datos.id;
+                titulo = element.datos.id;
+            }
+        })
+    }
+    html+=`</div>`;
+    await Queue.fire({
+        willOpen:async()=>{
+            if (jstree) {
+                pintarJstree("#folder_jstree")
+            }
+    
+            formulario.filtros.forEach((element, index) => {
+                if(element.tipo.includes("select")){
+                    element.datos.id=element.datos.id==undefined?element.label.toLowerCase().replaceAll(" ","_"):element.datos.id;
+                    $("#"+ element.datos.id).selectpicker("refresh",{noneSelectedText: 'Seleccione...'});
+                }
+            })
+    },
+    title: 'Agregar Usuario',
+    html: html,
+    currentProgressStep: 1
+    }).then(async()=>{
+        if(botones_emergente.length>0){
+            let info = await ajax_peticion("/query/standard_query", { 'data': contruir(botones_emergente,window) }, "POST");
+            if(info.data.mensaje=="ok"){
+                Swal.fire({
+                    title: titulo_ventana,
+                    text: info.data.mensaje,
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
+                  });
+            }else{
+                Swal.fire({
+                    title: titulo_ventana,
+                    text: info.data.mensaje,
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                  });
+            }
+    }
+    })
+
+
+
+    await Queue.fire({
+    title: 'Tercero',
+    currentProgressStep: 2,
+    confirmButtonText: 'OK',
+    // optional class to show fade-out backdrop animation which was disabled in Queue mixin
+    showClass: { backdrop: 'swal2-noanimation' },
+    })
+   
+
+
 });
 
 
@@ -800,13 +886,16 @@ async function pintarJstree(id) {
     let data = { "comando": "get_rec_treerojo" };
     let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(data) }, "POST");
     info.data.data = JSON.parse(JSON.stringify(info.data.data).replaceAll(".","_"));
+    global = info;
     $(id).jstree({
         'core': {
             'check_callback': true,
-            "themes": { "stripes": true },
             'data': info.data.data,
-            'multiple': true
-
+            "themes": {
+                "name": "default",
+                "dots": false,
+                "icons": false
+            },
         },
         "types": {
             "root": {
@@ -818,26 +907,19 @@ async function pintarJstree(id) {
         },
         'search': {
             'case_insensitive': true,
-            'show_only_matches': true
+            'show_only_matches': true,
+            "show_only_matches_children": true
         },
         "conditionalselect": function (node, event) {
             if(node.original.hijos==0){
-                Swal.fire({
-                    title: '',
-                    text: "Seleccione el icono para poder ver los receptores que pueden tener agencias directas RECEPTORES DE COLOR AZUL",
-                    icon: 'error',
-                    confirmButtonText: 'Aceptar'
-                  });
+                $("#mensaje_busqueda").text("Este receptor no puede tener Agencias Directas, seleccione uno azul");
+                
             }
             return node.original.hijos == 1;
         },
         'plugins': ['conditionalselect', 'types', 'search'],
-        'themes': {
-            'theme': 'apple',
-            "dots": true,
-            "icons": true
-        },
-        'plugins': ['search','conditionalselect', 'types', 'html_data', 'themes', 'ui']
+      
+        'plugins': ['search','conditionalselect', 'types']
     }).bind("loaded.jstree", function (e) {
         for (var i in info.data.data) {
             if (info.data.data[i].hijos === "1") {
@@ -849,7 +931,7 @@ async function pintarJstree(id) {
                     $("#" + info.data.data[i].id + " >a").css("color", "blue")
                     $("#" + info.data.data[i].id + " >a >i").css("display", "none")
                 }
-            } else {
+            }else {
                 $("#" + info.data.data[i].id.replaceAll(".", "") + " >a").css("color", "red");
                 $("#" + info.data.data[i].id.replaceAll(".", "") + " >a >i").css("display", "none")
             }
@@ -857,14 +939,10 @@ async function pintarJstree(id) {
     }).on('search.jstree', function (nodes, str, res) {
         if (str.nodes.length===0) {
             try{
+                $("#mensaje_busqueda").text("");
                 $('#search').jstree(true).hide_all();
             }catch(e){
-                Swal.fire({
-                    title: '',
-                    text: "No existen receptores con este nombre",
-                    icon: 'error',
-                    confirmButtonText: 'Aceptar'
-                  });
+                $("#mensaje_busqueda").text("No existe un receptor con ese nombre");
             }
         }
     }).on("open_node.jstree", function () {
@@ -885,10 +963,26 @@ async function pintarJstree(id) {
 }
 var to = false;
 $(document).on("keyup",id +"#search",function () {
+    let info = global;
     if(to) { clearTimeout(to); }
     to = setTimeout(function () {
       var v = $("#search").val();
-      $("#base #modal2 #folder_jstree").jstree(true).search(v);
+      $("#folder_jstree").jstree(true).search(v);
+      for (var i in info.data.data) {
+        if (info.data.data[i].hijos === "1") {
+            if(info.data.data[i].id.endsWith(".")){
+                info.data.data[i].id=info.data.data[i].id.substring(0,info.data.data[i].id.length-2);
+                $("#" + info.data.data[i].id + " >a").css("color", "blue")
+                $("#" + info.data.data[i].id + " >a >i").css("display", "none")
+            }else{
+                $("#" + info.data.data[i].id + " >a").css("color", "blue")
+                $("#" + info.data.data[i].id + " >a >i").css("display", "none")
+            }
+        }else {
+            $("#" + info.data.data[i].id.replaceAll(".", "") + " >a").css("color", "red");
+            $("#" + info.data.data[i].id.replaceAll(".", "") + " >a >i").css("display", "none")
+        }
+    }
     }, 250);})
 
 
