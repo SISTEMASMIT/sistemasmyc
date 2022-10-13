@@ -2,6 +2,7 @@ import * as imp from "./importer.js";
 import {ajax_peticion} from "./Ajax-peticiones.js";
 import * as gestor from "./gestor.js";
 export function contruir(botones_emergente,window){
+    
                 let formulario_parametros=botones_emergente[(botones_emergente.length)-1].datos.parametros.split(",");
                 let parametros_data=botones_emergente[(botones_emergente.length)-1].datos.parametros_data!=undefined?botones_emergente[(botones_emergente.length)-1].datos.parametros_data.split(","):[];
                 let param= new Object();

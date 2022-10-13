@@ -32,7 +32,7 @@ var row;
 var parametros_segundo_envio = [];
 var hay_f4 = false;
 window["receptor"] ="";
-window["agencia"] ="";
+window["codigo_age"] ="";
 var botones_emergente=Array();
 var parametros_emergente = Array();
     var parametros_emergentes=Array()
@@ -319,7 +319,7 @@ $(document).on( "click","#guardar", async function(){
 
     if ($(base).children().length > 1) {
         if(parametros_emergente.length>0){
-                let info = await ajax_peticion("/query/standard_query", { 'data': contruir(parametros_emergente) }, "POST");
+                let info = await ajax_peticion("/query/standard_query", { 'data': contruir(parametros_emergente,window) }, "POST");
                 if(info.data.mensaje=="ok"){
                     Swal.fire({
                         title: '',

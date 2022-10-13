@@ -108,20 +108,13 @@ async function pintarJstree(id){
             'data': info.data.data,
             'multiple': true
         },
-        "types" : {
-            "root" : {
-              "icon" : "fa-regular fa-building-lock"
-            },
-            "child" : {
-                "icon" : "fa-regular fa-circle-user"
-            }
-        },
+       
         'search': {
             'case_insensitive': true,
             'show_only_matches' : true
         },
         'plugins': ['contextmenu','types' ,'search'],
-        'plugins': ['contextmenu', 'search','types', 'html_data', 'themes', 'ui'],
+        'plugins': ['contextmenu', 'search','types', 'html_data'],
         'contextmenu' : {items: customMenu}
     }).on('search.jstree', function (nodes, str, res) {
         if (str.nodes.length===0) {
