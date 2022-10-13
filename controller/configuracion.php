@@ -46,6 +46,7 @@ class Configuracion extends Controller
      }
      
      function topes_dinamicos(){}
+     function cobradores(){}
 
 }
 

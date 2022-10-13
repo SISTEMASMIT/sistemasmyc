@@ -209,8 +209,9 @@ $(document).on("click", "#agregar", async function () {
     let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(data) }, "POST");
     let formulario = JSON.parse(info.settings["jsr"]);
     let html="";
-    modal_id++;
-    let modal = $(base).children().first().html().replaceAll("{}", modal_id);
+
+    window[moneda_actual].modal = window[moneda_actual].modal + 1;
+    let modal = $(base).children().first().html().replaceAll("{}", window[moneda_actual].modal);
     let modalsplit = modal.split("*");
     let titulo = '';
     let jstree = false;
@@ -244,7 +245,7 @@ $(document).on("click", "#agregar", async function () {
         modal = modal.replaceAll("#", titulo);
         $(base).append(modal);
         if (jstree) {
-            pintarJstree("#base #modal" + modal_id + " #folder_jstree")
+            pintarJstree("#base #modal" + window[moneda_actual].modal + " #folder_jstree")
         }
         formulario.filtros.forEach((element, index) => {
             if(element.tipo.includes("select")){

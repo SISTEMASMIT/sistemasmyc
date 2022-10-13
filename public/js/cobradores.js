@@ -1,12 +1,9 @@
-import * as fecha from "./date.js";
-import {ajax_peticion} from "./Ajax-peticiones.js";
+
 import {ini_tabla} from "./table_ini.js";
 import {Stack} from './stack.js';
-import * as gestor from "./gestor.js";
-//modificaciones
-import { construir_modal,crear } from "./contruir_peticion_formularios_emergentes.js"; 
-
-//
+import * as gestor from "./gestor.js";  
+import { construir_modal,crear } from "./contruir_peticion_formularios_emergentes.js";
+import {ajax_peticion} from "./Ajax-peticiones.js";
 var monedas=[];
 var moneda_actual;
 var stack = new Stack();
@@ -15,13 +12,11 @@ var modal_id = 1;
 var boton=false;
 var row;
 var id_menu;
-// modificaciones
 
-window["grupo"] ="";
+window["receptor"] ="";
 var botones_emergente=[];
 var parametros_emergentes=[];
 var titulo_ventana="";
-//
 
 $(document).ready(function () {
     
@@ -35,11 +30,7 @@ $(document).ready(function () {
     // fecha.rangeDate = f1f2 antiguos
     // fecha.futuDate = f1f2 futuros
     // fecha.oneDate = f1 unica
-    // fecha.rangeDate("#f1f2");
-    // cargaAdicional();
 });
-
-
 //Detectamos el cambio de moneda en el tab
 $(document).on("click", "#moneda .tabs .tab-list .tab", function(event) {
 	event.preventDefault();
@@ -73,7 +64,7 @@ $(document).on("click", "#moneda .tabs .tab-list .tab", function(event) {
 
 
 
-$(document).on('click', '#agencias_grupos', function() {
+$(document).on('click', '#cobradores', function() {
     boton=true;
     traer_data();
 });
@@ -81,14 +72,14 @@ $(document).on('click', '#agencias_grupos', function() {
 
 //Ocultar El modal
 $(document).on('hidden.bs.modal', '#base', function() {
-
     $(base).children().last().remove();
     if($(base).children().length>1){
         $('.modal-backdrop').addClass('show');
         $(base).children().last().addClass("fade");
         $(base).children().last().addClass("show");
     }
-   
+    window[moneda_actual].modal=window[moneda_actual].modal-1;
+    window[moneda_actual].pop();
  });
 
  //Trae la data de acuerdo a los parametros iniciales
@@ -98,21 +89,11 @@ async function traer_data(){
     $('#tabla_'+moneda_actual).removeClass('invisible');
     $('#aceptar').prop('disabled', true);
     //Se llama al método de crear la tabla, se le envían dos arreglos, parametros y etiquetas.
-    let parametros = ['grupo','receptor'];
+    let parametros = ['receptor'];
     let extras = {};
-    let peticionValidada=true;
-    parametros.forEach((elemento)=>{
-        if($("#"+elemento).selectpicker("val")=="title="){
-            peticionValidada=false;
-        }
-    })
     //parametros,  extras, moneda, comando/id 
     if(window[moneda_actual].size()<1 || boton==true){
-        if(peticionValidada){
-            window[moneda_actual].push(await gestor.consulta(parametros,extras, moneda_actual,"agencias_grupos"));
-        }else{
-            gestor.alerta("Se debe seleccionar algun valor en las listas","error")
-        }
+        window[moneda_actual].push(await gestor.consulta(parametros,extras, moneda_actual,"cobradores"));
     }
     let tabla_info = {"stack":window[moneda_actual],
         "parametros":parametros,
@@ -120,7 +101,7 @@ async function traer_data(){
         "titulo":"Reporte de Ventas Global",
         "modal_id":window[moneda_actual].modal_id
     }
-    gestor.montar_tabla(tabla_info,window[moneda_actual]);
+    gestor.montar_tabla(tabla_info,window[moneda_actual],"elimitable");
 }
 
 
@@ -216,23 +197,20 @@ $(document).on("change","#f3",async function(){
     let ano = $(this).selectpicker("val");
     $("#load_"+moneda_actual).addClass('spinner');
     window[moneda_actual] = await gestor.event_change(window[moneda_actual],base,ano);
+
 });
 
-//modificar
+
+/// modificaciones
 
 //agregar
 $(document).on("click", "#agregar", async function () {
-    if($("#grupo").selectpicker("val")=="title="){
-        gestor.alerta("Seleccione un grupo antes de agregar","error")
-        return false;
-    }
-    window["grupo"]=$("#grupo").selectpicker("val");
     let data = { "comando": "", "orden": $(this).attr("data-orden") };
     let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(data) }, "POST");
     let formulario = JSON.parse(info.settings["jsr"]);
     let html="";
-    modal_id++;
-    let modal = $(base).children().first().html().replaceAll("{}", modal_id);
+    window[moneda_actual].modal = window[moneda_actual].modal + 1;
+    let modal = $(base).children().first().html().replaceAll("{}", window[moneda_actual].modal);
     let modalsplit = modal.split("*");
     let titulo = '';
     let jstree = false;
@@ -266,7 +244,7 @@ $(document).on("click", "#agregar", async function () {
         modal = modal.replaceAll("#", titulo);
         $(base).append(modal);
         if (jstree) {
-            pintarJstree("#base #modal" + modal_id + " #folder_jstree")
+            pintarJstree("#base #modal" + window[moneda_actual].modal + " #folder_jstree")
         }
         formulario.filtros.forEach((element, index) => {
             if(element.tipo.includes("select")){
@@ -282,42 +260,93 @@ $(document).on("click", "#agregar", async function () {
         }
     }
 });
-$(document).on("change","#receptor_grupo",async function(){
-    let receptores=$(this).selectpicker().val();
-    let data={"receptor":receptores,"comando":"cfg_grup_agea1"};
-    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
-    if(info.data.data.length ==  0){
-        gestor.alerta('Este receptor no tiene agencias','warning')
-        let agencias=$("#agencia");
-        agencias.html("");
-        agencias.selectpicker("refresh");
-    }else{
-        let agencias=$("#agencia");
-        agencias.selectpicker({noneSelectedText: 'Seleccione una agencia'});
-        agencias.html(generarHtml(info.data.data));
-        agencias.selectpicker("refresh");
-    }
 
+$(document).on("click","#agregar_cobrador", function(){
+    crear(botones_emergente,titulo_ventana);
+    traer_data();
 });
-function generarHtml(list){
-    let html=""
-    list.forEach(function(element,index){
-        if(index==0){
-            html+=`<option value="${element.codigo_age}" data-subtext='${element.codigo_age}' > ${element.nombre_age}</option>`;
-        }else{
-            html+=`<option value="${element.label}" data-subtext='${element.codigo_age}' >${element.nombre_age}</option>`;
+
+
+//Botones
+
+$(document).on('click','td',async function(){
+  
+    var column = $(this).parent().children().index(this);
+    var currentRow = $(this).closest("tr");
+    let col_act = column;
+    let row_act = $('#tabla_'+moneda_actual).DataTable().row( this ).index();
+    let grupo= $('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[2];
+    let grupos_list=window[moneda_actual].peek();
+    grupos_list=grupos_list.data.data;
+    let html_select = `<div style="height: 300px;"><select class='selectpicker' id='n_grupo'>`
+    grupos_list.forEach((grupo,i)=>{
+        html_select+=`<option value='`+grupo.grupo+`' >`+grupo.grupo+`</option>`;
+    })
+    html_select+=`</select></div>`;
+    if(column=="0"){
+        Swal.fire({
+            title: '¿Estas seguro?',
+            text: "Que deseas Eliminar este cobrador!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si!',
+            cancelButtonText: 'No!'
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+                let data={"c1":$('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[3],"comando":"cfg_cobradore"}
+                let info =await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
+                if(info.data.mensaje.includes("ok")){
+                    gestor.alerta(info.data.mensaje,"success");
+                }else{
+                    gestor.alerta(info.data.mensaje,"error");
+                }
+            }
+          })
+    }else if(column==1){
+        let data = { "comando": "", "orden":"modalEditarCobrador"};
+        let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(data) }, "POST");
+        let formulario = JSON.parse(info.settings["jsr"]);
+        let html="";
+        let titulo;
+        let titulo_ventana;
+        ({html,botones_emergente,titulo_ventana,titulo} =await construir_modal(formulario,botones_emergente,"Editar Cobrador","Editar"));
+    Swal.fire({
+        title: '<strong> Receptor : '+$('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[2]+'</strong>',
+        icon: 'info',
+        html: html,
+        willOpen:()=>{
+            $("#c1").val($('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[3])
+            $("#nombre_co").val($('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[4])
+            $("#apellido_co").val($('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[5])
+            $("#direccion_co").val($('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[6])
+            $("#telefono_co").val($('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[7])
+        },
+        showCloseButton: true,
+        showCancelButton: true,
+        focusConfirm: false,
+        confirmButtonText:
+          ' Guardar',
+        cancelButtonText:
+          '<i class="fa fa-thumbs-down">Cancelar</i>',
+      }).then(async (result)  =>{
+        if (result.isConfirmed) {
+            let data = {"comando":"cfg_cobradorm","c0":$('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[2],"c1":$("#c1").val(),"nombre_co":$("#nombre_co").val(),"apellido_co":$("#apellido_co").val(),"direccion_co":$("#direccion_co").val(),"telefono_co":$("#telefono_co").val()}
+            let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(data) }, "POST");
+            if(info.data.mensaje=='ok'){
+                Swal.fire('Editado!', '', 'success')
+                traer_data();
+            }
         }
-    });
-    return html;
+
+      })
+      
+        
+
+    
 }
-
-
-$(document).on("click","#agregar_grupo", function(){
-    if($("#agencia").selectpicker("val").length<=0){
-        gestor.alerta("Seleccione una Agencia antes de agregar","error")
-        return false;
-    }
-    crear(botones_emergente,titulo_ventana,window);
-});
+    
+})
 
 
