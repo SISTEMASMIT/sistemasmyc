@@ -11,7 +11,7 @@ export function contruir(botones_emergente,window){
                     let data=f.split(":")
                     if(data[1]=="select"){
                         o.index=data[0];
-                        o.valor=$("#"+data[0]).selectpicker("val")    ;
+                        o.valor=$("#"+data[0]).selectpicker("val");
                     }else
                     if(data[1]=="text" || data[1]=="int"){
                         o.index=data[0];

@@ -64,7 +64,7 @@ $(document).on("click", "#moneda .tabs .tab-list .tab", function(event) {
 
 
 
-$(document).on('click', '#configurar_grupos_agencias', function() {
+$(document).on('click', '#cobradores', function() {
     boton=true;
     traer_data();
 });
@@ -89,11 +89,11 @@ async function traer_data(){
     $('#tabla_'+moneda_actual).removeClass('invisible');
     $('#aceptar').prop('disabled', true);
     //Se llama al método de crear la tabla, se le envían dos arreglos, parametros y etiquetas.
-    let parametros = [];
+    let parametros = ['receptor'];
     let extras = {};
     //parametros,  extras, moneda, comando/id 
     if(window[moneda_actual].size()<1 || boton==true){
-        window[moneda_actual].push(await gestor.consulta(parametros,extras, moneda_actual,"configurar_grupos_agencias"));
+        window[moneda_actual].push(await gestor.consulta(parametros,extras, moneda_actual,"cobradores"));
     }
     let tabla_info = {"stack":window[moneda_actual],
         "parametros":parametros,
@@ -209,7 +209,6 @@ $(document).on("click", "#agregar", async function () {
     let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(data) }, "POST");
     let formulario = JSON.parse(info.settings["jsr"]);
     let html="";
-
     window[moneda_actual].modal = window[moneda_actual].modal + 1;
     let modal = $(base).children().first().html().replaceAll("{}", window[moneda_actual].modal);
     let modalsplit = modal.split("*");
@@ -262,8 +261,9 @@ $(document).on("click", "#agregar", async function () {
     }
 });
 
-$(document).on("click","#agregar_grupo", function(){
+$(document).on("click","#agregar_cobrador", function(){
     crear(botones_emergente,titulo_ventana);
+    traer_data();
 });
 
 
@@ -285,52 +285,44 @@ $(document).on('click','td',async function(){
     html_select+=`</select></div>`;
     if(column=="0"){
         Swal.fire({
-            title: '<strong>Grupo: '+grupo+'</strong>',
-            icon: 'info',
-            html:
-              `Seleccione un grupo para reemplazar en las agencias que pertenecían a `+grupo+` <br>`+html_select,
-            showCloseButton: true,
+            title: '¿Estas seguro?',
+            text: "Que deseas Eliminar este cobrador!",
+            icon: 'warning',
             showCancelButton: true,
-            focusConfirm: false,
-            confirmButtonText:
-              ' Eliminar',
-            cancelButtonText:
-              '<i class="fa fa-thumbs-down">Cancelar</i>',
-          }).then(async (result)  =>{
-            let grupo_new = $('#n_grupo').selectpicker('val');
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si!',
+            cancelButtonText: 'No!'
+          }).then(async (result) => {
             if (result.isConfirmed) {
-                let data = {"comando":"cfg_grup_eli","c0":grupo,"grupo":grupo_new}
-                let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(data) }, "POST");
-                if(info.data.mensaje=='ok'){
-                    Swal.fire('Eliminado!', '', 'success')
-                    traer_data();
+                let data={"c1":$('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[3],"comando":"cfg_cobradore"}
+                let info =await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
+                if(info.data.mensaje.includes("ok")){
+                    gestor.alerta(info.data.mensaje,"success");
+                }else{
+                    gestor.alerta(info.data.mensaje,"error");
                 }
             }
-
           })
-          $('#n_grupo').selectpicker({noneSelectedText : 'Seleccione'});
-
-          
-
     }else if(column==1){
-        let data = { "comando": "", "orden": $(this).attr("data-orden") };
+        let data = { "comando": "", "orden":"modalEditarCobrador"};
         let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(data) }, "POST");
-        let grupo = $('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[2];
-        let rec = $('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[4];
-        let detalle = $('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[3];
-        let html=""
-        html+=`
-        <div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3'><label class='form-label'>Grupo</label>
-    <input type='text' class='form-control form-control-lg' id='grupo_input' value='`+grupo+`'>
-    </div>`;
-    html+=`<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3'><label class='form-label'>Detalle</label>
-    <input type='text' class='form-control-lg' id='detalle_input' value='`+detalle+`'>
-    </div>
-    `;
+        let formulario = JSON.parse(info.settings["jsr"]);
+        let html="";
+        let titulo;
+        let titulo_ventana;
+        ({html,botones_emergente,titulo_ventana,titulo} =await construir_modal(formulario,botones_emergente,"Editar Cobrador","Editar"));
     Swal.fire({
-        title: '<strong>Receptor: '+rec+'</strong>',
+        title: '<strong> Receptor : '+$('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[2]+'</strong>',
         icon: 'info',
         html: html,
+        willOpen:()=>{
+            $("#c1").val($('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[3])
+            $("#nombre_co").val($('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[4])
+            $("#apellido_co").val($('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[5])
+            $("#direccion_co").val($('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[6])
+            $("#telefono_co").val($('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[7])
+        },
         showCloseButton: true,
         showCancelButton: true,
         focusConfirm: false,
@@ -339,12 +331,10 @@ $(document).on('click','td',async function(){
         cancelButtonText:
           '<i class="fa fa-thumbs-down">Cancelar</i>',
       }).then(async (result)  =>{
-        let grupo_new = $('#grupo_input').val();
-        let detalle = $('#detalle_input').val();
         if (result.isConfirmed) {
-            let data = {"comando":"cfg_grup_modi","c0":grupo,"grupo":grupo_new,"c1":detalle,"c2":rec}
+            let data = {"comando":"cfg_cobradorm","c0":$('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[2],"c1":$("#c1").val(),"nombre_co":$("#nombre_co").val(),"apellido_co":$("#apellido_co").val(),"direccion_co":$("#direccion_co").val(),"telefono_co":$("#telefono_co").val()}
             let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(data) }, "POST");
-            if(info.data.mensaje=='Datos Actualizados'){
+            if(info.data.mensaje=='ok'){
                 Swal.fire('Editado!', '', 'success')
                 traer_data();
             }

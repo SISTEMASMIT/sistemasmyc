@@ -33,6 +33,13 @@ export function formulario_emergente_label_value(label,json,clase,style){
     </div>`
 }
 
+export function formulario_emergente_label_value_check(label,json,clase,style){
+    let c = clase!="1" && clase!=undefined ?clase:"col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12";
+    return `<div class='${c} filtros'><label class='form-label'>${label}</label>
+    <label class='form-label' id='${json.id!=undefined?json.id:label}_label'>${$("#"+json.id).selectpicker("val")}</label>
+    </div>`
+}
+
 
 
 export function formulario_emergente_date(label,json,clase,style){

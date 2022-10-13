@@ -105,7 +105,6 @@ async function pintarJstree(id){
     $(id).jstree({
         'core': {
             'check_callback': true,
-            "themes": { "stripes": true },
             'data': info.data.data,
             'multiple': true
         },
@@ -122,11 +121,6 @@ async function pintarJstree(id){
             'show_only_matches' : true
         },
         'plugins': ['contextmenu','types' ,'search'],
-        'themes': {
-            'theme': 'apple',
-            "dots": true,
-            "icons": true
-        },
         'plugins': ['contextmenu', 'search','types', 'html_data', 'themes', 'ui'],
         'contextmenu' : {items: customMenu}
     }).on('search.jstree', function (nodes, str, res) {
