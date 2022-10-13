@@ -33,18 +33,9 @@ var hay_f4=false;
 var receptor="Todos";
 
 $(document).ready( async function(){
-    rangeDate("#f1f2");
-   var columns = 6;
-    var rows = 10;
-    var head = crear_head(columns);
-    var body = crear_body(columns,rows);
-    var html=head+body;
-    $('#tablaf').html(html);
-    $('#tablaf').DataTable();
+ 
     cargaAdicional()
-
     // lo que traigo de grupos
-
     pintarJstree("#folder_jstree");
     //Jstree
 })
@@ -60,15 +51,6 @@ function cargaAdicional(){
  }
 
 
-function crear_head(data){
-    let head = `<thead><tr>`;
-    for(var i=0; i<data;i++){
-        head+=`<th>-</th>`;
-    }
-    head+=`</tr></thead>`;
-    return head;
- }
-
 
 
  $(document).on('change', '#loteria', async function() {
@@ -76,20 +58,6 @@ function crear_head(data){
     montar_tabla(receptor,loteria);
 });
 
-function crear_body(columns, rows){
-   let body = `<tbody>`;
-   for(var a =0; a< rows; a++){
-       body+=`<tr>`;
-       for(var i=0; i<columns;i++){
-           body+=`<td>-</td>`;
-       }
-       body+=`</tr>`
-   }
-   
-   
-   body+=`</tbody>`;
-   return body;
-}
 
 //Ocultar El modal
 $(document).on('hidden.bs.modal', '#base', function() {
@@ -115,14 +83,7 @@ $(document).on('hidden.bs.modal', '#base', function() {
 
 
 async function montar_tabla(receptor,loteria){
-   var w = document.getElementById("tabla_res").clientWidth;
-   var h = document.getElementById("tabla_res").clientHeight;
-   h = h+500;
-   $('#f').html('');
-   $("#carga").addClass('carga');
-   $("#carga").width( w );
-   $("#carga").height( h );
-   $("#load").addClass('spinner');
+ 
    let data = {"receptor":receptor,"loteria":loteria,"comando":"cfg_topedina","orden":"no"};
    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
 
@@ -190,9 +151,6 @@ async function montar_tabla(receptor,loteria){
        isrclick=false;
    }
    console.log(rclick)
-   $('#tabla1').removeClass('invisible');
-   let labels ={"Receptor":receptor,"Loteria":loteria};
-   crear_tabla(info.data,"#tabla1","#thead1","#tbody1",isdclick,dclick,isrclick,invisibles,sumatorias,labels,'ventas_global_sistemas_consolodidados');
 
 }
 

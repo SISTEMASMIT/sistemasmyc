@@ -101,7 +101,7 @@ async function traer_data(){
         "titulo":"Reporte de Ventas Global",
         "modal_id":window[moneda_actual].modal_id
     }
-    gestor.montar_tabla(tabla_info,window[moneda_actual]);
+    gestor.montar_tabla(tabla_info,window[moneda_actual],"elimitable");
 }
 
 
@@ -264,3 +264,98 @@ $(document).on("click", "#agregar", async function () {
 $(document).on("click","#agregar_grupo", function(){
     crear(botones_emergente,titulo_ventana);
 });
+
+
+//Botones
+
+$(document).on('click','td',async function(){
+  
+    var column = $(this).parent().children().index(this);
+    var currentRow = $(this).closest("tr");
+    let col_act = column;
+    let row_act = $('#tabla_'+moneda_actual).DataTable().row( this ).index();
+    let grupo= $('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[2];
+    let grupos_list=window[moneda_actual].peek();
+    grupos_list=grupos_list.data.data;
+    let html_select = `<div style="height: 300px;"><select class='selectpicker' id='n_grupo'>`
+    grupos_list.forEach((grupo,i)=>{
+        html_select+=`<option value='`+grupo.grupo+`' >`+grupo.grupo+`</option>`;
+    })
+    html_select+=`</select></div>`;
+    if(column=="0"){
+        Swal.fire({
+            title: '<strong>Grupo: '+grupo+'</strong>',
+            icon: 'info',
+            html:
+              `Seleccione un grupo para reemplazar en las agencias que pertenecían a `+grupo+` <br>`+html_select,
+            showCloseButton: true,
+            showCancelButton: true,
+            focusConfirm: false,
+            confirmButtonText:
+              ' Eliminar',
+            cancelButtonText:
+              '<i class="fa fa-thumbs-down">Cancelar</i>',
+          }).then(async (result)  =>{
+            let grupo_new = $('#n_grupo').selectpicker('val');
+            if (result.isConfirmed) {
+                let data = {"comando":"cfg_grup_eli","c0":grupo,"grupo":grupo_new}
+                let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(data) }, "POST");
+                if(info.data.mensaje=='ok'){
+                    Swal.fire('Eliminado!', '', 'success')
+                    traer_data();
+                }
+            }
+
+          })
+          $('#n_grupo').selectpicker({noneSelectedText : 'Seleccione'});
+
+          
+
+    }else if(column==1){
+        let data = { "comando": "", "orden": $(this).attr("data-orden") };
+        let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(data) }, "POST");
+        let grupo = $('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[2];
+        let rec = $('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[4];
+        let detalle = $('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[3];
+        let html=""
+        html+=`
+        <div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3'><label class='form-label'>Grupo</label>
+    <input type='text' class='form-control form-control-lg' id='grupo_input' value='`+grupo+`'>
+    </div>`;
+    html+=`<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3'><label class='form-label'>Detalle</label>
+    <input type='text' class='form-control-lg' id='detalle_input' value='`+detalle+`'>
+    </div>
+    `;
+    Swal.fire({
+        title: '<strong>Receptor: '+rec+'</strong>',
+        icon: 'info',
+        html: html,
+        showCloseButton: true,
+        showCancelButton: true,
+        focusConfirm: false,
+        confirmButtonText:
+          ' Guardar',
+        cancelButtonText:
+          '<i class="fa fa-thumbs-down">Cancelar</i>',
+      }).then(async (result)  =>{
+        let grupo_new = $('#grupo_input').val();
+        let detalle = $('#detalle_input').val();
+        if (result.isConfirmed) {
+            let data = {"comando":"cfg_grup_modi","c0":grupo,"grupo":grupo_new,"c1":detalle,"c2":rec}
+            let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(data) }, "POST");
+            if(info.data.mensaje=='Datos Actualizados'){
+                Swal.fire('Editado!', '', 'success')
+                traer_data();
+            }
+        }
+
+      })
+      
+        
+
+    
+}
+    
+})
+
+
