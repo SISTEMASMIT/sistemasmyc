@@ -1,7 +1,7 @@
 import * as imp from "./importer.js";
 import {ajax_peticion} from "./Ajax-peticiones.js";
 import * as gestor from "./gestor.js";
-export function contruir(botones_emergente){
+export function contruir(botones_emergente,window){
                 let formulario_parametros=botones_emergente[(botones_emergente.length)-1].datos.parametros.split(",");
                 let parametros_data=botones_emergente[(botones_emergente.length)-1].datos.parametros_data!=undefined?botones_emergente[(botones_emergente.length)-1].datos.parametros_data.split(","):[];
                 let param= new Object();
@@ -24,6 +24,10 @@ export function contruir(botones_emergente){
                     if(data[1]=="select_multiple"){
                         o.index=data[0];
                         o.valor=$("#"+data[0]).selectpicker("val").join(",");
+                    }
+                    if(data[1]=="select_multiple-"){
+                        o.index=data[0];
+                        o.valor=$("#"+data[0]).selectpicker("val").join(",")+",";
                     }
                     param.parametros.push(o)
                 });
@@ -74,10 +78,10 @@ export async function construir_modal(formulario,botones_emergente,titulo_ventan
     return {html,botones_emergente,titulo_ventana,titulo};
 }
 
-export async function crear(botones_emergente,titulo_ventana){
+export async function crear(botones_emergente,titulo_ventana,window){
 
     try{
-        let info = await ajax_peticion("/query/standard_query", { 'data': contruir(botones_emergente) }, "POST");
+        let info = await ajax_peticion("/query/standard_query", { 'data': contruir(botones_emergente,window) }, "POST");
                     if(info.data.mensaje=="ok"){
                         gestor.alerta(info.data.mensaje,"success");
                     }else{

@@ -20,7 +20,8 @@ export function formulario_emergente_date(label,json,clase,style){
 }
 export function formulario_emergente_select(label,json,clase,style){
    try{
-        let html=`<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>${label}</label>
+    let c = clase!="1" && clase!=undefined ?clase:"col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3";
+        let html=`<div class='${c}  filtros'><label class='form-label'>${label}</label>
         <select class='selectpicker' id='${label.toLowerCase().replaceAll(" ", "_")}'>`
         json.forEach((elemento,index)=>{
             if(elemento.id==undefined){
@@ -42,7 +43,8 @@ export function formulario_emergente_select(label,json,clase,style){
 
 export function formulario_emergente_select_search(label,json,clase,style){
     try{
-         let html=`<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>${label}</label>
+        let c = clase!="1" && clase!=undefined ?clase:"col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3";
+         let html=`<div class='${c}  filtros'><label class='form-label'>${label}</label>
          <select class='selectpicker'data-live-search='true' id='${label.toLowerCase().replaceAll(" ", "_")}'>`
          json.forEach((elemento,index)=>{
              if(elemento.id==undefined){
@@ -64,7 +66,8 @@ export function formulario_emergente_select_search(label,json,clase,style){
 
 export function formulario_emergente_select_search_shadow(label,json,clase,style){
     try{
-         let html=`<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>${label}</label>
+        let c = clase!="1" && clase!=undefined ?clase:"col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3";
+         let html=`<div class='${c}  filtros'><label class='form-label'>${label}</label>
          <select class='selectpicker' data-live-search='true' id='${label.toLowerCase().replaceAll(" ", "_")}'>`
          json.forEach((elemento,index)=>{
              if(elemento.id==undefined){
@@ -85,7 +88,8 @@ export function formulario_emergente_select_search_shadow(label,json,clase,style
  }
 export function formulario_emergente_select_multiple(label,json,clase,style){
     try{
-         let html=`<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>${label}</label>
+        let c = clase!="1" && clase!=undefined ?clase:"col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3";
+         let html=`<div class='${c}  filtros'><label class='form-label'>${label}</label>
          <select class='selectpicker' id='${label.toLowerCase().replaceAll(" ", "_")}' data-live-search='true' data-selected-text-format='count' multiple>`
          json.forEach((elemento,index)=>{
              if(elemento.id==undefined){

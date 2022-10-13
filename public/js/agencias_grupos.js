@@ -16,7 +16,8 @@ var boton=false;
 var row;
 var id_menu;
 // modificaciones
-window["receptor"] ="";
+
+window["grupo"] ="";
 var botones_emergente=[];
 var parametros_emergentes=[];
 var titulo_ventana="";
@@ -215,13 +216,17 @@ $(document).on("change","#f3",async function(){
     let ano = $(this).selectpicker("val");
     $("#load_"+moneda_actual).addClass('spinner');
     window[moneda_actual] = await gestor.event_change(window[moneda_actual],base,ano);
-
 });
 
 //modificar
 
 //agregar
 $(document).on("click", "#agregar", async function () {
+    if($("#grupo").selectpicker("val")=="title="){
+        gestor.alerta("Seleccione un grupo antes de agregar","error")
+        return false;
+    }
+    window["grupo"]=$("#grupo").selectpicker("val");
     let data = { "comando": "", "orden": $(this).attr("data-orden") };
     let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(data) }, "POST");
     let formulario = JSON.parse(info.settings["jsr"]);
@@ -277,9 +282,42 @@ $(document).on("click", "#agregar", async function () {
         }
     }
 });
+$(document).on("change","#receptor_grupo",async function(){
+    let receptores=$(this).selectpicker().val();
+    let data={"receptor":receptores,"comando":"cfg_grup_agea1"};
+    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
+    if(info.data.data.length ==  0){
+        gestor.alerta('Este receptor no tiene agencias','warning')
+        let agencias=$("#agencia");
+        agencias.html("");
+        agencias.selectpicker("refresh");
+    }else{
+        let agencias=$("#agencia");
+        agencias.selectpicker({noneSelectedText: 'Seleccione una agencia'});
+        agencias.html(generarHtml(info.data.data));
+        agencias.selectpicker("refresh");
+    }
 
-$(document).on("click","#agregar_topos_grupo", function(){
-    crear(botones_emergente,titulo_ventana);
+});
+function generarHtml(list){
+    let html=""
+    list.forEach(function(element,index){
+        if(index==0){
+            html+=`<option value="${element.codigo_age}" data-subtext='${element.codigo_age}' > ${element.nombre_age}</option>`;
+        }else{
+            html+=`<option value="${element.label}" data-subtext='${element.codigo_age}' >${element.nombre_age}</option>`;
+        }
+    });
+    return html;
+}
+
+
+$(document).on("click","#agregar_grupo", function(){
+    if($("#agencia").selectpicker("val").length<=0){
+        gestor.alerta("Seleccione una Agencia antes de agregar","error")
+        return false;
+    }
+    crear(botones_emergente,titulo_ventana,window);
 });
 
 

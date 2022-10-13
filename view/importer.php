@@ -19,9 +19,9 @@ class Importer
         }
     }
     function select_search_shadow($label, $json, $type,$clase,$style)
-    {   
+    {   $clase=$clase="1"?$clase:"col-12 col-sm-12 col-md-4 col-lg-3 col-xl-3";
         try {
-            $html = "<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>" . $label . "</label>";
+            $html = "<div class='".$clase." filtros'><label class='form-label'>" . $label . "</label>";
             $html .= "<select class='selectpicker' data-live-search='true' id=".strtolower(str_replace(" ","_",$label))." data-type='".$type."'>";
             foreach ($json as $key => $select) {
                 if (!isset($select->id)) {
@@ -46,9 +46,9 @@ class Importer
     }
 
     function select_search($label, $json, $type,$clase,$style)
-    {   
+    {   $clase=$clase="1"?$clase:"col-12 col-sm-12 col-md-4 col-lg-3 col-xl-3";
         try {
-            $html = "<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>" . $label . "</label>";
+            $html = "<div class='".$clase." filtros'><label class='form-label'>" . $label . "</label>";
             $html .= "<select class='selectpicker' data-live-search='true' id=".strtolower(str_replace(" ","_",$label))." data-type='".$type."'>";
             foreach ($json as $key => $select) {
                 if (!isset($select->id)) {
@@ -72,9 +72,9 @@ class Importer
 
 
     function select_multiple($label, $json, $type,$clase,$style)
-    {
+    {$clase=$clase="1"?$clase:"col-12 col-sm-12 col-md-4 col-lg-3 col-xl-3";
         try {
-            $html = "<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label'>" . $label . "</label>";
+            $html = "<div class='".$clase." filtros'><label class='form-label'>" . $label . "</label>";
             $html .= "<select class='selectpicker' id=".strtolower(str_replace(" ","_",$label))." data-type='".$type."' data-live-search='true' data-selected-text-format='count' multiple>";
             foreach ($json as $key => $select) {
                 if (!isset($select->id)) {
@@ -94,9 +94,9 @@ class Importer
         }
     }
     function select($label, $json, $type,$clase,$style)
-    {
+    {$clase=$clase="1"?$clase:"col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6";
         try {
-            $html = "<div class='col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 filtros'><label class='form-label' >" . $label . "</label>";
+            $html = "<div class='".$clase." filtros'><label class='form-label' >" . $label . "</label>";
             $html .= "<select class='selectpicker' id=".strtolower(str_replace(" ","_",$label))." data-type='".$type."' >";
             foreach ($json as $key => $select) {
                 if (!isset($select->id)) {
@@ -116,7 +116,7 @@ class Importer
     }
 
     function button($label, $json, $type,$clase,$style)
-    {   
+    {   $clase=$clase="1"?$clase:"col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6";
         if(!isset($json->id)){
             $json->id=$label;
         }
@@ -124,7 +124,7 @@ class Importer
             $_SESSION[strtolower(str_replace(" ","_",$json->id))]=$json;
         }
         try {
-            $html = "<div class='col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 filtros'>";
+            $html = "<div class='".$clase." filtros'>";
             $orden=isset($json->orden)?$json->orden:"";
             $html .= "<button type='button' id='".strtolower(str_replace(" ","_",$json->id))."' class='".$this->colores[$label]." btn-lg btn-block' data-orden=".$orden.">".$label."</button>";
             $html .= "</div>";
