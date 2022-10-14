@@ -293,5 +293,6 @@ $path=$_SERVER['DOCUMENT_ROOT'];
         <script type="module" src="<? $path;?>/public/js/login.js"></script>
         <script src="<? $path;?>/public/js/app.js"></script>
         <script src="<? $path;?>/public/js/validar.js"></script>
+        <script src="<? $path;?>/public/js/sweetalert2.js"></script>
     </body>
 </html>

@@ -352,6 +352,17 @@ $(document).on("click", "#agregrar", async function () {
     let jstree = false;
     const steps = ['1', '2', '3']
     const Queue = Swal.mixin({
+        allowOutsideClick: () => {
+            const popup = Swal.getPopup()
+            popup.classList.remove('swal2-show')
+            setTimeout(() => {
+              popup.classList.add('animate__animated', 'animate__headShake')
+            })
+            setTimeout(() => {
+              popup.classList.remove('animate__animated', 'animate__headShake')
+            }, 500)
+            return false
+          },
     progressSteps: steps,
     confirmButtonText: 'Siguiente >',
     // optional classes to avoid backdrop blinking between steps
@@ -391,6 +402,7 @@ $(document).on("click", "#agregrar", async function () {
     html+=`</div>`;
     await Queue.fire({   
     title: titulo,
+    
     html : html,
     willOpen:()=>{
         if (jstree) {
@@ -893,7 +905,7 @@ async function pintarJstree(id) {
             'data': info.data.data,
             "themes": {
                 "name": "default",
-                "dots": false,
+                "dots": true,
                 "icons": false
             },
         },
@@ -913,9 +925,18 @@ async function pintarJstree(id) {
         "conditionalselect": function (node, event) {
             if(node.original.hijos==0){
                 $("#mensaje_busqueda").text("Este receptor no puede tener Agencias Directas, seleccione uno azul");
-                
+                setTimeout(function(){
+                    $("#mensaje_busqueda").text("");
+                },3000)
+            }else{
+                Swal.fire({
+                    title: 'test',
+                    icon: 'info'
+                })
+                $("#mensaje_busqueda").text("Seleccionado "+node.id);
             }
             return node.original.hijos == 1;
+
         },
         'plugins': ['conditionalselect', 'types', 'search'],
       
@@ -943,6 +964,9 @@ async function pintarJstree(id) {
                 $('#search').jstree(true).hide_all();
             }catch(e){
                 $("#mensaje_busqueda").text("No existe un receptor con ese nombre");
+                setTimeout(function(){
+                    $("#mensaje_busqueda").text("");
+                },3000)
             }
         }
     }).on("open_node.jstree", function () {
