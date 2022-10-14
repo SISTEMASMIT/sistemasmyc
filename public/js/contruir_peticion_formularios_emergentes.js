@@ -55,15 +55,23 @@ export async function construir_modal(formulario,botones_emergente,titulo_ventan
     formulario.filtros.forEach((element) => {
         if (element.tipo != "titulo") {
             if (imp[element.tipo]) {
-                if ($(this).attr("data-orden") == "modalAgregarAgencia" && element.tipo.includes("button") && jstree == false) {
+                if (($(this).attr("data-orden") == "modalAgregarAgencia") && element.tipo.includes("button") && jstree == false) {
                     jstree = true
-                    html += `<div class='col-6'>
-                            <label>Arbol de Receptores</label>
-                            <input id="search" class="espaciadoB form-control" type="text" placeholder="Buscar receptor">
-                            <br>
-                            <div id="folder_jstree" class="col-6">
-                            </div>
-                        </div>`
+                    html += `<div style="
+                    width: 100%;
+                    padding: 1em;
+                    display: flex;
+                    justify-content: end;
+                "><button id="receptores_btn" style="
+                    padding: 1em;
+                    border-radius: 6px;
+                    border: 0px;
+                    box-shadow: 5px 5px 5px #9aa8b7;
+                    background: white;
+                ">
+                <i class="fa-solid fa-arrows-down-to-people" style="color:red"></i>
+                                <span  style="color:red">Receptores</span>      
+                            </button>`
                 }
                 html += imp[element.tipo](element.label, element.datos, element.clase, element.style)
             }
