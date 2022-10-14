@@ -113,8 +113,6 @@ $(document).on('dblclick', 'td', async function () {
 //Click Derecho
 
 $(document).on('contextmenu', 'td', function (e) {
-    console.log(e.pageY);
-    console.log(e.pageX);
     row = $(this).closest("tr"); 
     let stack = window[moneda_actual].peek();
     if(stack.settings.is_rclick){

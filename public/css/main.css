@@ -23,12 +23,26 @@ table{
     font-size: 20px;
 }
 
+
+.jstree-default .jstree-search  {
+    font-style: italic !important;
+    color: #56a72a !important;
+    font-weight: bold !important;
+}
+
+ul[rele = group] {
+    text-align: left;
+ }
+
 .premiar{
     text-align: center;
 }
 .dclick:hover{
     background-color: rgb(168, 203, 207);
     cursor: -webkit-grab; cursor: grab;
+}
+.swal2-popup{
+    width: 85em !important;
 }
 
 .rclick:hover{
@@ -88,7 +102,9 @@ table{
     font-weight: bold;
     color: #ff0000;
 }
-
+.jstree-node, .jstree-children, .jstree-container-ul {
+    text-align: left;
+}
 
 .table-rep-plugin{
     width: 100%;
