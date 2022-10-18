@@ -48,6 +48,7 @@ class Configuracion extends Controller
      function topes_dinamicos(){}
      function cobradores(){}
      function tapados_y_topes(){}
+     function zonas(){}
 
 }
 

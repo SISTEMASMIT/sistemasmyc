@@ -1,6 +1,7 @@
 import {ajax_peticion} from "./Ajax-peticiones.js";
 import {crear_tabla} from "./table2.js";
 import {crear_tabla_editable} from "./editable2.js";
+import {crear_tabla_eliminar} from "./elimina_table2.js";
 import {crear_tabla_elimitable} from "./elimitable2.js";
 import {Stack} from './stack.js';
 import * as imp from "./importer.js";
@@ -114,6 +115,8 @@ export function montar_tabla(tabla_info,stack_global,tipo_tabla){
             crear_tabla_editable(table);
         }else if(tipo_tabla=="elimitable"){
             crear_tabla_elimitable(table);
+        }else if(tipo_tabla=="eliminable"){
+            crear_tabla_eliminar(table);
         }
     }else{
         crear_tabla(table);
