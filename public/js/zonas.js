@@ -218,7 +218,58 @@ $(document).on("change","#f3",async function(){
     window[moneda_actual] = await gestor.event_change(window[moneda_actual],base,ano);
 });
 
-//modificar
+//modificione
+
+//botones
+$(document).on('click','td',async function(){
+  
+    var column = $(this).parent().children().index(this);
+    var currentRow = $(this).closest("tr");
+    let col_act = column;
+    let row_act = $('#tabla_'+moneda_actual).DataTable().row( this ).index();
+    let grupo= $('#tabla_'+moneda_actual).DataTable().row(currentRow).data()[2];
+    let grupos_list=window[moneda_actual].peek();
+    grupos_list=grupos_list.data.data;
+    let html_select = `<div style="height: 300px;"><select class='selectpicker' id='n_grupo'>`
+    grupos_list.forEach((grupo,i)=>{
+        html_select+=`<option value='`+grupo.grupo+`' >`+grupo.grupo+`</option>`;
+    })
+    html_select+=`</select></div>`;
+    if(column=="0"){
+        Swal.fire({
+            title: '<strong>Grupo: '+grupo+'</strong>',
+            icon: 'info',
+            html:
+              `Seleccione un grupo para reemplazar en las agencias que pertenecían a `+grupo+` <br>`+html_select,
+            showCloseButton: true,
+            showCancelButton: true,
+            focusConfirm: false,
+            confirmButtonText:
+              ' Eliminar',
+            cancelButtonText:
+              '<i class="fa fa-thumbs-down">Cancelar</i>',
+          }).then(async (result)  =>{
+            let grupo_new = $('#n_grupo').selectpicker('val');
+            if (result.isConfirmed) {
+                let data = {"comando":"cfg_grup_eli","c0":grupo,"grupo":grupo_new}
+                let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(data) }, "POST");
+                if(info.data.mensaje=='ok'){
+                    Swal.fire('Eliminado!', '', 'success')
+                    traer_data();
+                }
+            }
+
+          })
+          $('#n_grupo').selectpicker({noneSelectedText : 'Seleccione'});
+
+          
+
+    }
+})
+
+
+
+
 
 //agregar
 $(document).on("click", "#agregar", async function () {
