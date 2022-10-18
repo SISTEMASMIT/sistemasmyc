@@ -34,11 +34,13 @@ var parametros_segundo_envio = [];
 var hay_f4 = false;
 window["receptor"] ="";
 window["codigo_age"] ="";
+window["codigo_ban"] ="";
 var botones_emergente=Array();
 var parametros_emergente = Array();
     var parametros_emergentes=Array()
 var titulo_ventana="";
 $(document).ready(async function () {
+    
     rangeDate("#f1f2");
     var columns = 6;
     var rows = 10;
@@ -216,43 +218,6 @@ function getCurrentDate(formato) {
 
 
 
-$(document).on('click', '.btn-danger', async function () {
-    let btn = btns[btns.length - 1];
-    let data = [];
-    let parametros = btn[0].datos.parametros.split(",");
-    let comando2 = btn[0].datos.id;
-    Object.assign(data, { "comando": comando2 });
-    for (let i = 0; i < parametros.length; i++) {
-        Object.assign(data, { [parametros[i]]: et[parametros[i]] });
-    }
-    let keys = Object.getOwnPropertyNames(data).filter((x) => {
-        return x != "length" ? x : "";
-    });
-    let valores = Object.values(data);
-    let string = "{";
-    keys.forEach((key, index) => {
-        string += `"${key}":"${valores[index]}",`;
-    })
-    string = string.slice(0, string.length - 1);
-    string += "}";
-    var info = await ajax_peticion("/query/standard_query", { 'data': string }, "POST");
-    if (info.data.mensaje == "El ticket ya esta anulado") {
-        Swal.fire({
-            title: '',
-            text: info.data.mensaje,
-            icon: 'warning',
-            confirmButtonText: 'Aceptar'
-        })
-    } else {
-        Swal.fire({
-            title: '',
-            text: info.data.mensaje,
-            icon: 'success',
-            confirmButtonText: 'Aceptar'
-        })
-    }
-});
-
 
 //Click Derecho
 $(document).on('contextmenu', 'td', function (e) {
@@ -322,12 +287,7 @@ $(document).on( "click","#guardar", async function(){
         if(parametros_emergente.length>0){
                 let info = await ajax_peticion("/query/standard_query", { 'data': contruir(parametros_emergente,window) }, "POST");
                 if(info.data.mensaje=="ok"){
-                    Swal.fire({
-                        title: '',
-                        text: info.data.mensaje,
-                        icon: 'success',
-                        confirmButtonText: 'Aceptar'
-                      });
+                    montar_tabla();
                 }else{
                     Swal.fire({
                         title: '',
@@ -338,7 +298,8 @@ $(document).on( "click","#guardar", async function(){
                 }
                 
         }
-        $(base).children().last().removeClass("show");
+        $(base).children().last().modal("hide");
+
     }
 
 })
@@ -385,6 +346,7 @@ $(document).on("click", "#agregrar", async function () {
                                 </div>
                             </div>`
                     }
+                    
                     html += imp[element.tipo](element.label, element.datos, element.clase, element.style)
                 }
                 if(element.tipo.includes("button")){
@@ -423,12 +385,7 @@ $(document).on("click", "#agregrar", async function () {
         if(botones_emergente.length>0){
             let info = await ajax_peticion("/query/standard_query", { 'data': contruir(botones_emergente,window) }, "POST");
             if(info.data.mensaje=="ok"){
-                Swal.fire({
-                    title: titulo_ventana,
-                    text: info.data.mensaje,
-                    icon: 'success',
-                    confirmButtonText: 'Aceptar'
-                  });
+                console.log("Confirmado Agencia");
             }else{
                 Swal.fire({
                     title: titulo_ventana,
@@ -929,11 +886,7 @@ async function pintarJstree(id) {
                     $("#mensaje_busqueda").text("");
                 },3000)
             }else{
-                Swal.fire({
-                    title: 'test',
-                    icon: 'info'
-                })
-                $("#mensaje_busqueda").text("Seleccionado "+node.id);
+                $("#mensaje_busqueda").text("Seleccionado "+node.id+" - "+node.text);
             }
             return node.original.hijos == 1;
 
@@ -982,6 +935,7 @@ async function pintarJstree(id) {
     }).on("select_node.jstree", function (e, data) {
         $(id).jstree().close_node($("#Todos"));
         window["receptor"] = data.node.id.replaceAll("_",".");
+        window["codigo_ban"] = data.node.id.replaceAll("_",".");
     });
     
 }
@@ -1020,11 +974,24 @@ $(document).on('click','td',async function(){
     var currentRow = $(this).closest("tr");
     let col_act = column;
     let row_act = $('#tabla1').DataTable().row( this ).index();
-    
+    let jstree=false;
     if(column=="0"){
-          alert("eliminar");   
+        let agencia = $('#tabla1').DataTable().row(currentRow).data()[5];
+        Swal.fire({
+            title: 'Confirmar',
+            showDenyButton: true,
+            text: 'Esta seguro que desea eliminar la agencia '+agencia+' ?',
+            confirmButtonText: 'Eliminar',
+            denyButtonText: `Cancelar`,
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+              Swal.fire('Saved!', '', 'success')
+            }
+          })
+
     }else if(column==1){
-        let data = { "comando": "", "orden": $(this).attr("data-orden") };
+        let data = { "comando": "", "orden": "modalEditarAgencia" };
         let info = await ajax_peticion("/query/standard_query", { 'data': JSON.stringify(data) }, "POST");
         let formulario = JSON.parse(info.settings["jsr"]);
         let age = $('#tabla1').DataTable().row(currentRow).data()[5];
@@ -1040,11 +1007,12 @@ $(document).on('click','td',async function(){
             formulario.filtros.forEach((element, index) => {
                 if (element.tipo != "titulo") {
                     if (imp[element.tipo]) {
-                        if ($(this).attr("data-orden") == "modalAgregarAgencia" && element.tipo.includes("button") && jstree == false) {
+                        if ( "modalEditarAgencia"== "modalEditarAgencia" && element.tipo.includes("button") && jstree == false) {
                             jstree = true
                             html += `<div class='col-6'>
                                     <label>Arbol de Receptores</label>
                                     <input id="search" class="espaciadoB form-control" type="text" placeholder="Buscar receptor">
+                                    <label id="mensaje_busqueda"></label>
                                     <br>
                                     <div id="folder_jstree" class="col-6">
                                     </div>
@@ -1060,6 +1028,12 @@ $(document).on('click','td',async function(){
 
                             keys.forEach((key,i)=>{
                                     if(element.datos.id!=undefined){
+                                        if(key=="codigo_age"){
+                                            window["codigo_age"]=info.data.data[0].codigo_age;
+                                        }
+                                        if(key=="codigo_ban"){
+                                            window["codigo_ban"]=info.data.data[0].codigo_ban;
+                                        }
                                         if(key==element.datos.id){
                                             element.datos.value=valores[i]
                                         }
@@ -1087,10 +1061,12 @@ $(document).on('click','td',async function(){
             modal = modal.replaceAll("#", titulo);
     
             $(base).append(modal);
-            // if (jstree) {
-            //     pintarJstree("#base #modal" + modal_id + " #folder_jstree")
-            // }
-    
+            if (jstree) {
+                pintarJstree("#base #modal" + modal_id + " #folder_jstree")
+            }
+            $('#folder_jstree').jstree('select_node', info.data.data.codigo_ban);
+
+
             formulario.filtros.forEach((element, index) => {
                 if(element.tipo.includes("select")){
                     if(element.tipo.includes("multi")){
@@ -1115,7 +1091,7 @@ $(document).on('click','td',async function(){
                     }else if(element.datos.value=='S'){
                         $("#"+ element.datos.id).prop('checked', true);
                     }
-                }   
+                }  
             })
             
             if ($(base).children().length > 1) {

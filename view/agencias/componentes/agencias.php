@@ -64,7 +64,6 @@
                 </div>
                 </div>
 
-
             </div> <!-- Row general -->
         </div> <!-- container-fluid -->
     </div>  <!--- page-content --->
