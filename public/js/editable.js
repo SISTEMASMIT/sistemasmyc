@@ -206,7 +206,7 @@ function crear_body(data){
     let body = ``;
     for(var i in data){
         body+=`<tr>`
-        body+=`<td class="btn btn-sm btn-info premiar"  id="editar"><i class="fa-solid fa-trophy"></i></td>`;
+        body+=`<td><button class="btn btn-sm btn-info premiar"  id="editar"><i class="fa-solid fa-trophy"></i></button></td>`;
         for(var a in data[i]){
             if(Number.isInteger(parseInt(data[i][a]))){
                 body+=`<td class="num_aling">`+data[i][a]+`</td>`;

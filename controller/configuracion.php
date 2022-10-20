@@ -49,6 +49,7 @@ class Configuracion extends Controller
      function cobradores(){}
      function tapados_y_topes(){}
      function zonas(){}
+     function loterias(){}
 
 }
 
