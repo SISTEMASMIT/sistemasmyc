@@ -269,11 +269,33 @@ $('#recuperarCl').submit(async function(e) {
 
     if(info.e=="1"){
         $("#modalClave").modal("hide");
-        $('#msgClaveCard').html("<p>Su clave se cambió correctamente, en breve podrá iniciar sesión de nuevo.</p>");
-        $("#claveAlerta").modal("show");
-        setTimeout(function(){
-            window.location.href = "/";
-        }, 3000);
+        let timerInterval
+            Swal.fire({
+            title: 'Correcto',
+            icon: 'success',
+            html: 'En instantes podrás iniciar sesión nuevamente.',
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading()
+                const b = Swal.getHtmlContainer().querySelector('b')
+                timerInterval = setInterval(() => {
+                b.textContent = Swal.getTimerLeft()
+                }, 100)
+            },
+            willClose: () => {
+                clearInterval(timerInterval)
+            }
+            }).then((result) => {
+                window.location.href = "/";
+            })
+
+        
+        // $('#msgClaveCard').html("<p>Su clave se cambió correctamente, en breve podrá iniciar sesión de nuevo.</p>");
+        // $("#claveAlerta").modal("show");
+        // setTimeout(function(){
+        //     window.location.href = "/";
+        // }, 3000);
     }else{
         $("#msgClave").html("<p>El código no es válido.</p>");
     }

@@ -194,8 +194,8 @@ export async function crear_tabla(parametro,tb,hd,bd,isd,dc,isr,inv,sum,labels,t
 function crear_head(data){
     
     let head = `<tr>`;
-    head += `<th >Eliminar</th>
-    <th >Editar</th>`;
+    head += `<th ></th>
+    <th ></th>`;
     for(var i in data){
         head+=`<th >`+data[i]+`</th>`;
     }
@@ -207,8 +207,8 @@ function crear_body(data){
     let body = ``;
     for(var i in data){
         body+=`<tr>`
-        body+=`<td class="btn-sm btn-danger"  id="eliminar"><i class="fa-solid fa-trash"></i></td>
-        <td class="btn-sm btn-info" data-orden="modalEditarAgencia" id="editar"><i class="fa-solid fa-pen-to-square"></i> </td>`;
+        body+=`<td><button class="btn-sm btn-danger"  id="eliminar"><i class="fa-solid fa-trash"></i></button></td>
+        <td><button class="btn-sm btn-info" data-orden="modalEditarAgencia" id="editar"><i class="fa-solid fa-pen-to-square"></i></button></td>`;
         for(var a in data[i]){
             if(Number.isInteger(parseInt(data[i][a]))){
                 body+=`<td class="num_aling">`+data[i][a]+`</td>`;

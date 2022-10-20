@@ -23,11 +23,22 @@ table{
     font-size: 20px;
 }
 
+/* para cambiar el color cuando se haga búsqueda en jstree*/
 
-.jstree-default .jstree-search  {
+/* .jstree-default .jstree-search  {
     font-style: italic !important;
     color: #56a72a !important;
     font-weight: bold !important;
+} */
+
+.jstree-default>.jstree-no-dots .jstree-node, .jstree-default>.jstree-no-dots .jstree-leaf>.jstree-ocl {
+    background-image: url(32px.png) !important;
+    background-position: -292px -4px;
+    background-repeat: repeat-y;;
+}
+
+.jstree-default>.jstree-no-dots .jstree-closed>.jstree-ocl {
+    margin-right: 5px;
 }
 
 ul[rele = group] {

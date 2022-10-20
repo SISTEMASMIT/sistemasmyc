@@ -73,6 +73,7 @@ export async function construir_modal(formulario,botones_emergente,titulo_ventan
                                 <span  style="color:red">Receptores</span>      
                             </button>`
                 }
+                
                 html += imp[element.tipo](element.label, element.datos, element.clase, element.style)
             }
             if(element.tipo.includes("button")){

@@ -223,8 +223,8 @@ export function crear_tabla_elimitable(table){
 
 function crear_head(data){
     let head = `<tr>`;
-    head += `<th >Eliminar</th>
-    <th >Editar</th>`;
+    head += `<th ></th>
+    <th ></th>`;
     for(var i in data){
         head+=`<th>`+data[i].charAt(0).toUpperCase()+data[i].slice(1)+`</th>`;
     }
@@ -237,8 +237,8 @@ function crear_body(data){
     let body = ``;
     for(var i in data){
         body+=`<tr>`
-        body+=`<td class="btn-sm btn-danger"  id="eliminar"><i class="fa-solid fa-trash"></i></td>
-        <td class="btn-sm btn-info" data-orden="modalEditarAgencia" id="editar"><i class="fa-solid fa-pen-to-square"></i> </td>`;
+        body+=`<td><button class="btn-sm btn-danger"  id="eliminar"><i class="fa-solid fa-trash"></i></button></td>
+        <td><button class="btn-sm btn-info" data-orden="modalEditarAgencia" id="editar"><i class="fa-solid fa-pen-to-square"></i></button></td>`;
         for(var a in data[i]){
                 if(data[i][a]==null)data[i][a]='';
                 if(Number.isInteger(parseInt(data[i][a]))){
