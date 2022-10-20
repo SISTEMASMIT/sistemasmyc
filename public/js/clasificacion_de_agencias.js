@@ -35,10 +35,25 @@ $(document).ready(function () {
     // fecha.rangeDate = f1f2 antiguos
     // fecha.futuDate = f1f2 futuros
     // fecha.oneDate = f1 unica
-    // fecha.rangeDate("#f1f2");
-    // cargaAdicional();
+    fecha.oneDate("#f1");
+    cargaAdicional();
 });
+function cargaAdicional(){
+    let sistemas = $('#sistema');
+    sistemas.prepend(`<option value="todos">Todos</option>`)
+    sistemas.selectpicker("refresh");
+    sistemas.val("todos");
+    // sistemas.selectpicker('val', '');
+    // sistemas.find('option').remove();
+    sistemas.selectpicker("render")
+    sistemas.selectpicker("refresh");
 
+    let grupo = $('#grupo');
+    grupo.prepend(`<option value="todos">Todos</option>`)
+    grupo.selectpicker("refresh");
+    grupo.val("todos");
+    grupo.selectpicker("render")
+ }
 
 //Detectamos el cambio de moneda en el tab
 $(document).on("click", "#moneda .tabs .tab-list .tab", function(event) {
@@ -73,7 +88,7 @@ $(document).on("click", "#moneda .tabs .tab-list .tab", function(event) {
 
 
 
-$(document).on('click', '#zonas_search', function() {
+$(document).on('click', '#clasificacion_de_agencias', function() {
     boton=true;
     traer_data();
 });
@@ -98,7 +113,7 @@ async function traer_data(){
     $('#tabla_'+moneda_actual).removeClass('invisible');
     $('#aceptar').prop('disabled', true);
     //Se llama al método de crear la tabla, se le envían dos arreglos, parametros y etiquetas.
-    let parametros = ['grupo','receptor'];
+    let parametros = ['grupo','receptor','sistema','agencia_a_mostrar','f1'];
     let extras = {};
     let peticionValidada=true;
     parametros.forEach((elemento)=>{
@@ -109,7 +124,7 @@ async function traer_data(){
     //parametros,  extras, moneda, comando/id 
     if(window[moneda_actual].size()<1 || boton==true){
         if(peticionValidada){
-            window[moneda_actual].push(await gestor.consulta(parametros,extras, moneda_actual,"zonas_search"));
+            window[moneda_actual].push(await gestor.consulta(parametros,extras, moneda_actual,"clasificacion_de_agencias"));
         }else{
             gestor.alerta("Se debe seleccionar algun valor en las listas","error")
         }
@@ -120,7 +135,7 @@ async function traer_data(){
         "titulo":"Reporte de Ventas Global",
         "modal_id":window[moneda_actual].modal_id
     }
-    gestor.montar_tabla(tabla_info,window[moneda_actual],"eliminable");
+    gestor.montar_tabla(tabla_info,window[moneda_actual]);
 }
 
 

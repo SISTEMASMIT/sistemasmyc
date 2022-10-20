@@ -21,7 +21,7 @@ class Importer
     function select_search_shadow($label, $json, $type,$clase,$style)
     {   $clase=$clase="1"?$clase:"col-12 col-sm-12 col-md-4 col-lg-3 col-xl-3";
         try {
-            $html = "<div class='".$clase." filtros'><label class='form-label'>" . $label . "</label>";
+            $html = "<div class='".$clase." filtros'><label class='form-label' style='display: block;'>" . $label . "</label>";
             $html .= "<select class='selectpicker' data-live-search='true' id=".strtolower(str_replace(" ","_",$label))." data-type='".$type."'>";
             foreach ($json as $key => $select) {
                 if (!isset($select->id)) {
@@ -48,7 +48,7 @@ class Importer
     function select_search($label, $json, $type,$clase,$style)
     {   $clase=$clase="1"?$clase:"col-12 col-sm-12 col-md-4 col-lg-3 col-xl-3";
         try {
-            $html = "<div class='".$clase." filtros'><label class='form-label'>" . $label . "</label>";
+            $html = "<div class='".$clase." filtros'><label class='form-label' style='display: block;'>" . $label . "</label>";
             $html .= "<select class='selectpicker' data-live-search='true' id=".strtolower(str_replace(" ","_",$label))." data-type='".$type."'>";
             foreach ($json as $key => $select) {
                 if (!isset($select->id)) {
@@ -74,7 +74,7 @@ class Importer
     function select_multiple($label, $json, $type,$clase,$style)
     {$clase=$clase="1"?$clase:"col-12 col-sm-12 col-md-4 col-lg-3 col-xl-3";
         try {
-            $html = "<div class='".$clase." filtros'><label class='form-label'>" . $label . "</label>";
+            $html = "<div class='".$clase." filtros'><label class='form-label' style='display: block;'>" . $label . "</label>";
             $html .= "<select class='selectpicker' id=".strtolower(str_replace(" ","_",$label))." data-type='".$type."' data-live-search='true' data-selected-text-format='count' multiple>";
             foreach ($json as $key => $select) {
                 if (!isset($select->id)) {
@@ -96,7 +96,7 @@ class Importer
     function select($label, $json, $type,$clase,$style)
     {$clase=$clase="1"?$clase:"col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6";
         try {
-            $html = "<div class='".$clase." filtros'><label class='form-label' >" . $label . "</label>";
+            $html = "<div class='".$clase." filtros'><label class='form-label' style='display: block;'>" . $label . "</label>";
             $html .= "<select class='selectpicker' id=".strtolower(str_replace(" ","_",$label))." data-type='".$type."' >";
             foreach ($json as $key => $select) {
                 if (!isset($select->id)) {
