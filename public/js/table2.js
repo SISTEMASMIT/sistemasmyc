@@ -183,8 +183,13 @@ export function crear_tabla(table){
                                 return intVal(a) + intVal(b);
                             }, 0);
                     const formato = new Intl.NumberFormat('en-US', { /*style: 'currency', currency: 'USD',*/ minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                    $(api.column(colNo).footer()).html('<h6 class="total">Sum: '+ formato.format(total2)+' </h6>');
-                    $(api.column(colNo).footer()).append('<h6 class="total">Total: '+ formato.format(total3)+' </h6>');
+                    if(i==0){
+                        $(api.column(colNo).footer()).html('<h6 class="total">Sub Total: '+ formato.format(total2)+' </h6>');
+                        $(api.column(colNo).footer()).append('<h6 class="total">Total: '+ formato.format(total3)+' </h6>');
+                    }else{
+                        $(api.column(colNo).footer()).html('<h6 class="total">'+ formato.format(total2)+' </h6>');
+                        $(api.column(colNo).footer()).append('<h6 class="total">'+ formato.format(total3)+' </h6>');
+                    }
                 }
             },
             

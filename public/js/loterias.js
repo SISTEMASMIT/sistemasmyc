@@ -7,7 +7,11 @@ var head;
 var datos;
 var con=0;
 var sin=0;
+var cifras=0;
+var figuras=0;
 var salvar = [];
+var selected = [];
+
 $(document).ready(async function () {
     $("#load").addClass('spinner');
     let data= {"comando":"cfg_loterias_list"};
@@ -15,14 +19,12 @@ $(document).ready(async function () {
     head = info.data.head;
     datos = info.data.data;
     crear_tabla(info.data);
-    $('#contador').html(`<h5><b>Lot: Sin Signo: `+sin+`</b></h5><h5><b>Lot: Con Signo: `+con+`</b></h5>`);
+    $('#contador').html(`<h5><b>Lot: Sin Signo: `+sin+`</b></h5><h5><b>Lot: Con Signo: `+con+`</b></h5><h5><b>Lot: 4 Cifras: `+cifras+`</b></h5><h5><b>Lot: Figuras: `+figuras+`</b></h5><h5><b>Total: `+datos.length+`</b></h5>`);
 });
 
 $('#tipo').on('change', function() {
     let info  = {"data":filtrar(this.value),"head":head};
     crear_tabla(info);
-    $('#contador').html(`<h5><b>Lot: Sin Signo: `+sin+`</b></h5><h5><b>Lot: Con Signo: `+con+`</b></h5>`);
-
 });
 
 
@@ -80,11 +82,17 @@ function crear_tabla(info){
         "scrollCollapse": true,
         "columnDefs":  [{ targets: [3], visible: false}],
         language: {
-            "sInfo": "Total: _TOTAL_ registros",
+            "sInfo": "Total: _TOTAL_ Loterias",
             "sInfoFiltered":   "(filtrados)",
             "sSearch":   "Buscar:",
+            "info" : ''
 
         },
+        "rowCallback": function( row, data ) {
+            if ( $.inArray(data.DT_RowId, selected) !== -1 ) {
+                $(row).addClass('selected');
+            }
+        }
      });
     $("#load").removeClass('spinner');
 }
@@ -105,6 +113,12 @@ function crear_body(data){
     for(var i in data){
         if(data[i].signo_lot=='SI'){
             con++;
+        }else if(data[i].signo_lot=='NO'){
+            sin++;
+        }else if(data[i].signo_lot=='PE'){
+            cifras++;
+        }else{
+            figuras++;
         }
         body+=`<tr>`;
             for(var a in data[i]){
@@ -124,15 +138,27 @@ function crear_body(data){
         body+=`</tr>`
     }
     body+=``;
-    sin=datos.length-con;
+
     return body
 }
 
+$(document).on('click','tr', function(){
+    if ($(this).hasClass('selected')) {
+        $(this).removeClass('selected');
+    } else {
+        $('#tabla1').DataTable().$('tr.selected').removeClass('selected');
+        $(this).addClass('selected');
+    }
+});
+
 $(document).on('click','td',async function(){
+    $("#load2").addClass('spinner');
     let row = $('#tabla1').DataTable().row( this ).index();
     let data= {"comando":"cfg_loterias_click","c0":$('#tabla1').DataTable().row(row).data()[0]};
     var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
     detalle(info);
+    $("#load2").removeClass('spinner');
+
 });
 
 
@@ -185,9 +211,9 @@ function detalle(data){
     html=``;
     for (let i = 0; i < dias.length; i++) {
         if(info.dia[i]==1){
-            html+=`<input class="form-check-input" type="checkbox" value="" id="dia`+i+`" checked>`+dias[i]+`</br>`;
+            html+=`<label style="margin-left: 15%;"><input class="form-check-input" style="cursor:pointer;" type="checkbox" value="" id="dia`+i+`" checked>`+dias[i]+`</label></br>`;
         }else{
-            html+=`<input class="form-check-input" type="checkbox" value="" id="dia`+i+`">`+dias[i]+`</br>`;
+            html+=`<label style="margin-left: 15%;"><input class="form-check-input" style="cursor:pointer;" type="checkbox" value="" id="dia`+i+`">`+dias[i]+`</label></br>`;
 
         }
     }
@@ -202,6 +228,8 @@ function detalle(data){
 }
 
 function pintar_inputs(id,atributo,info){
+    let formato = Intl.NumberFormat('en-US');
+
     let datos=[];
     let html=``;
     let keys = Object.getOwnPropertyNames(info).filter(function(x){ 
@@ -212,7 +240,11 @@ function pintar_inputs(id,atributo,info){
     });
 
     for (let i = 0; i <= 6; i++) {
-        html+=`<input type="text" value="`+datos[i]+`" id="`+id+``+i+`" style="max-width: -webkit-fill-available;">`;
+        if(id=='horas_juego'){
+            html+=`<input type="text" value="`+datos[i]+`" id="`+id+``+i+`" style="max-width: -webkit-fill-available;">`;
+        }else{
+            html+=`<input type="text" value="`+formato.format(datos[i])+`" id="`+id+``+i+`" style="max-width: -webkit-fill-available;">`;
+        }
     }
     $("#"+id).html(html);
 }

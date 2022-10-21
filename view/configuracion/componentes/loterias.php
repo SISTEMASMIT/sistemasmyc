@@ -15,7 +15,7 @@
                             <option value="OT" >Figuras</option>
                         </select>
                         </div>
-                        <div class="col-md-12" id="" style="max-height: 600px;">
+                        <div class="col-md-12" id="" style="max-height: 600px;cursor:pointer;">
                             <table id="tabla1" class="cell-border display nowrap" style="width:100%">
                                 <thead class="thead" id="thead1">
                                     <tr><th></th></tr>
@@ -29,6 +29,7 @@
                     </div>
                 </div>
                 <div class="col-md-8">
+                    <div id="load2"></div>
                     <div id="formulario" style="font-size: large";>
                         
                     </div>

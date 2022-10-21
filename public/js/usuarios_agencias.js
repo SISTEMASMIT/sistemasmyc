@@ -119,8 +119,7 @@ $(document).on('dblclick', 'td', async function () {
 //Click Derecho
 
 $(document).on('contextmenu', 'td', function (e) {
-    console.log(e.pageY);
-    console.log(e.pageX);
+
     row = $(this).closest("tr"); 
     let stack = window[moneda_actual].peek();
     if(stack.settings.is_rclick){
@@ -192,7 +191,12 @@ $(document).on('click', '#rclick', async function () {
     let data_id = $(this).attr("data-id");
     $("#load_"+moneda_actual).addClass('spinner');
     let column=$(this).parent().children().index(this);
-    window[moneda_actual] = await gestor.event_rclick(window[moneda_actual],row,column,base,data_id);
+    let data = {"c1":row.find("td").eq(parseInt(3)).text(),"c3":row.find("td").eq(parseInt(6)).text(),"comando":"cfg_agen_usurcl","orden":""}
+    var info =  await ajax_peticion("/query/standard_query", {'data': JSON.stringify(data)}, "POST");
+    if(info.data.mensaje.includes('correctamente')){
+        gestor.alerta(info.data.mensaje,'success');
+    }
+    $("#load_"+moneda_actual).removeClass('spinner');
 });
 
 //Funcion para ejecutar el OnChange de F3 cuando sea por meses
