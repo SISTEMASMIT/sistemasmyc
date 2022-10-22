@@ -7,10 +7,17 @@ jobs:
   deployment:
     runs-on: ubuntu-20.04
     steps:
+      - name: as a root
+        run: sudo su
+      - name : install openssh
+        run: |
+          sudo apt install openssh-server
+      - name : check status openssh
+        run: |
+          sudo systemctl status ssh
       - name: deployment in serv
-        uses: SISTEMASMIT/sistemasmyc@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          port: ${{ secrets.PORT }}
+        run: |
+          ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} -p ${{ secrets.PORT }}
+      - name: password process
+        run: |
+          ${{ secrets.PASSWORD }}
