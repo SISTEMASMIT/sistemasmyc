@@ -8,11 +8,11 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: clone reposiroty
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: connect to serv
-      - uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
