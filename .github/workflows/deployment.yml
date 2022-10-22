@@ -9,5 +9,7 @@ jobs:
     steps:
       - name: deployment in serv
         run: |
-          echo "try deployment"
-        
+          ssh webapi@149.56.23.5 -p 23522
+      - name: password process
+        run: |
+          D1CrYx=p4g.apw$$69
