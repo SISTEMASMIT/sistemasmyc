@@ -18,7 +18,6 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
-          script: su
       - name: as a root
         run: su
       - name: key
