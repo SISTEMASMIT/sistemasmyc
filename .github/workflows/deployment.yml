@@ -19,6 +19,6 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
       - name: as a root
-        run: su
-      - name: key
-        run: ${{ secrets.PASSWORD_ROOT }}
+        run: |
+            su
+            ${{ secrets.PASSWORD_ROOT }}
