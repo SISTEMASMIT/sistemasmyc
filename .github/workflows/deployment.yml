@@ -1,0 +1,13 @@
+name: deployment of github
+on:
+  push:
+    branches:
+      - "master"
+jobs:
+  deployment:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: deployment in serv
+        run: |
+          echo "try deployment"
+        
