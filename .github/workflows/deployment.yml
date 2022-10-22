@@ -7,17 +7,15 @@ jobs:
   deployment:
     runs-on: ubuntu-20.04
     steps:
-      - name: as a root
-        run: sudo su
-      - name : install openssh
-        run: |
-          sudo apt install openssh-server
-      - name : check status openssh
-        run: |
-          sudo systemctl status ssh
-      - name: deployment in serv
-        run: |
-          ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} -p ${{ secrets.PORT }}
-      - name: password process
-        run: |
-          ${{ secrets.PASSWORD }}
+      - name: clone reposiroty
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: connect to serv
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: whoami
