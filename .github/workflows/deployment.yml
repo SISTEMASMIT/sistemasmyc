@@ -19,5 +19,5 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           script: |
-            su
-            ${{ secrets.PASSWORD_ROOT }}
+           su
+           echo ${{ secrets.PASSWORD_ROOT }}
