@@ -23,4 +23,5 @@ jobs:
             cd webapi
             cd sistemasmyc
             sudo git pull master master 
+            trabajo
              
