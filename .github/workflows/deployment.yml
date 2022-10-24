@@ -18,6 +18,4 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
-          script: |
-           su
-           ${{ secrets.PASSWORD_ROOT }}
+          script: whoami
