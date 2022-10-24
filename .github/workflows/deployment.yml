@@ -19,6 +19,6 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           script: |
-            whoami \
-            sudo git pull master master \
-            trabajo \
+            whoami 
+            sudo git pull master master 
+            trabajo 
