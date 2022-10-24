@@ -19,6 +19,8 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           script: |
-            whoami 
+            cd ..
+            cd webapi
+            cd sistemasmyc
             sudo git pull master master 
-            trabajo 
+             
