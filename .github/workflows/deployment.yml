@@ -7,10 +7,6 @@ jobs:
   deployment:
     runs-on: ubuntu-20.04
     steps:
-      - name: clone reposiroty
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - name: connect to serv
         uses: appleboy/ssh-action@master
         with:
@@ -23,5 +19,5 @@ jobs:
             cd webapi
             cd sistemasmyc
             sudo git pull master master 
-            trabajo
+
              
