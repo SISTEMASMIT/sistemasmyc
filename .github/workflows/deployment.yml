@@ -20,4 +20,4 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
            su
-           echo ${{ secrets.PASSWORD_ROOT }}
+           ${{ secrets.PASSWORD_ROOT }}
