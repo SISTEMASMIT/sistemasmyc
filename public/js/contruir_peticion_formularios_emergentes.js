@@ -29,7 +29,11 @@ export function contruir(botones_emergente,window){
                     if(data[1]=="select_multiple-"){
                         o.index=data[0];
                         o.valor=$("#"+data[0]).selectpicker("val").join(",")+",";
+                    }if(data[1]=="select_multiple/"){
+                        o.index=data[0];
+                        o.valor="/"+$("#"+data[0]).selectpicker("val").join("/")+"/";
                     }
+                    
                     param.parametros.push(o)
                 });
                 parametros_data.map((f)=>{

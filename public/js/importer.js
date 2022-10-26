@@ -187,7 +187,7 @@ export function formulario_emergente_select_multiple(label,json,clase,style){
  }
 export function button_emergente(label,json,clase,style){
     let orden = json.orden!="" && json.orden!= undefined && json.orden
-    return `<div class='col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 filtros'>
+    return `<div class='col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 filtros' style="${style}">
     <button type='button' id='${json.id}' class='btn-lg btn-block btn-success' data-orden="${orden}">${label}</button>
     </div>`
 }
