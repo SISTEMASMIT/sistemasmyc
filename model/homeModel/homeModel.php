@@ -73,7 +73,7 @@ function crearArbol($arboles){
 	}
 	return $arrayAux;
 }
-#falta desarrollo de cursividad ..........
+
 function buscarEnArbol(&$arboles,$nodo,$id){
 	foreach($arboles as $clave => $arbol){
 		$ids=explode(";",$arbol->listahijos);
