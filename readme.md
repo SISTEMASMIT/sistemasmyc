@@ -1,6 +1,66 @@
 # Estructura
 
-### La estructura de esta aplicación está con un patrón MVC el cual consta de diferentes partes, su parte principal es que tiene un archivo index el cual sirve de importador principal, es decir él solo llama a los archivos que construyen toda la aplicación, por ende en la configuración siempre se debe redireccionar a este index ( Esta configuración se evidenciara más adelante en la configuración del nginx).
+### La estructura de esta aplicación está con un patrón MVC el cual consta de diferentes partes, su parte principal es que tiene un archivo index el cual sirve de importador principal, es decir él solo llama a los archivos que construyen toda la aplicación, por ende en la configuración siempre se debe redireccionar a este index ( Esta configuración se evidenciara a continuacion).
+
+```
+server {
+  index index.php index.html;
+  server_name phpfpm.local;
+  error_log  /var/log/nginx/error.log;
+  access_log /var/log/nginx/access.log;
+  root /var/www/html;
+ 
+  location / {
+    try_files $uri $uri/ /index.php;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    fastcgi_param REMOTE_ADDR $http_x_forwarded_for;
+  }
+
+  location ~ \.php$ {
+    try_files $uri = 404;
+    fastcgi_split_path_info ^(.+\.php)(/.+)$;
+    fastcgi_pass php-fpm:9000;
+    fastcgi_index index.php;
+    include fastcgi_params;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    fastcgi_param PATH_INFO $fastcgi_path_info;
+  }
+}
+```
+*Aqui tenemos un bloque de servidor donde se configura los logs y la redireccion al archivo index con cualquier peticion*
+
+# Como desplegar de forma local
+
+### Para desplegar la aplicacion es necesario que tengas instalado de forma local docker, o en su defecto puedes desplegar lo haciendo las configuraciones pertinentes con php-fpm y un nginx o configurando tu propio servidor aqui hablaremos de una etapa de desarrollo donde se uso docker. docker compose para ser más explicito
+
+## Windows 
+### Paso 1: 
+#### Instlación de docker https://www.docker.com/ aqui podras descargar docker desktop el cual te permitira lanzar contenedores, explicación: docker desktop genera un entorno virtual con un subsistema de linux.
+
+### Paso 2
+#### Vaya https://github.com/SISTEMASMIT/sistemasmyc donde podra clonar y hacer un pill a los arhivos necesarios para poder hacer el despliegue.
+
+### Paso 3 
+
+#### Abra su editor de codigo favorito y una ventana de cmd o cualquier terminal instalada, hace el pull o clone el repositorio en la carpeta que desea alojar la plataforma.  
+
+#### posteriormente a esto puedes usar el comando docker-compose up o docker compose up, el computador va a empezar a descargar las dependencias o sistemas necesarios para hacer el lanzamiento, a continuacion se mostrara y explicara los archivos de docker y los logs que podria mostrar el docker
+
+## Logs
+
+![Logs de descarga y inicio de procesos de las maquinas](./public/Captura%20de%20pantalla%202022-11-09%20141253.png "Logs de descarga y inicio de procesos de las maquinas")
+
+### Logs de descarga y inicio de procesos de las maquinas
+
+![Logs de descarga y inicio de procesos de las maquinas](./public/Captura%20de%20pantalla%202022-11-09%20141324.png "Logs de descarga y inicio de procesos de las maquinas")
+
+### Aqui ya podemos evidenciar que los servicios estan el linea y puedes acceder a la ruta http://localhost:8080
+
+
+
+# expliacion del codigo
+
+## index.php
 ```
 <?php
 require_once("libs/apps.php");
@@ -133,3 +193,5 @@ class Configuracion extends Controller
 ```
 ####  parent::__construct();  
 *Hacemos uso del constructor general el cual nos crea un model dependiendo como se llame el controlador o el parametro que se pase en loadModel*
+
+### Posteriormente en el código vemos el filtro de sesión, el proceso para la creación del menú y la extracción de los filtros para su posterior pintado **En caso de tener subrutas es decir cuando no solo tienes la ruta configuración si no tienes configuracion/topes-dinamicos se debe crear un método para que la función pueda enviar este ultimo parametro a la base de datos y hacer la respectiva extracción de filtros,  Aquí se le da uso a la función  bl_parametros la cual usa la tabla links_orders para crear los filtros, cada fila de esta tabla puede ser un filtro o puede ser un dclick, rclikc, sumatoria, invisibles, o ejecución que es cuando se necesitan valores de una consulta en una emergente esto será explicado más adelante** posteriormente, estos datos son transmitidos a las vistas gracias al controller general que tiene estos atributos.
