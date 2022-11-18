@@ -15,6 +15,7 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           script: |
+            sudo ls
             sudo cd ..
             sudo cd webapi
             sudo cd sistemasmyc
