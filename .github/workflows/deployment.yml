@@ -17,8 +17,7 @@ jobs:
           script: |
             cd ..
             cd webapi
-            ls
             cd sistemasmyc
-            git pull master master 
+            sudo git pull master master 
 
              
