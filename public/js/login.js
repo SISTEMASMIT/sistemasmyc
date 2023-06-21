@@ -22,10 +22,26 @@ $('#reactivar').submit(async function(e){
     if(info.e == '1'){
         $('#activarUser').addClass('invisible');
         $('#cancelarActivarUser').html('Cerrar');
-        $('#msgAct').html('<p>¡Usuario Activado Correctamente, en segundos podrás intentar nuevamente!</p>');
-        setTimeout(function(){
-            window.location.href = "/";
-        }, 5000);
+        let timerInterval
+                Swal.fire({
+                title: 'Correcto',
+                icon: 'success',
+                html: '¡Usuario Activado Correctamente, en segundos podrás intentar nuevamente!.',
+                timer: 4000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading()
+                    const b = Swal.getHtmlContainer().querySelector('b')
+                    timerInterval = setInterval(() => {
+                    b.textContent = Swal.getTimerLeft()
+                    }, 100)
+                },
+                willClose: () => {
+                    clearInterval(timerInterval)
+                }
+                }).then((result) => {
+                    window.location.href = "/";
+                })
     }else if(info.e=="0"){
         $('#msgAct').html('<p class="invalido">¡Código inválido, intente después!</p>');
     }else{
@@ -65,6 +81,9 @@ $('#formLogin').submit(async function(e) {
             $('#invalido').html('<p>Error Técnico</p>');
         }else{
             $('#invalido').html('<p>¡Su usuario o clave son inválidos, intente nuevamente!</p>');
+            setTimeout(function(){
+                $('#invalido').html('');
+            }, 3000);
         }   
         console.log("Error "+info.mensaje);
     }else if(info.e="2"){
@@ -140,12 +159,27 @@ $('#registroP').submit(async function(e) {
         if(confirmar.google.charAt(0)=="1"){
             if(confirmar.clave.charAt(0)=="1"){
                 if(confirmar.equipo.charAt(0)=="1"){
-                    $('#sesionAlerta').modal("show");
                     $('#modalQR').modal("hide");
-                    $('#msgSesion').html("<p>Se han validado todos los datos, en breve podrás iniciar sesion con tu nueva clave.</p>");
-                    setTimeout(function(){
-                        window.location.href = "/home";
-                    }, 3000);
+                    let timerInterval
+                        Swal.fire({
+                        title: 'Correcto',
+                        icon: 'success',
+                        html: 'Se han validado todos los datos, en breve podrás iniciar sesion con tu nueva clave.',
+                        timer: 4000,
+                        timerProgressBar: true,
+                        didOpen: () => {
+                            Swal.showLoading()
+                            const b = Swal.getHtmlContainer().querySelector('b')
+                            timerInterval = setInterval(() => {
+                            b.textContent = Swal.getTimerLeft()
+                            }, 100)
+                        },
+                        willClose: () => {
+                            clearInterval(timerInterval)
+                        }
+                        }).then((result) => {
+                            window.location.href = "/";
+                        })
                 }else{
                     $('#msgQr').html("<p>Equipo Inválido.</p>");
                 }
@@ -214,15 +248,50 @@ $('#navegador').submit(async function(e) {
             $('#msgReg').html('<p>¡Código Inválido, intente nuevamente</p><br>');
         }else if(info.e=="3"){
             $('#modalNav').modal("hide");
-            $('#alertaModal').modal("show");
+           
             if(recordarNavegador=="On"){
-                $('#msgRegNav').html("<p>Su navegador se registró Permanentemente.</p>");
+                let timerInterval
+                Swal.fire({
+                title: 'Correcto',
+                icon: 'success',
+                html: 'Su navegador se registró Permanentemente.',
+                timer: 4000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading()
+                    const b = Swal.getHtmlContainer().querySelector('b')
+                    timerInterval = setInterval(() => {
+                    b.textContent = Swal.getTimerLeft()
+                    }, 100)
+                },
+                willClose: () => {
+                    clearInterval(timerInterval)
+                }
+                }).then((result) => {
+                    window.location.href = "/";
+                })
             }else{
-                $('#msgRegNav').html("<p>Su navegador se registró Temporalmente.</p>");
+                let timerInterval
+                Swal.fire({
+                title: 'Correcto',
+                icon: 'success',
+                html: 'Su navegador se registró Temporalmente.',
+                timer: 4000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading()
+                    const b = Swal.getHtmlContainer().querySelector('b')
+                    timerInterval = setInterval(() => {
+                    b.textContent = Swal.getTimerLeft()
+                    }, 100)
+                },
+                willClose: () => {
+                    clearInterval(timerInterval)
+                }
+                }).then((result) => {
+                    window.location.href = "/";
+                })
             }
-            setTimeout(function(){
-                window.location.href = "/home";
-            }, 3000);
         }
     }
 });

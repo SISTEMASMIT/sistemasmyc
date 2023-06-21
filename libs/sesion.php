@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-$tiempo = 60000;
+$tiempo = 600000;
 // Máxima duración de sesión activa en hora
 define( 'MAX_SESSION_TIEMPO', 3600 *  1);
 define( 'MAX_SESSION_INACTIVIDAD', $tiempo *  1);

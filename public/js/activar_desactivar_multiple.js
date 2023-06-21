@@ -13,6 +13,9 @@ var modal_id = 1;
 var boton=false;
 var row;
 var id_menu;
+var seleccionados=[];
+
+
 
 window["receptor"] ="";
 var botones_emergente=[];
@@ -31,40 +34,9 @@ $(document).ready(function () {
     // fecha.rangeDate = f1f2 antiguos
     // fecha.futuDate = f1f2 futuros
     // fecha.oneDate = f1 unica
-
-    fecha.rangeDate("#f1f2");
-});
-//Detectamos el cambio de moneda en el tab
-$(document).on("click", "#moneda .tabs .tab-list .tab", function(event) {
-	event.preventDefault();
-
-    boton=false;
-    $(".tab").removeClass("active");
-	$(".tab-content").removeClass("show");
-	$(this).addClass("active");
-	$($(this).attr('href')).addClass("show");
-    moneda_actual = $("#moneda .tabs a.active").attr('id');
-
-    var w = document.getElementById("tab-"+moneda_actual).clientWidth;
-    var h = document.getElementById("tab-"+moneda_actual).clientHeight;
-    h = h+500;
-    $("#carga_"+moneda_actual).addClass('carga');
-    $("#carga_"+moneda_actual).width( w );
-    $("#carga_"+moneda_actual).height( h );
-    $("#load_"+moneda_actual).addClass('spinner');
-
+    $("#act-desc-multiple").addClass('invisible');
     
-    //Este if es para comprobar si ya existe una pila de esa moneda
-    if (window[moneda_actual].moneda != undefined) { 
-    }else{
-        window[moneda_actual] =  new Stack(moneda_actual,1)
-    }
-    traer_data();
-
-    $("#carga_"+moneda_actual).removeClass('carga');
-    $("#load_"+moneda_actual).removeClass('spinner');
 });
-
 
 
 
@@ -82,10 +54,17 @@ $(document).on('hidden.bs.modal', '#base', function() {
 });
 
 
-// $(document).on('click', '#act-desc-multiple_acepta', function() {
-//     boton=true;
-//     traer_data();
-// });
+$(document).on('click', '#act-desc-multiple', function() {
+    boton=true;
+
+      // Iterate over all checkboxes in the table
+      var rows_selected = $('#tabla_COP').DataTable().column(0).checkboxes.selected();
+
+      // Iterate over all selected checkboxes
+      $.each(rows_selected, function(index, rowId){
+        console.log(rowId);
+      });
+});
 
  //Trae la data de acuerdo a los parametros iniciales
 // async function traer_data(){
@@ -111,10 +90,22 @@ $(document).on('hidden.bs.modal', '#base', function() {
 
 
 //Doble Click
-$(document).on('dblclick', 'td', async function () {
+$(document).on('click', 'td', async function () {
     let column=$(this).parent().children().index(this);
     row = $(this).closest("tr"); 
-    window[moneda_actual] = await gestor.event_dclick(window[moneda_actual],row,column,base);
+    
+    let item=row.find("td").eq(1).text();
+    if(row.hasClass('selected')){
+        seleccionados = seleccionados.filter(function(x) {
+            return x !== item
+            
+        })
+        row.removeClass('selected');
+    }else{
+        row.addClass('selected');
+        seleccionados.push(row.find("td").eq(1).text());
+    }
+    console.log(seleccionados);
 });
 
 
@@ -197,13 +188,14 @@ $(document).on('click', '#rclick', async function () {
     window[moneda_actual] = await gestor.event_rclick(window[moneda_actual],row,column,base,data_id);
 });
 
-//Funcion para ejecutar el OnChange de F3 cuando sea por meses
-$(document).on("change","#f3",async function(){
-    let ano = $(this).selectpicker("val");
-    $("#load_"+moneda_actual).addClass('spinner');
-    window[moneda_actual] = await gestor.event_change(window[moneda_actual],base,ano);
 
-});
+
+//Seleccionar todos
+$(document).on('click',  '#select-all', function(){
+    // Check/uncheck all checkboxes in the table
+    var rows = $('#tabla_'+moneda_actual).rows({ 'search': 'applied' }).nodes();
+    $('input[type="checkbox"]', rows).prop('checked', this.checked);
+ });
 
 
 /// modificaciones
@@ -214,6 +206,7 @@ $(document).on("change","#operacion",function(){
         $("#monto").attr("style","display:none")
     }
 })
+
 $(document).on("change","#receptor",async function(){
     let receptores=$(this).selectpicker().val();
     let data={"receptor":receptores,"comando":"get_age_multi"};
@@ -243,6 +236,7 @@ $(document).on("change","#receptor",async function(){
         "titulo":"Reporte de Ventas Global",
         "modal_id":window[moneda_actual].modal_id
     }
-    gestor.montar_tabla(tabla_info,window[moneda_actual]);
+    gestor.montar_tabla(tabla_info,window[moneda_actual],"checkeable");
+    $("#act-desc-multiple").removeClass('invisible');
     }
 });

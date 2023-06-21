@@ -221,29 +221,7 @@ $(document).on("click", "#agregrar", async function () {
     let modalsplit = modal.split("*");
     let titulo = '';
     let jstree = false;
-//modales anidados
-    // if ($(base).children().length > 1) {
-    //     if(botones_emergente.length>0){
-    //             let info = await ajax_peticion("/query/standard_query", { 'data': contruir(botones_emergente) }, "POST");
-    //             if(info.data.mensaje=="ok"){
-    //                 Swal.fire({
-    //                     title: titulo_ventana,
-    //                     text: info.data.mensaje,
-    //                     icon: 'success',
-    //                     confirmButtonText: 'Aceptar'
-    //                   });
-    //             }else{
-    //                 Swal.fire({
-    //                     title: titulo_ventana,
-    //                     text: info.data.mensaje,
-    //                     icon: 'error',
-    //                     confirmButtonText: 'Aceptar'
-    //                   });
-    //             }
-                
-    //     }
-    //     $(base).children().last().removeClass("show");
-    // }
+
     if (formulario.filtros != undefined) {
         ({html,botones_emergente,titulo_ventana,titulo} =await construir_modal(formulario,botones_emergente,titulo_ventana,titulo));
         modalsplit[1] = html
